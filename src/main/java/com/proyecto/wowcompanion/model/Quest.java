@@ -46,5 +46,8 @@ public class Quest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quest_giver_id")
     private Npc questGiver;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
 }
 

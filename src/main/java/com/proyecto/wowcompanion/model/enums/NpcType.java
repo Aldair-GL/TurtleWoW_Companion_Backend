@@ -10,6 +10,8 @@ public enum NpcType {
     VENDOR,
     TRAINER,
     BOSS,
-    QUEST_GIVER
+    QUEST_GIVER,
+    FLIGHT_MASTER,
+    INNKEEPER
 }
 

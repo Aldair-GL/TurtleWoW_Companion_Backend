@@ -38,5 +38,8 @@ public class Zone {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faction_id")
     private Faction faction;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
 }
 

@@ -7,6 +7,7 @@ import com.proyecto.wowcompanion.dto.ZoneAppDto;
 import com.proyecto.wowcompanion.model.Npc;
 import com.proyecto.wowcompanion.model.Quest;
 import com.proyecto.wowcompanion.model.Zone;
+import com.proyecto.wowcompanion.model.Faction;
 import com.proyecto.wowcompanion.model.enums.NpcType;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class AppMapper {
 
         String faction = "Neutral";
         if (zone.getFaction() != null) {
-            faction = zone.getFaction().getName();
+            faction = mapFactionName(zone.getFaction());
         }
 
         return ZoneAppDto.builder()
@@ -40,7 +41,7 @@ public class AppMapper {
                 .description(zone.getDescription() != null ? zone.getDescription() : "")
                 .level(level)
                 .faction(faction)
-                .imageUrl(null)
+                .imageUrl(zone.getImageUrl())
                 .build();
     }
 
@@ -49,12 +50,12 @@ public class AppMapper {
     public QuestAppDto toQuestAppDto(Quest quest) {
         if (quest == null) return null;
 
-        String faction = "Both";
+        String faction = "Neutral";
         if (quest.getFactionRequired() != null) {
             switch (quest.getFactionRequired()) {
                 case ALLIANCE -> faction = "Alliance";
                 case HORDE -> faction = "Horde";
-                case NEUTRAL -> faction = "Both";
+                case NEUTRAL -> faction = "Neutral";
             }
         }
 
@@ -84,7 +85,7 @@ public class AppMapper {
                 .zone(zoneName)
                 .faction(faction)
                 .rewardXp(rewardXp != null ? rewardXp : 0)
-                .imageUrl(null)
+                .imageUrl(quest.getImageUrl())
                 .build();
     }
 
@@ -95,11 +96,9 @@ public class AppMapper {
 
         String type = mapNpcType(npc.getNpcType(), npc.getIsQuestGiver());
 
-        String faction = "Neutral";
+        String faction = "Hostile";
         if (npc.getFaction() != null) {
-            faction = npc.getFaction().getName();
-        } else {
-            faction = "Hostile";
+            faction = mapFactionName(npc.getFaction());
         }
 
         String zoneName = "";
@@ -120,7 +119,7 @@ public class AppMapper {
                 .type(type)
                 .level(npc.getLevel() != null ? npc.getLevel() : 1)
                 .faction(faction)
-                .imageUrl(null)
+                .imageUrl(npc.getImageUrl())
                 .build();
     }
 
@@ -165,9 +164,25 @@ public class AppMapper {
             case VENDOR -> "Vendor";
             case TRAINER -> "Trainer";
             case QUEST_GIVER -> "Quest Giver";
+            case FLIGHT_MASTER -> "Flight Master";
+            case INNKEEPER -> "Innkeeper";
             case DRAGON -> "Boss";
             case ELEMENTAL -> "Boss";
             default -> "NPC";
+        };
+    }
+
+    /**
+     * Mapea la facción a los valores que espera el frontend Android:
+     * "Alliance", "Horde", "Neutral".
+     * Las facciones neutrales (Steamwheedle, Argent Dawn, etc.) se mapean a "Neutral".
+     */
+    private String mapFactionName(Faction faction) {
+        if (faction == null) return "Neutral";
+        return switch (faction.getType()) {
+            case ALLIANCE -> "Alliance";
+            case HORDE -> "Horde";
+            case NEUTRAL -> "Neutral";
         };
     }
 

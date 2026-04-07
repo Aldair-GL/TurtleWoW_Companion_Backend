@@ -138,9 +138,9 @@ http://localhost:8084/h2-console
 El fichero `data.sql` carga automaticamente datos seed al arrancar en perfil `dev`:
 - 6 facciones
 - 9 clases de personaje
-- 13 zonas
-- 15 NPCs
-- 10 quests
+- 18 zonas (con imageUrl)
+- 25 NPCs (con imageUrl, tipos variados: Boss, Vendor, Quest Giver, Trainer, Flight Master, Innkeeper)
+- 25 quests (con imageUrl, variedad de niveles 1-60 y facciones)
 - 12 items
 - 8 razas
 - 12 profesiones
