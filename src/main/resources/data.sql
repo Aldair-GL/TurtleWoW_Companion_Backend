@@ -505,6 +505,57 @@ INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id
 (104, 'Toga del Maestro Oscuro', 'Vestiduras del rector de Scholomance.', 'EPIC', 'Pechera de tela', 8.0, 108),
 (105, 'Baculo de Gandling', 'Baculo que teletransporta a las victimas.', 'EPIC', 'Baston', 6.0, 108);
 
+-- ==================== NPCs ====================
+INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES
+(1, 'Mariscal Dughan', 'Mariscal de Villadorada', 'El mariscal de Villadorada, defensor del Bosque de Elwynn.', 'QUEST_GIVER', true, 15, 1, 1, NULL),
+(2, 'Gryan Mantorrecio', 'Capitan de la Milicia del Pueblo', 'Lider de la Milicia del Pueblo en Paramos de Poniente.', 'QUEST_GIVER', true, 30, 2, 1, NULL),
+(3, 'Hemet Nesingwary', 'Gran Cazador', 'Famoso cazador enano que desafia aventureros en Vega de Tuercespina.', 'QUEST_GIVER', true, 45, 19, 1, NULL),
+(4, 'Posadero Farley', 'Posadero', 'Posadero de la Posada del Orgullo del Leon en Villadorada.', 'INNKEEPER', true, 10, 1, 1, NULL),
+(5, 'Dungar Tiraolarga', 'Maestro de Grifos', 'Maestro de grifos en Ciudad de Ventormenta.', 'FLIGHT_MASTER', false, 55, 5, 1, NULL),
+(6, 'Thrall', 'Jefe de Guerra de la Horda', 'Jefe de Guerra y lider de los Orcos. Poderoso chaman que libero a su pueblo.', 'QUEST_GIVER', false, 63, 14, 2, NULL),
+(7, 'Rexxar', 'Campeon de la Horda', 'Legendario semiogro maestro de bestias que vaga por las tierras salvajes.', 'QUEST_GIVER', true, 60, 11, 2, NULL),
+(8, 'Sergra Espinoscura', 'Dadora de Misiones', 'Dadora de misiones en la Encrucijada de Los Baldios.', 'QUEST_GIVER', true, 25, 11, 2, NULL),
+(9, 'Doras', 'Maestro de Jinetes del Viento', 'Maestro de vuelo en Orgrimmar.', 'FLIGHT_MASTER', false, 55, 14, 2, NULL),
+(10, 'Gazlowe', 'Ingeniero Jefe de Trinquete', 'Ingeniero jefe y lider goblin de Trinquete en Los Baldios.', 'QUEST_GIVER', true, 35, 11, 3, NULL),
+(11, 'Cromie', 'Dragon Bronce', 'Dragon bronce disfrazado de gnoma, guardiana de las lineas temporales.', 'QUEST_GIVER', true, 55, 25, 4, NULL),
+(12, 'Hogger', 'Jefe Gnoll', 'El temible jefe gnoll del Bosque de Elwynn. Terror de aventureros novatos.', 'BOSS', false, 11, 1, NULL, NULL),
+(13, 'Onyxia', 'Madre de Cria del Vuelo Negro', 'Hija de Alamuerte, manipulo en secreto la politica de Ventormenta.', 'DRAGON', false, 63, 19, NULL, NULL),
+(14, 'Ragnaros', 'El Senor del Fuego', 'Senor elemental del fuego, invocado por los enanos Hierro Negro.', 'ELEMENTAL', false, 63, 26, NULL, NULL),
+(15, 'Drek''Thar', 'Vidente del Clan Lobo Gelido', 'Poderoso chaman ciego, mentor de Thrall.', 'TRAINER', false, 62, 14, 2, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ==================== MISIONES (QUESTS) ====================
+INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES
+(1, 'Una Amenaza Interior', 'El Mariscal Dughan esta preocupado por la amenaza creciente de kobolds en las minas de Elwynn. Investiga la Mina de Hagovago.', 4, 1, 'ALLIANCE', '250 XP, 1 plata', 250, 1, 1, NULL),
+(2, 'La Hermandad Defias', 'Gryan Mantorrecio necesita ayuda para descubrir la amenaza Defias en Paramos de Poniente.', 14, 10, 'ALLIANCE', '1150 XP, 8 plata', 1150, 2, 2, NULL),
+(3, 'La Milicia del Pueblo', 'Ayuda a la Milicia del Pueblo a defender Paramos de Poniente de la Hermandad Defias.', 12, 9, 'ALLIANCE', '900 XP, 6 plata', 900, 2, 2, NULL),
+(4, 'Se Busca: Hogger', 'Hogger ha estado aterrorizando a los viajeros en Elwynn. Lleva su cabeza al Mariscal Dughan.', 11, 5, 'ALLIANCE', '850 XP, 5 plata', 850, 1, 1, NULL),
+(5, 'El Barril Vacio de Chen', 'Encuentra los ingredientes para la cerveza legendaria de Chen Tormenta de Cerveza en Los Baldios.', 15, 11, 'HORDE', '1350 XP, 10 plata', 1350, 11, 10, NULL),
+(6, 'Perdidos en Batalla', 'Encuentra a un guerrero caido en Los Baldios y devuelve sus pertenencias a su familia.', 10, 7, 'HORDE', '630 XP, 3 plata 50 cobre', 630, 11, NULL, NULL),
+(7, 'Desafio de Sergra', 'Sergra Espinoscura te desafia a cazar los feroces raptores de Los Baldios.', 13, 10, 'HORDE', '1100 XP, 7 plata', 1100, 11, 8, NULL),
+(8, 'Bienvenido a la Jungla', 'Hemet Nesingwary te desafia a cazar bestias salvajes de Vega de Tuercespina.', 30, 28, NULL, '2400 XP, 25 plata', 2400, 19, 3, NULL),
+(9, 'Maestria de Raptores', 'Hemet Nesingwary quiere que demuestres tu valia cazando los raptores mas letales.', 33, 29, NULL, '2800 XP, 30 plata', 2800, 19, 3, NULL),
+(10, 'Una Plaga Sobre Ti', 'Cromie necesita ayuda investigando la plaga en las Tierras de la Peste del Oeste.', 53, 50, NULL, '5500 XP, 55 plata', 5500, 25, 11, NULL),
+(11, 'Gran Cazador', 'Rastrea y derrota al Rey Bangalash en Vega de Tuercespina para Hemet Nesingwary.', 38, 35, NULL, '3100 XP, 32 plata', 3100, 19, 3, NULL),
+(12, 'La Llamada de Silithus', 'El Circulo Cenarion necesita campeones para investigar la amenaza Silithida.', 58, 55, NULL, '6000 XP, 60 plata', 6000, 23, NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ==================== OBJETOS (ITEMS) ====================
+INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES
+(1, 'Vendaval, Espada Bendita del Buscavientos', 'Espada legendaria forjada con la esencia de Truenaan.', 'LEGENDARY', 'Arma', 60, 'Nucleo de Magma - Ataduras del Buscavientos'),
+(2, 'Sulfuras, Mano de Ragnaros', 'Maza legendaria a dos manos forjada con el Martillo de Sulfuron.', 'LEGENDARY', 'Arma', 60, 'Nucleo de Magma - Ragnaros'),
+(3, 'Piedra de Hogar', 'Te devuelve a tu posada cuando la usas.', 'COMMON', 'Consumible', 1, 'Se obtiene al crear el personaje'),
+(4, 'Tela de Lino', 'Tela basica usada en sastreria y primeros auxilios.', 'COMMON', 'Material', 1, 'Humanoides nivel 1-15'),
+(5, 'Panuelo Defias', 'Un panuelo rojo usado por miembros de la Hermandad Defias.', 'COMMON', 'Mision', 1, 'Mobs Defias en Paramos de Poniente'),
+(6, 'Poderoso Martillo de Smite', 'Un poderoso martillo dropeado por Mr. Smite en Las Minas de la Muerte.', 'RARE', 'Arma', 17, 'Minas de la Muerte - Mr. Smite'),
+(7, 'Baston de Dominacion', 'Un poderoso baston para lanzadores de la Cumbre de Roca Negra.', 'EPIC', 'Arma', 57, 'Cumbre de Roca Negra Superior'),
+(8, 'Mineral de Cobre', 'Mineral de cobre en bruto que puede fundirse en barras.', 'COMMON', 'Material', 1, 'Vetas de mineral nivel 1-50'),
+(9, 'Colmillo de las Sombras', 'Rara espada de twink del Castillo Colmillo Oscuro.', 'RARE', 'Arma', 17, 'Castillo Colmillo Oscuro - varios jefes'),
+(10, 'Pocion de Curacion Menor', 'Restaura de 70 a 90 de vida.', 'COMMON', 'Consumible', 1, 'Alquimia, vendedor'),
+(11, 'Manto Devoto', 'Hombreras de sacerdote nivel 0 del Baron Rivendare.', 'RARE', 'Armadura', 55, 'Stratholme - Baron Rivendare'),
+(12, 'Marca de Honor de la Garganta Grito de Guerra', 'Marca obtenida en el campo de batalla.', 'UNCOMMON', 'Mision', 10, 'JcJ Garganta Grito de Guerra')
+ON CONFLICT (id) DO NOTHING;
+
 -- ==================== SINCRONIZAR SECUENCIAS ====================
 SELECT setval(pg_get_serial_sequence('factions','id'), (SELECT COALESCE(MAX(id),1) FROM factions));
 SELECT setval(pg_get_serial_sequence('character_classes','id'), (SELECT COALESCE(MAX(id),1) FROM character_classes));
@@ -513,3 +564,6 @@ SELECT setval(pg_get_serial_sequence('races','id'), (SELECT COALESCE(MAX(id),1) 
 SELECT setval(pg_get_serial_sequence('professions','id'), (SELECT COALESCE(MAX(id),1) FROM professions));
 SELECT setval(pg_get_serial_sequence('bosses','id'), (SELECT COALESCE(MAX(id),1) FROM bosses));
 SELECT setval(pg_get_serial_sequence('loot_items','id'), (SELECT COALESCE(MAX(id),1) FROM loot_items));
+SELECT setval(pg_get_serial_sequence('npcs','id'), (SELECT COALESCE(MAX(id),1) FROM npcs));
+SELECT setval(pg_get_serial_sequence('quests','id'), (SELECT COALESCE(MAX(id),1) FROM quests));
+SELECT setval(pg_get_serial_sequence('items','id'), (SELECT COALESCE(MAX(id),1) FROM items));
