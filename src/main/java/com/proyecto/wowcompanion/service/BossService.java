@@ -27,7 +27,7 @@ public class BossService {
     }
 
     public BossResponseDto findById(Long id) {
-        Boss boss = bossRepository.findById(id)
+        Boss boss = bossRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Boss", id));
         return bossMapper.toDto(boss);
     }

@@ -55,20 +55,26 @@ Faction (1) ----< (N) Npc
 Faction (1) ----< (N) Race
 Zone    (1) ----< (N) Npc
 Zone    (1) ----< (N) Quest
+Zone    (1) ----< (N) Boss
+Boss    (1) ----< (N) LootItem
 Npc     (1) ----< (N) Quest (quest_giver)
 Race    (N) >----< (N) CharacterClass (tabla intermedia race_class)
 ```
 
-Entidades: **Faction, Zone, Npc, Quest, Item, CharacterClass, Race, Profession, Usuario**
+Entidades: **Faction, Zone, Npc, Quest, Item, CharacterClass, Race, Profession, Boss, LootItem, Usuario**
 
 ---
 
 ## Endpoints principales
 
+### Lectura (GET)
+
 | Metodo | Ruta | Descripcion | Filtros |
 |--------|------|-------------|---------|
 | GET | `/api/v1/zones` | Zonas y mazmorras (paginado) | `?name=`, `?continent=` |
 | GET | `/api/v1/zones/{id}` | Detalle de zona | |
+| GET | `/api/v1/zones/{id}/bosses` | Jefes de una mazmorra con loot | |
+| GET | `/api/v1/bosses/{id}` | Detalle de un jefe con loot | |
 | GET | `/api/v1/races` | Razas jugables | `?factionId=` |
 | GET | `/api/v1/races/{id}` | Detalle de raza con clases | |
 | GET | `/api/v1/classes` | Clases de personaje | `?name=` |
@@ -77,6 +83,29 @@ Entidades: **Faction, Zone, Npc, Quest, Item, CharacterClass, Race, Profession, 
 | GET | `/api/v1/factions/{id}` | Detalle de faccion | |
 | GET | `/api/v1/professions` | Profesiones | `?name=` |
 | GET | `/api/v1/professions/{id}` | Detalle de profesion | |
+| GET | `/api/v1/items` | Items (paginado) | `?name=`, `?quality=` |
+| GET | `/api/v1/items/{id}` | Detalle de item | |
+| GET | `/api/v1/search?q=` | Busqueda global en zonas, quests y NPCs | |
+
+### CRUD completo (Quest)
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/api/v1/quests` | Listar quests (paginado) |
+| GET | `/api/v1/quests/{id}` | Detalle de quest |
+| POST | `/api/v1/quests` | Crear quest |
+| PUT | `/api/v1/quests/{id}` | Actualizar quest |
+| DELETE | `/api/v1/quests/{id}` | Eliminar quest |
+
+### CRUD completo (NPC)
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/api/v1/npcs` | Listar NPCs (paginado) |
+| GET | `/api/v1/npcs/{id}` | Detalle de NPC |
+| POST | `/api/v1/npcs` | Crear NPC |
+| PUT | `/api/v1/npcs/{id}` | Actualizar NPC |
+| DELETE | `/api/v1/npcs/{id}` | Eliminar NPC |
 
 Paginacion (zonas): `?page=0&size=20&sort=name,asc`
 
@@ -128,3 +157,5 @@ El fichero `data.sql` carga automaticamente los datos semilla al arrancar:
 - 20 mazmorras vanilla (desde Simas Igneas hasta Scholomance)
 - 8 razas jugables (4 Alianza, 4 Horda) con sus clases disponibles
 - 12 profesiones (9 primarias, 3 secundarias)
+- 14+ jefes de mazmorra con items de botin
+- NPCs, quests e items del mundo
