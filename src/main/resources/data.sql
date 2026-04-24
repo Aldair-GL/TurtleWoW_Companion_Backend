@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS usuarios;
 DELETE FROM loot_items;
 DELETE FROM items;
 DELETE FROM bosses;
+DELETE FROM npcs;
+DELETE FROM quests;
 
 -- ==================== FACCIONES ====================
 INSERT INTO factions (id, name, description, type) VALUES
@@ -377,168 +379,271 @@ ON CONFLICT (id) DO NOTHING;
 
 -- RAGEFIRE CHASM
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(1, 'Oggleflint''s Inspirer', 'A primitive but surprisingly sturdy staff.', 'UNCOMMON', 'Staff', 35.0, 1),
-(2, 'Subterranean Cape', 'A cape forged in the heat of the chasm.', 'UNCOMMON', 'Cloak', 28.0, 2),
-(3, 'Robe of Evocation', 'Ragged robe imbued with demonic energy.', 'UNCOMMON', 'Chest Cloth', 30.0, 3),
-(4, 'Bazzalan''s Blade', 'Curved dagger of the satyr leader.', 'RARE', 'Dagger', 25.0, 4);
+(1, 'Oggleflint''s Inspirer', 'A primitive but surprisingly sturdy mace.', 'UNCOMMON', 'One-Hand Mace', 35.0, 1),
+(2, 'Caverndeep Trudgers', 'Boots caked in volcanic ash.', 'UNCOMMON', 'Boots Mail', 30.0, 1),
+(3, 'Subterranean Cape', 'Cape forged in the heat of the chasm.', 'UNCOMMON', 'Cloak', 28.0, 2),
+(4, 'Cursed Felblade', 'A dagger infused with demonic flame.', 'UNCOMMON', 'Dagger', 25.0, 2),
+(5, 'Crystalline Cuffs', 'Wristguards reinforced with lava crystal.', 'UNCOMMON', 'Bracers Cloth', 22.0, 2),
+(6, 'Robe of Evocation', 'Ragged robe imbued with demonic energy.', 'UNCOMMON', 'Chest Cloth', 30.0, 3),
+(7, 'Chanting Blade', 'Dagger that hums with dark incantations.', 'UNCOMMON', 'Dagger', 26.0, 3),
+(8, 'Bazzalan''s Blade', 'Curved dagger of the satyr leader.', 'RARE', 'Dagger', 25.0, 4),
+(9, 'Demonic Bone Ring', 'Ring carved from demon bone.', 'UNCOMMON', 'Ring', 30.0, 4),
+(10, 'Shadowweave Mantle', 'Shoulderpads from woven shadows.', 'UNCOMMON', 'Shoulders Cloth', 22.0, 4);
 
 -- WAILING CAVERNS
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(5, 'Belt of the Fang', 'Belt woven with enchanted scales.', 'UNCOMMON', 'Belt Leather', 28.0, 5),
-(6, 'Serpent''s Shoulders', 'Shoulder pads infused with serpent venom.', 'RARE', 'Shoulders Leather', 15.0, 6),
-(7, 'Kresh''s Back', 'Natural petrified shell shield.', 'RARE', 'Shield', 35.0, 7),
-(8, 'Savage Trodders', 'Boots pulsing with nightmare energy.', 'RARE', 'Boots Leather', 14.0, 8),
-(9, 'Living Root', 'A sword that seems to grow like a plant.', 'RARE', 'Two-Hand Sword', 18.0, 9),
-(10, 'Mutant Scale Breastplate', 'Breastplate from Mutanus hide.', 'RARE', 'Chest Mail', 22.0, 10);
+(11, 'Belt of the Fang', 'Belt woven with enchanted scales.', 'UNCOMMON', 'Belt Leather', 28.0, 5),
+(12, 'Snakeskin Bag', 'A bag made from serpent hide.', 'UNCOMMON', 'Bag', 20.0, 5),
+(13, 'Serpent''s Shoulders', 'Shoulder pads infused with serpent venom.', 'RARE', 'Shoulders Leather', 15.0, 6),
+(14, 'Cobrahn''s Grasp', 'Gloves dripping with venom.', 'UNCOMMON', 'Gloves Leather', 22.0, 6),
+(15, 'Kresh''s Back', 'Natural petrified shell shield.', 'RARE', 'Shield', 35.0, 7),
+(16, 'Worn Turtle Shell Shield', 'A sturdy ancient shell.', 'UNCOMMON', 'Shield', 40.0, 7),
+(17, 'Savage Trodders', 'Boots pulsing with nightmare energy.', 'RARE', 'Boots Leather', 14.0, 8),
+(18, 'Serpentis'' Gloves', 'Gloves from the fang lord.', 'UNCOMMON', 'Gloves Cloth', 20.0, 8),
+(19, 'Living Root', 'A sword that seems to grow like a plant.', 'RARE', 'Two-Hand Sword', 18.0, 9),
+(20, 'Deep Fathom Ring', 'Ring pulled from the nightmare.', 'UNCOMMON', 'Ring', 24.0, 9),
+(21, 'Mutant Scale Breastplate', 'Breastplate from Mutanus hide.', 'RARE', 'Chest Mail', 22.0, 10),
+(22, 'Slime-Encrusted Pads', 'Shoulder pads covered in nightmare ooze.', 'UNCOMMON', 'Shoulders Leather', 26.0, 10);
 
 -- THE DEADMINES
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(11, 'Rhahk''Zor''s Hammer', 'Heavy warhammer of the ogre guardian.', 'RARE', 'Two-Hand Mace', 33.0, 11),
-(12, 'Taskmaster Axe', 'Light axe from Sneed''s shredder gears.', 'RARE', 'One-Hand Axe', 18.0, 12),
-(13, 'Smelting Pants', 'Heat-resistant pants from the Defias forge.', 'UNCOMMON', 'Legs Mail', 30.0, 13),
-(14, 'Smite''s Mighty Hammer', 'Enormous hammer of the tauren first mate.', 'RARE', 'Two-Hand Mace', 22.0, 14),
-(15, 'Cruel Barb', 'Dark blade emanating malice.', 'RARE', 'One-Hand Sword', 15.5, 15),
-(16, 'Blackened Defias Armor', 'Leather armor of the Brotherhood leader.', 'RARE', 'Chest Leather', 12.0, 15),
-(17, 'Cape of the Brotherhood', 'Red silk cape, symbol of authority.', 'UNCOMMON', 'Cloak', 20.0, 15);
+(23, 'Rhahk''Zor''s Hammer', 'Heavy warhammer of the ogre guardian.', 'RARE', 'Two-Hand Mace', 33.0, 11),
+(24, 'Rockslicer', 'A brutal mining pick repurposed for war.', 'UNCOMMON', 'One-Hand Axe', 28.0, 11),
+(25, 'Taskmaster Axe', 'Light axe from Sneed''s shredder gears.', 'RARE', 'One-Hand Axe', 18.0, 12),
+(26, 'Buzzer Blade', 'Serrated blade from the shredder.', 'UNCOMMON', 'Dagger', 25.0, 12),
+(27, 'Gold-Flecked Gloves', 'Gloves stained with molten gold.', 'UNCOMMON', 'Gloves Cloth', 28.0, 12),
+(28, 'Smelting Pants', 'Heat-resistant pants from the Defias forge.', 'UNCOMMON', 'Legs Mail', 30.0, 13),
+(29, 'Lavishly Jeweled Ring', 'A ring from the smelter''s collection.', 'UNCOMMON', 'Ring', 24.0, 13),
+(30, 'Smite''s Mighty Hammer', 'Enormous hammer of the tauren first mate.', 'RARE', 'Two-Hand Mace', 22.0, 14),
+(31, 'Smite''s Reaver', 'The first mate''s second weapon.', 'RARE', 'One-Hand Axe', 18.0, 14),
+(32, 'Thief''s Blade', 'A fine sword for any rogue.', 'UNCOMMON', 'One-Hand Sword', 26.0, 14),
+(33, 'Cruel Barb', 'Dark blade emanating malice.', 'RARE', 'One-Hand Sword', 15.0, 15),
+(34, 'Blackened Defias Armor', 'Leather armor of the Brotherhood leader.', 'RARE', 'Chest Leather', 12.0, 15),
+(35, 'Cape of the Brotherhood', 'Red silk cape, symbol of authority.', 'RARE', 'Cloak', 20.0, 15),
+(36, 'VanCleef''s Battle Axe', 'The hidden axe of the Defias leader.', 'RARE', 'Two-Hand Axe', 8.0, 15),
+(37, 'Corsair''s Overshirt', 'Fine Defias officer garment.', 'UNCOMMON', 'Chest Cloth', 18.0, 15);
 
 -- SHADOWFANG KEEP
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(18, 'Butcher''s Slicer', 'Belt torn by worgen claws.', 'UNCOMMON', 'One-Hand Sword', 30.0, 16),
-(19, 'Silverlaine''s Family Seal', 'Ethereal ring with spectral glow.', 'RARE', 'Ring', 16.0, 17),
-(20, 'Commander''s Crest', 'Shield of the former paladin.', 'UNCOMMON', 'Shield', 24.0, 18),
-(21, 'Odo''s Ley Staff', 'Staff of the winged worgen.', 'RARE', 'Staff', 14.0, 19),
-(22, 'Fenrus'' Hide', 'Belt of spectral wolf pelt.', 'UNCOMMON', 'Chest Leather', 26.0, 20),
-(23, 'Robes of Arugal', 'Arcane vestments of the mad archmage.', 'RARE', 'Chest Cloth', 12.0, 21),
-(24, 'Belt of Arugal', 'Belt embroidered with summoning runes.', 'RARE', 'Belt Cloth', 18.0, 21),
-(25, 'Shadowfang', 'Legendary sword imbued with darkness.', 'RARE', 'One-Hand Sword', 3.5, 21);
+(38, 'Butcher''s Slicer', 'Wicked blade of the worgen butcher.', 'UNCOMMON', 'One-Hand Sword', 30.0, 16),
+(39, 'Bloody Apron', 'A leather apron stained beyond cleaning.', 'UNCOMMON', 'Chest Leather', 28.0, 16),
+(40, 'Silverlaine''s Family Seal', 'Ethereal ring with spectral glow.', 'RARE', 'Ring', 16.0, 17),
+(41, 'Baron''s Scepter', 'Ghostly scepter of Baron Silverlaine.', 'UNCOMMON', 'One-Hand Mace', 22.0, 17),
+(42, 'Commander''s Crest', 'Shield of the former paladin.', 'UNCOMMON', 'Shield', 24.0, 18),
+(43, 'Arced War Axe', 'Springvale''s notched battle axe.', 'UNCOMMON', 'Two-Hand Axe', 20.0, 18),
+(44, 'Odo''s Ley Staff', 'Staff of the winged worgen.', 'RARE', 'Staff', 14.0, 19),
+(45, 'Girdle of the Blindwatcher', 'Belt of cured bat leather.', 'UNCOMMON', 'Belt Leather', 24.0, 19),
+(46, 'Fenrus'' Hide', 'Pelt of the spectral wolf.', 'UNCOMMON', 'Chest Leather', 26.0, 20),
+(47, 'Black Wolf Bracers', 'Dark fur bracers.', 'UNCOMMON', 'Bracers Leather', 30.0, 20),
+(48, 'Robes of Arugal', 'Arcane vestments of the mad archmage.', 'RARE', 'Chest Cloth', 12.0, 21),
+(49, 'Belt of Arugal', 'Belt embroidered with summoning runes.', 'RARE', 'Belt Cloth', 18.0, 21),
+(50, 'Shadowfang', 'Legendary sword imbued with darkness.', 'RARE', 'One-Hand Sword', 3.5, 21),
+(51, 'Meteor Shard', 'A dark crystalline dagger.', 'RARE', 'Dagger', 5.0, 21);
 
 -- THE STOCKADE
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(26, 'Iron Knuckles', 'Broken shackles turned weapon.', 'UNCOMMON', 'Fist Weapon', 30.0, 22),
-(27, 'Kam''s Walking Stick', 'Dark Iron hammer of solid make.', 'UNCOMMON', 'Staff', 25.0, 23),
-(28, 'Defias Renegade Ring', 'Ring of the Defias conspirator.', 'UNCOMMON', 'Ring', 28.0, 24);
+(52, 'Iron Knuckles', 'Broken shackles turned weapon.', 'UNCOMMON', 'Fist Weapon', 30.0, 22),
+(53, 'Prison Shank', 'Crude dagger made by an inmate.', 'UNCOMMON', 'Dagger', 35.0, 22),
+(54, 'Kam''s Walking Stick', 'Dark Iron hammer of solid make.', 'UNCOMMON', 'Staff', 25.0, 23),
+(55, 'Darkforge Chain Boots', 'Boots forged by Dark Iron craft.', 'UNCOMMON', 'Boots Mail', 22.0, 23),
+(56, 'Defias Renegade Ring', 'Ring of the Defias conspirator.', 'UNCOMMON', 'Ring', 28.0, 24),
+(57, 'Dextren''s Waistband', 'Belt of the imprisoned assassin.', 'UNCOMMON', 'Belt Leather', 30.0, 25);
 
 -- BLACKFATHOM DEEPS
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(29, 'Ghamoo-Ra''s Bind', 'Corrupted turtle shell shield.', 'RARE', 'Shield', 30.0, 26),
-(30, 'Naga Heartpiercer', 'Bow found in dark waters.', 'RARE', 'Bow', 20.0, 27),
-(31, 'Aku''mai''s Sting', 'Precious gem torn from the hydra.', 'RARE', 'Dagger', 18.0, 30),
-(32, 'Rod of the Sleepwalker', 'Cloak that seems to flow like water.', 'RARE', 'Staff', 22.0, 29);
+(58, 'Ghamoo-Ra''s Bind', 'Corrupted turtle shell shield.', 'RARE', 'Shield', 30.0, 26),
+(59, 'Tortoise Armor', 'Shell plates fashioned into armor.', 'UNCOMMON', 'Chest Mail', 25.0, 26),
+(60, 'Naga Heartpiercer', 'Bow found in dark waters.', 'RARE', 'Bow', 20.0, 27),
+(61, 'Naga Battle Gloves', 'Scaled gloves of naga make.', 'UNCOMMON', 'Gloves Mail', 24.0, 27),
+(62, 'Rod of the Sleepwalker', 'Staff of twilight energy.', 'RARE', 'Staff', 22.0, 29),
+(63, 'Twilight Lord''s Claymore', 'Dark two-hand sword.', 'RARE', 'Two-Hand Sword', 16.0, 29),
+(64, 'Aku''mai''s Sting', 'Precious gem torn from the hydra.', 'RARE', 'Dagger', 18.0, 30),
+(65, 'Leech Pants', 'Legs infused with void energy.', 'UNCOMMON', 'Legs Cloth', 22.0, 30),
+(66, 'Moss Cinch', 'A belt woven from deep-sea kelp.', 'UNCOMMON', 'Belt Leather', 28.0, 30);
 
 -- GNOMEREGAN
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(33, 'Electrocutioner Leg', 'Sword sparking with electricity.', 'RARE', 'One-Hand Sword', 20.0, 33),
-(34, 'Manual Crowd Pummeler', 'Mechanical gauntlets of incredible power.', 'RARE', 'Two-Hand Mace', 22.0, 34),
-(35, 'Thermaplugg''s Central Core', 'Engineering helm with irradiated visor.', 'RARE', 'Helm Mail', 15.0, 35),
-(36, 'Civinad Robes', 'Staff emitting a faint green glow.', 'RARE', 'Chest Cloth', 18.0, 35);
+(67, 'Grubbis Paws', 'Clawed gauntlets of the trogg.', 'UNCOMMON', 'Gloves Leather', 30.0, 31),
+(68, 'Toxic Revenger', 'Dagger dripping irradiated slime.', 'RARE', 'Dagger', 20.0, 32),
+(69, 'Hydrocane', 'Staff that lets you breathe underwater.', 'UNCOMMON', 'Staff', 25.0, 32),
+(70, 'Electrocutioner Leg', 'Sword sparking with electricity.', 'RARE', 'One-Hand Sword', 20.0, 33),
+(71, 'Electrified Dagger', 'Dagger that shocks on contact.', 'UNCOMMON', 'Dagger', 24.0, 33),
+(72, 'Manual Crowd Pummeler', 'Mechanical mace of incredible power.', 'RARE', 'Two-Hand Mace', 22.0, 34),
+(73, 'Thermaplugg''s Central Core', 'Engineering helm with irradiated visor.', 'RARE', 'Helm Mail', 15.0, 35),
+(74, 'Civinad Robes', 'Robes emitting a faint green glow.', 'RARE', 'Chest Cloth', 18.0, 35),
+(75, 'Thermaplugg''s Left Arm', 'Mechanical arm with hidden blade.', 'RARE', 'One-Hand Sword', 12.0, 35);
 
 -- SCARLET MONASTERY
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(37, 'Bloody Brass Knuckles', 'Blood-stained gloves of the torturer.', 'UNCOMMON', 'Fist Weapon', 30.0, 36),
-(38, 'Orb of the Forgotten Seer', 'Life-draining blood mage dagger.', 'RARE', 'Off-Hand', 20.0, 37),
-(39, 'Dog Training Gloves', 'Spiked reinforced collar.', 'UNCOMMON', 'Gloves Leather', 28.0, 38),
-(40, 'Mantle of Doan', 'Arcane mantle of great magical power.', 'RARE', 'Shoulders Cloth', 18.0, 39),
-(41, 'Ravager', 'The Champion axe. Its Whirlwind is legendary.', 'RARE', 'Two-Hand Axe', 15.0, 40),
-(42, 'Herod''s Shoulder', 'Imposing helm of the scarlet champion.', 'RARE', 'Shoulders Mail', 12.0, 40),
-(43, 'Mograine''s Might', 'Blessed sword of the scarlet commander.', 'RARE', 'Two-Hand Mace', 14.0, 41),
-(44, 'Whitemane''s Chapeau', 'Inquisitor hood with healing powers.', 'RARE', 'Helm Cloth', 16.0, 42);
+(76, 'Bloody Brass Knuckles', 'Blood-stained gloves of the torturer.', 'UNCOMMON', 'Fist Weapon', 30.0, 36),
+(77, 'Torturing Poker', 'A red-hot iron from the inquisition.', 'UNCOMMON', 'One-Hand Sword', 26.0, 36),
+(78, 'Orb of the Forgotten Seer', 'Sphere of dark magic.', 'RARE', 'Off-Hand', 20.0, 37),
+(79, 'Bloodmage Thalnos'' Robe', 'Robes stained with blood magic.', 'UNCOMMON', 'Chest Cloth', 24.0, 37),
+(80, 'Dog Training Gloves', 'Spiked reinforced gloves.', 'UNCOMMON', 'Gloves Leather', 28.0, 38),
+(81, 'Houndmaster''s Bow', 'Bow used to command war hounds.', 'UNCOMMON', 'Bow', 22.0, 38),
+(82, 'Mantle of Doan', 'Arcane mantle of great power.', 'RARE', 'Shoulders Cloth', 18.0, 39),
+(83, 'Illusionary Rod', 'Staff of the library guardian.', 'RARE', 'Staff', 16.0, 39),
+(84, 'Hypnotic Blade', 'Dagger that mesmerizes.', 'UNCOMMON', 'Dagger', 20.0, 39),
+(85, 'Ravager', 'The Champion''s axe. Its Whirlwind is legendary.', 'RARE', 'Two-Hand Axe', 15.0, 40),
+(86, 'Herod''s Shoulder', 'Imposing shoulderguards.', 'RARE', 'Shoulders Mail', 12.0, 40),
+(87, 'Raging Berserker''s Helm', 'Helm worn in berserker rage.', 'RARE', 'Helm Mail', 14.0, 40),
+(88, 'Mograine''s Might', 'Blessed mace of the commander.', 'RARE', 'Two-Hand Mace', 14.0, 41),
+(89, 'Scarlet Leggings', 'Plate leggings of the Crusade.', 'RARE', 'Legs Plate', 16.0, 41),
+(90, 'Whitemane''s Chapeau', 'Inquisitor hood with healing powers.', 'RARE', 'Helm Cloth', 16.0, 42),
+(91, 'Hand of Righteousness', 'Mace blessed by the Light.', 'RARE', 'One-Hand Mace', 14.0, 42),
+(92, 'Triune Amulet', 'Holy amulet of the high inquisitor.', 'RARE', 'Necklace', 18.0, 42);
 
 -- RAZORFEN KRAUL
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(45, 'Thornspike', 'Quilboar shaman staff.', 'UNCOMMON', 'Dagger', 28.0, 43),
-(46, 'Corpsemaker', 'Enormous axe of the overlord.', 'RARE', 'Two-Hand Axe', 20.0, 45),
-(47, 'Heart of Agamaggan', 'Amulet of the quilboar matriarch.', 'RARE', 'Necklace', 15.0, 46);
+(93, 'Thornspike', 'Quilboar shaman dagger.', 'UNCOMMON', 'Dagger', 28.0, 43),
+(94, 'Swinetusk Shank', 'Crude bone shiv.', 'UNCOMMON', 'Dagger', 30.0, 44),
+(95, 'Corpsemaker', 'Enormous axe of the overlord.', 'RARE', 'Two-Hand Axe', 20.0, 45),
+(96, 'Tusken Helm', 'Helm adorned with boar tusks.', 'UNCOMMON', 'Helm Leather', 25.0, 45),
+(97, 'Heart of Agamaggan', 'Amulet of the matriarch.', 'RARE', 'Necklace', 15.0, 46),
+(98, 'Razorflank''s Mantle', 'Thorny shoulderpads.', 'RARE', 'Shoulders Leather', 18.0, 46);
 
 -- RAZORFEN DOWNS
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(48, 'Silky Spider Cape', 'Venomous fang of the undead spider.', 'UNCOMMON', 'Cloak', 28.0, 47),
-(49, 'Mordresh''s Lifeless Skull', 'Sword wreathed in spectral flames.', 'RARE', 'Off-Hand', 18.0, 48),
-(50, 'Icemetal Barbute', 'Sword of the lich imbued with deadly cold.', 'RARE', 'Helm Mail', 15.0, 50),
-(51, 'Coldrage Dagger', 'Cloak emanating supernatural cold.', 'RARE', 'Dagger', 20.0, 50);
+(99, 'Silky Spider Cape', 'Cloak woven from spider silk.', 'UNCOMMON', 'Cloak', 28.0, 47),
+(100, 'Carapace of Tuten''kash', 'Shield from spider carapace.', 'RARE', 'Shield', 20.0, 47),
+(101, 'Mordresh''s Lifeless Skull', 'Off-hand wreathed in flame.', 'RARE', 'Off-Hand', 18.0, 48),
+(102, 'Glowing Eye of Mordresh', 'Ring that burns with inner fire.', 'UNCOMMON', 'Ring', 24.0, 48),
+(103, 'Icemetal Barbute', 'Frozen mail helm.', 'RARE', 'Helm Mail', 15.0, 50),
+(104, 'Coldrage Dagger', 'Dagger emanating supernatural cold.', 'RARE', 'Dagger', 20.0, 50),
+(105, 'Robes of the Lich', 'Frost-touched robes.', 'RARE', 'Chest Cloth', 14.0, 50);
 
 -- ULDAMAN
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(52, 'Ironaya''s Bracers', 'Titan medallion of incredible craft.', 'RARE', 'Bracers Plate', 22.0, 52),
-(53, 'Galgann''s Fireblaster', 'Dark Iron warhammer.', 'RARE', 'Gun', 18.0, 53),
-(54, 'Stoneslayer', 'Fragment of the titan guardian.', 'RARE', 'Two-Hand Sword', 12.0, 55),
-(55, 'The Rockpounder', 'Sword forged with titan technology.', 'RARE', 'Two-Hand Mace', 10.0, 55);
+(106, 'Revelosh''s Gloves', 'Crystal-studded gloves.', 'UNCOMMON', 'Gloves Mail', 28.0, 51),
+(107, 'Revelosh''s Armguards', 'Bracers carved from titan stone.', 'UNCOMMON', 'Bracers Mail', 30.0, 51),
+(108, 'Ironaya''s Bracers', 'Titan construct bracers.', 'RARE', 'Bracers Plate', 22.0, 52),
+(109, 'Stonekeeper''s Helm', 'Helm of the titan guardian.', 'RARE', 'Helm Plate', 18.0, 52),
+(110, 'Galgann''s Fireblaster', 'Dark Iron pistol.', 'RARE', 'Gun', 18.0, 53),
+(111, 'Galgann''s Firehammer', 'Hammer wreathed in flame.', 'UNCOMMON', 'One-Hand Mace', 22.0, 53),
+(112, 'Stoneslayer', 'Massive titan-forged sword.', 'RARE', 'Two-Hand Sword', 12.0, 55),
+(113, 'The Rockpounder', 'Titan construction hammer.', 'RARE', 'Two-Hand Mace', 10.0, 55),
+(114, 'Archaedic Stone', 'Trinket of titan origin.', 'RARE', 'Trinket', 8.0, 55);
 
 -- ZUL'FARRAK
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(56, 'Sang''thraze the Deflector', 'Spear made from basilisk stinger.', 'RARE', 'One-Hand Sword', 20.0, 56),
-(57, 'Theka''s Seal', 'Amulet that protects from death.', 'RARE', 'Ring', 15.0, 57),
-(58, 'Sul''thraze the Lasher', 'Magic wand controlling waters.', 'EPIC', 'Two-Hand Sword', 18.0, 59),
-(59, 'Ukorz''s First Mate Hat', 'Enormous axe of the troll chief.', 'RARE', 'Helm Leather', 16.0, 60);
+(115, 'Sang''thraze the Deflector', 'Enchanted troll blade.', 'RARE', 'One-Hand Sword', 20.0, 56),
+(116, 'Antu''sul''s Reach', 'Staff of the basilisk priest.', 'UNCOMMON', 'Staff', 24.0, 56),
+(117, 'Theka''s Seal', 'Scarab-shaped ring.', 'RARE', 'Ring', 15.0, 57),
+(118, 'Witch Doctor''s Cane', 'Staff of the necromancer.', 'RARE', 'Staff', 20.0, 58),
+(119, 'Zum''rah''s Vexing Cane', 'Cursed walking stick.', 'UNCOMMON', 'Staff', 24.0, 58),
+(120, 'Sul''thraze the Lasher', 'Combined epic troll sword.', 'EPIC', 'Two-Hand Sword', 5.0, 59),
+(121, 'Big Bad Pauldrons', 'Enormous shoulderguards.', 'RARE', 'Shoulders Plate', 18.0, 60),
+(122, 'Ukorz''s First Mate Hat', 'Leather pirate hat.', 'RARE', 'Helm Leather', 16.0, 60);
 
 -- MARAUDON
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(60, 'Noxxion''s Shackles', 'Corrupt seed of plant power.', 'UNCOMMON', 'Bracers Plate', 30.0, 61),
-(61, 'Vinerot Sandals', 'Thorny claws of the giant plant.', 'RARE', 'Boots Cloth', 20.0, 62),
-(62, 'Fist of Stone', 'Mace of rock melted by elemental force.', 'RARE', 'One-Hand Mace', 18.0, 64),
-(63, 'Blade of Eternal Darkness', 'Crystalline dagger of Therazane''s daughter.', 'EPIC', 'Dagger', 14.0, 65),
-(64, 'Princess Theradras'' Scepter', 'Earth gem of immense elemental power.', 'EPIC', 'One-Hand Mace', 8.0, 65);
+(123, 'Noxxion''s Shackles', 'Corrupted bracers.', 'UNCOMMON', 'Bracers Plate', 30.0, 61),
+(124, 'Heart of Noxxion', 'Poisonous trinket.', 'RARE', 'Trinket', 20.0, 61),
+(125, 'Vinerot Sandals', 'Thorn-studded sandals.', 'RARE', 'Boots Cloth', 20.0, 62),
+(126, 'Fist of Stone', 'Mace of elemental rock.', 'RARE', 'One-Hand Mace', 18.0, 64),
+(127, 'Landslide Buckler', 'Shield of compressed earth.', 'RARE', 'Shield', 16.0, 64),
+(128, 'Blade of Eternal Darkness', 'Crystalline dagger of void energy.', 'EPIC', 'Dagger', 5.0, 65),
+(129, 'Princess Theradras'' Scepter', 'Earth scepter of immense power.', 'EPIC', 'One-Hand Mace', 8.0, 65),
+(130, 'Gemshard Heart', 'Necklace with a living crystal.', 'RARE', 'Necklace', 14.0, 65),
+(131, 'Elemental Rockridge Leggings', 'Stone-reinforced legplates.', 'RARE', 'Legs Plate', 12.0, 65);
 
 -- SUNKEN TEMPLE
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(65, 'Atal''alarion''s Tusk Ring', 'Axe torn from Atal''ai golem.', 'RARE', 'Ring', 22.0, 66),
-(66, 'Dragon''s Call', 'Staff imbued with dragon breath.', 'RARE', 'One-Hand Sword', 16.0, 67),
-(67, 'Jammal''an''s Smite', 'Ritual sword of Jammal''an.', 'RARE', 'Two-Hand Mace', 14.0, 68),
-(68, 'Essence of Eranikus', 'Fragment of corrupted dragon power.', 'EPIC', 'Trinket', 10.0, 69);
+(132, 'Atal''alarion''s Tusk Ring', 'Ring from the stone golem.', 'RARE', 'Ring', 22.0, 66),
+(133, 'Guardian''s Embrace', 'Chestpiece of the temple guardian.', 'UNCOMMON', 'Chest Mail', 20.0, 66),
+(134, 'Dragon''s Call', 'Sword imbued with dragon power.', 'RARE', 'One-Hand Sword', 16.0, 67),
+(135, 'Dreamscale Breastplate', 'Armor from corrupted green scales.', 'RARE', 'Chest Mail', 14.0, 67),
+(136, 'Jammal''an''s Smite', 'Ritual mace of the prophet.', 'RARE', 'Two-Hand Mace', 14.0, 68),
+(137, 'Prophet''s Medallion', 'Amulet of dark prophecy.', 'RARE', 'Necklace', 18.0, 68),
+(138, 'Essence of Eranikus', 'Fragment of corrupted dragon power.', 'EPIC', 'Trinket', 10.0, 69),
+(139, 'Rod of Corrosion', 'Staff tainted by the Dream.', 'RARE', 'Staff', 14.0, 69);
 
 -- BLACKROCK DEPTHS
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(69, 'Gerstahn''s Medallion', 'Whip used in interrogations.', 'RARE', 'Necklace', 20.0, 70),
-(70, 'Stonegrip Gauntlets', 'Incandescent core of the elemental.', 'RARE', 'Gloves Plate', 18.0, 71),
-(71, 'Angerforge''s Battle Axe', 'Shield of the Dark Iron general.', 'RARE', 'One-Hand Axe', 16.0, 73),
-(72, 'Second Wind', 'Gauntlets of the golem lord.', 'RARE', 'Gun', 14.0, 74),
-(73, 'Imperial Jewel', 'Ring of the Dark Iron Emperor.', 'EPIC', 'Trinket', 8.0, 76),
-(74, 'Hand of Justice', 'Legendary trinket of the Emperor.', 'EPIC', 'Trinket', 5.0, 76);
+(140, 'Gerstahn''s Medallion', 'Necklace of the interrogator.', 'RARE', 'Necklace', 20.0, 70),
+(141, 'Interrogator''s Shackles', 'Bracers used in torture.', 'UNCOMMON', 'Bracers Plate', 26.0, 70),
+(142, 'Stonegrip Gauntlets', 'Gauntlets of molten stone.', 'RARE', 'Gloves Plate', 18.0, 71),
+(143, 'Roccor''s Flame', 'Fiery off-hand.', 'UNCOMMON', 'Off-Hand', 24.0, 71),
+(144, 'Angerforge''s Battle Axe', 'Battle axe of the general.', 'RARE', 'One-Hand Axe', 16.0, 73),
+(145, 'Golem Shard Leggings', 'Legplates from golem fragments.', 'RARE', 'Legs Plate', 14.0, 74),
+(146, 'Second Wind', 'Gun of the golem lord.', 'RARE', 'Gun', 14.0, 74),
+(147, 'Imperial Jewel', 'Trinket of the Emperor.', 'EPIC', 'Trinket', 8.0, 76),
+(148, 'Hand of Justice', 'Legendary trinket of BRD.', 'EPIC', 'Trinket', 5.0, 76),
+(149, 'Ironfoe', 'Hammer of the Emperor.', 'EPIC', 'One-Hand Mace', 3.0, 76),
+(150, 'Emperor''s Seal', 'Signet ring of Thaurissan.', 'RARE', 'Ring', 12.0, 76);
 
 -- LOWER BLACKROCK SPIRE
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(75, 'Skullsmash Hammer', 'Enormous sword of the High Lord ogre.', 'RARE', 'One-Hand Mace', 20.0, 77),
-(76, 'Keris of Zul''Serak', 'Tribal spear of the troll master.', 'RARE', 'Dagger', 18.0, 78),
-(77, 'Smolderweb''s Eye', 'Mandible of the giant spider.', 'RARE', 'Trinket', 22.0, 79),
-(78, 'Trindlehaven Staff', 'Dark gem torn from the dragonspawn.', 'EPIC', 'Staff', 10.0, 80);
+(151, 'Skullsmash Hammer', 'Mace of the ogre lord.', 'RARE', 'One-Hand Mace', 20.0, 77),
+(152, 'Plate of the Shaman King', 'Ogre-forged chestpiece.', 'RARE', 'Chest Plate', 16.0, 77),
+(153, 'Keris of Zul''Serak', 'Tribal troll dagger.', 'RARE', 'Dagger', 18.0, 78),
+(154, 'Voone''s Twitchbow', 'Troll crossbow.', 'RARE', 'Bow', 16.0, 78),
+(155, 'Smolderweb''s Eye', 'Trinket from the giant spider.', 'RARE', 'Trinket', 22.0, 79),
+(156, 'Trindlehaven Staff', 'Staff of dark power.', 'EPIC', 'Staff', 10.0, 80),
+(157, 'Wyrmthalak''s Shackles', 'Dragonspawn bracers.', 'RARE', 'Bracers Plate', 16.0, 80);
 
 -- UPPER BLACKROCK SPIRE
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(79, 'Emberseer''s Burning Eye', 'Fire elemental sword.', 'RARE', 'Trinket', 18.0, 81),
-(80, 'Warchief''s Crown', 'Helm of the self-proclaimed Warchief.', 'EPIC', 'Helm Plate', 12.0, 83),
-(81, 'Fang of the Crystal Spider', 'Fang of the fire monster.', 'EPIC', 'Dagger', 10.0, 84),
-(82, 'Draconic Maul', 'Sword of the dragonspawn general.', 'EPIC', 'Two-Hand Mace', 8.0, 85),
-(83, 'Seal of Ascension', 'Key to Nefarian lair.', 'EPIC', 'Ring', 100.0, 85);
+(158, 'Emberseer''s Burning Eye', 'Fire elemental trinket.', 'RARE', 'Trinket', 18.0, 81),
+(159, 'Pyric Caduceus', 'Staff of living flame.', 'RARE', 'Staff', 14.0, 81),
+(160, 'Warchief''s Crown', 'Helm of the self-proclaimed Warchief.', 'EPIC', 'Helm Plate', 12.0, 83),
+(161, 'Dal''Rend''s Tribal Guardian', 'Rend''s off-hand sword.', 'RARE', 'One-Hand Sword', 10.0, 83),
+(162, 'Dal''Rend''s Sacred Charge', 'Rend''s main-hand sword.', 'RARE', 'One-Hand Sword', 10.0, 83),
+(163, 'Fang of the Crystal Spider', 'Crystalline dagger.', 'EPIC', 'Dagger', 10.0, 84),
+(164, 'Blackblade of Shahram', 'Cursed blade of the Beast.', 'EPIC', 'Two-Hand Sword', 4.0, 84),
+(165, 'Draconic Maul', 'Mace of the dragonspawn general.', 'EPIC', 'Two-Hand Mace', 8.0, 85),
+(166, 'Seal of Ascension', 'Key to Nefarian''s lair.', 'EPIC', 'Ring', 100.0, 85);
 
 -- DIRE MAUL
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(84, 'Satyr''s Bow', 'Twisted scythe of the satyr.', 'RARE', 'Bow', 20.0, 86),
-(85, 'Ring of the Wildshaper', 'Corrupted staff of the shapechanger.', 'RARE', 'Ring', 16.0, 87),
-(86, 'Eye of Immol''thar', 'Eye of the Void demon.', 'EPIC', 'Trinket', 10.0, 89),
-(87, 'Eldritch Reinforced Legplates', 'Sword of the last elven prince.', 'RARE', 'Legs Plate', 14.0, 90),
-(88, 'Gordok''s Handguards', 'Treasure chest of the ogre king.', 'EPIC', 'Gloves Leather', 100.0, 91);
+(167, 'Satyr''s Bow', 'Twisted bow of the satyr.', 'RARE', 'Bow', 20.0, 86),
+(168, 'Energized Chestplate', 'Chest crackling with energy.', 'RARE', 'Chest Plate', 16.0, 86),
+(169, 'Ring of the Wildshaper', 'Ring of corrupted nature.', 'RARE', 'Ring', 16.0, 87),
+(170, 'Gloves of the Wildshaper', 'Clawed gloves of the satyr.', 'RARE', 'Gloves Leather', 18.0, 87),
+(171, 'Eye of Immol''thar', 'Eye of the Void demon.', 'EPIC', 'Trinket', 10.0, 89),
+(172, 'Eldritch Reinforced Legplates', 'Void-touched legplates.', 'RARE', 'Legs Plate', 14.0, 90),
+(173, 'Blade of the New Moon', 'Moonlit elven sword.', 'RARE', 'One-Hand Sword', 12.0, 90),
+(174, 'Gordok''s Handguards', 'Massive ogre gauntlets.', 'EPIC', 'Gloves Leather', 15.0, 91),
+(175, 'Gordok''s Handwraps', 'Cloth wraps of the ogre king.', 'RARE', 'Gloves Cloth', 18.0, 91);
 
 -- STRATHOLME
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(89, 'The Unforgiven''s Dreadsword', 'Ghostly sword that howls on strike.', 'RARE', 'One-Hand Sword', 18.0, 92),
-(90, 'Willey''s Portable Howitzer', 'Scarlet artillery staff.', 'RARE', 'Gun', 16.0, 94),
-(91, 'Tome of Knowledge', 'Sacred Crusade text.', 'RARE', 'Off-Hand', 20.0, 95),
-(92, 'Grand Crusader''s Helm', 'Horns torn from the Nathrezim.', 'EPIC', 'Helm Plate', 8.0, 96),
-(93, 'Hammer of the Grand Crusader', 'Reforged sword of the Dreadlord.', 'EPIC', 'Two-Hand Mace', 6.0, 96),
-(94, 'Anastari Heirloom', 'Spectral cloak of the banshee.', 'RARE', 'Ring', 18.0, 97),
-(95, 'Deathcharger''s Reins', 'Reins of the Baron deathcharger. Extremely rare.', 'EPIC', 'Mount', 0.8, 100),
-(96, 'Runeblade of Baron Rivendare', 'Runic sword of the undead lord.', 'EPIC', 'One-Hand Sword', 5.0, 100),
-(97, 'Helm of the Executioner', 'Dark cloak of Stratholme ruler.', 'RARE', 'Helm Mail', 14.0, 100);
+(176, 'The Unforgiven''s Dreadsword', 'Ghostly howling sword.', 'RARE', 'One-Hand Sword', 18.0, 92),
+(177, 'Ghostly Wristguards', 'Ethereal bracers.', 'UNCOMMON', 'Bracers Cloth', 24.0, 92),
+(178, 'Timmy''s Galoshes', 'Boots from the cruel ghoul.', 'RARE', 'Boots Mail', 20.0, 93),
+(179, 'Willey''s Portable Howitzer', 'Scarlet artillery gun.', 'RARE', 'Gun', 16.0, 94),
+(180, 'Willey''s Back Scratcher', 'Polearm of the cannon master.', 'RARE', 'Polearm', 14.0, 94),
+(181, 'Tome of Knowledge', 'Sacred Crusade text.', 'RARE', 'Off-Hand', 20.0, 95),
+(182, 'Archivist''s Cape', 'Cloak of the record keeper.', 'RARE', 'Cloak', 18.0, 95),
+(183, 'Grand Crusader''s Helm', 'Helm of the Nathrezim.', 'EPIC', 'Helm Plate', 8.0, 96),
+(184, 'Hammer of the Grand Crusader', 'Blessed mace of Balnazzar.', 'EPIC', 'Two-Hand Mace', 6.0, 96),
+(185, 'Anastari Heirloom', 'Spectral ring of the banshee.', 'RARE', 'Ring', 18.0, 97),
+(186, 'Banshee''s Touch', 'Staff of the banshee queen.', 'RARE', 'Staff', 14.0, 97),
+(187, 'Crypt Stalker Leggings', 'Nerubian leg armor.', 'RARE', 'Legs Leather', 16.0, 98),
+(188, 'Ramstein''s Lightning Bolts', 'Trinket of the gorger.', 'RARE', 'Trinket', 18.0, 99),
+(189, 'Deathcharger''s Reins', 'Reins of the Baron''s deathcharger. Ultra rare.', 'EPIC', 'Mount', 0.8, 100),
+(190, 'Runeblade of Baron Rivendare', 'Runic sword of the undead lord.', 'EPIC', 'Two-Hand Sword', 5.0, 100),
+(191, 'Helm of the Executioner', 'Dark mail helm.', 'RARE', 'Helm Mail', 14.0, 100),
+(192, 'Skullforge Reaver', 'Life-draining sword.', 'EPIC', 'One-Hand Sword', 4.0, 100);
 
 -- SCHOLOMANCE
 INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
-(98, 'Heart of Kirtonos', 'Fangs of the vampire guardian.', 'RARE', 'Trinket', 20.0, 101),
-(99, 'Barov Peasant Caller', 'Gem that distorts reality.', 'RARE', 'Trinket', 16.0, 102),
-(100, 'Rattlegore''s Bone', 'Giant bone used as mace.', 'RARE', 'Two-Hand Mace', 22.0, 103),
-(101, 'Frostwhisper''s Icy Grasp', 'Staff of the lich that freezes the soul.', 'EPIC', 'Staff', 10.0, 104),
-(102, 'Krastinov''s Bag of Horrors', 'Bloodstained scalpel of Krastinov.', 'RARE', 'Bag', 18.0, 105),
-(103, 'Barov Lord''s Signet', 'Noble cloak of the cursed family.', 'RARE', 'Ring', 20.0, 106),
-(104, 'Gandling''s Dark Robes', 'Vestments of the Scholomance rector.', 'EPIC', 'Chest Cloth', 8.0, 108),
-(105, 'Headmaster''s Charge', 'Staff that teleports victims.', 'EPIC', 'Staff', 6.0, 108);
+(193, 'Heart of Kirtonos', 'Vampire trinket.', 'RARE', 'Trinket', 20.0, 101),
+(194, 'Kirtonos'' Cloak', 'Cloak of bat leather.', 'RARE', 'Cloak', 16.0, 101),
+(195, 'Barov Peasant Caller', 'Summons spectral peasants.', 'RARE', 'Trinket', 16.0, 102),
+(196, 'Jandice''s Ring', 'Ring of illusion.', 'RARE', 'Ring', 18.0, 102),
+(197, 'Rattlegore''s Bone', 'Giant bone mace.', 'RARE', 'Two-Hand Mace', 22.0, 103),
+(198, 'Bone Golem Shoulders', 'Shoulderpads of fused bone.', 'RARE', 'Shoulders Plate', 16.0, 103),
+(199, 'Frostwhisper''s Icy Grasp', 'Staff of soul-freezing cold.', 'EPIC', 'Staff', 10.0, 104),
+(200, 'Ras''s Frost Mantle', 'Frost-touched cloak.', 'RARE', 'Cloak', 14.0, 104),
+(201, 'Krastinov''s Bag of Horrors', 'Bag containing surgical tools.', 'RARE', 'Bag', 18.0, 105),
+(202, 'Butcher''s Apron', 'Blood-soaked chest leather.', 'RARE', 'Chest Leather', 16.0, 105),
+(203, 'Barov Lord''s Signet', 'Ring of the cursed family.', 'RARE', 'Ring', 20.0, 106),
+(204, 'Lady Illucia''s Veil', 'Shadow-touched helm.', 'RARE', 'Helm Cloth', 18.0, 107),
+(205, 'Gandling''s Dark Robes', 'Vestments of the headmaster.', 'EPIC', 'Chest Cloth', 8.0, 108),
+(206, 'Headmaster''s Charge', 'Staff that teleports victims.', 'EPIC', 'Staff', 6.0, 108),
+(207, 'Gandling''s Grasp', 'Gloves of dark magic.', 'RARE', 'Gloves Cloth', 14.0, 108),
+(208, 'Detention Strap', 'Belt from the headmaster.', 'RARE', 'Belt Leather', 16.0, 108);
 
 -- ====================================================================
 -- ITEMS GENERALES (tabla items — independiente de loot_items)
@@ -684,3 +789,4 @@ SELECT setval(pg_get_serial_sequence('loot_items','id'), (SELECT COALESCE(MAX(id
 SELECT setval(pg_get_serial_sequence('npcs','id'), (SELECT COALESCE(MAX(id),1) FROM npcs));
 SELECT setval(pg_get_serial_sequence('quests','id'), (SELECT COALESCE(MAX(id),1) FROM quests));
 SELECT setval(pg_get_serial_sequence('items','id'), (SELECT COALESCE(MAX(id),1) FROM items));
+SELECT setval(pg_get_serial_sequence('users','id'), (SELECT COALESCE(MAX(id),1) FROM users));
