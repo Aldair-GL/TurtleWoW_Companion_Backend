@@ -3,13 +3,13 @@
 -- Base de datos Turtle WoW Companion
 -- ============================================================
 
--- Limpiar tablas dependientes para recargar
+-- Limpiar tablas dependientes para recargar (orden: hijos antes que padres)
 DROP TABLE IF EXISTS usuarios;
+DELETE FROM quests;
 DELETE FROM loot_items;
 DELETE FROM items;
-DELETE FROM bosses;
 DELETE FROM npcs;
-DELETE FROM quests;
+DELETE FROM bosses;
 
 -- ==================== FACCIONES ====================
 INSERT INTO factions (id, name, description, type) VALUES
@@ -789,4 +789,3 @@ SELECT setval(pg_get_serial_sequence('loot_items','id'), (SELECT COALESCE(MAX(id
 SELECT setval(pg_get_serial_sequence('npcs','id'), (SELECT COALESCE(MAX(id),1) FROM npcs));
 SELECT setval(pg_get_serial_sequence('quests','id'), (SELECT COALESCE(MAX(id),1) FROM quests));
 SELECT setval(pg_get_serial_sequence('items','id'), (SELECT COALESCE(MAX(id),1) FROM items));
-SELECT setval(pg_get_serial_sequence('users','id'), (SELECT COALESCE(MAX(id),1) FROM users));
