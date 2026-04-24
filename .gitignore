@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Scripts SQL borrables — NUNCA subir ###
+scripts/
+
+### Documentos borrables e internos — NUNCA subir ###
+**/BORRABLE*
+**/borrable*
+guia-deploy-render.md
+
+### Environment variables ###
+.env
+*.env
+src/main/resources/application-dev.properties
+

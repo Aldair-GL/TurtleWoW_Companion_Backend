@@ -14,7 +14,7 @@ import java.util.List;
  * Endpoint de busqueda global en zonas, quests y NPCs.
  */
 @RestController
-@RequestMapping("/api/search")
+@RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
 @Tag(name = "Search", description = "Busqueda global")
 public class SearchController {

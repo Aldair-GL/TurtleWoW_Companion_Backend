@@ -12,6 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"availableClasses"})
+@EqualsAndHashCode(exclude = {"availableClasses"})
 public class Race {
 
     @Id
@@ -21,7 +23,7 @@ public class Race {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(length = 1000)
+    @Column(length = 5000)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

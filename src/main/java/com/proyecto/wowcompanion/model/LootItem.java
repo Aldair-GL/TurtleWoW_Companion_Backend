@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "items")
+@Table(name = "loot_items")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Item {
+public class LootItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,23 +19,23 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 2000)
+    @Column(length = 1000)
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ItemQuality quality;
 
-    /** WEAPON, ARMOR, CONSUMABLE, QUEST, TRADE, REAGENT, RECIPE, MISC */
+    @Column(nullable = false)
     private String type;
 
-    /** Sword, Mace, Cloth, Leather, Potion, etc. */
-    private String subtype;
-
-    private Integer levelRequired;
-
-    private Integer itemLevel;
+    private Double dropRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profession_id")
-    private Profession profession;
+    @JoinColumn(name = "boss_id")
+    private Boss boss;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 }

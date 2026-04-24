@@ -1,204 +1,791 @@
 -- ============================================================
--- DATA SEED: World of Warcraft Vanilla
--- Datos iniciales para desarrollo y demostracion
--- Sincronizado con el frontend Android (Turtle WoW Companion)
+-- DATOS COMPLETOS: World of Warcraft Clasico (Vanilla)
+-- Base de datos Turtle WoW Companion
 -- ============================================================
 
--- ==================== FACTIONS ====================
-INSERT INTO factions (id, name, description, type) VALUES (1, 'Alliance', 'The Grand Alliance, a faction of noble races united against common threats.', 'ALLIANCE');
-INSERT INTO factions (id, name, description, type) VALUES (2, 'Horde', 'The New Horde, a coalition of outcast races fighting for survival and honor.', 'HORDE');
-INSERT INTO factions (id, name, description, type) VALUES (3, 'Steamwheedle Cartel', 'A powerful goblin trade coalition that maintains neutrality between Alliance and Horde.', 'NEUTRAL');
-INSERT INTO factions (id, name, description, type) VALUES (4, 'Argent Dawn', 'An organization focused on combating the Scourge in the Plaguelands.', 'NEUTRAL');
-INSERT INTO factions (id, name, description, type) VALUES (5, 'Cenarion Circle', 'A druidic order dedicated to protecting nature and the Emerald Dream.', 'NEUTRAL');
-INSERT INTO factions (id, name, description, type) VALUES (6, 'Thorium Brotherhood', 'A group of Dark Iron dwarves that have broken away from Ragnaros.', 'NEUTRAL');
+-- Limpiar tablas dependientes para recargar (orden: hijos antes que padres)
+DROP TABLE IF EXISTS usuarios;
+DELETE FROM quests;
+DELETE FROM loot_items;
+DELETE FROM items;
+DELETE FROM npcs;
+DELETE FROM bosses;
 
--- ==================== CHARACTER CLASSES ====================
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (1, 'Warrior', 'Masters of weaponry and armor. Excel at tanking and melee damage.', 'HYBRID', 'RAGE');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (2, 'Paladin', 'Holy warriors that can heal, tank, and deal damage. Alliance only.', 'HYBRID', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (3, 'Hunter', 'Ranged damage dealers who fight alongside animal companions.', 'DPS', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (4, 'Rogue', 'Stealthy assassins that excel at melee burst damage.', 'DPS', 'ENERGY');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (5, 'Priest', 'Versatile healers who can also deal shadow damage.', 'HEALER', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (6, 'Shaman', 'Elemental warriors with totems. Horde only.', 'HYBRID', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (7, 'Mage', 'Masters of arcane, fire, and frost magic. Powerful ranged DPS.', 'DPS', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (8, 'Warlock', 'Dark casters who command demons and shadow magic.', 'DPS', 'MANA');
-INSERT INTO character_classes (id, name, description, role, resource_type) VALUES (9, 'Druid', 'Shapeshifters who can fill any role: tank, healer, melee or ranged DPS.', 'HYBRID', 'MANA');
+-- ==================== FACCIONES ====================
+INSERT INTO factions (id, name, description, type) VALUES
+(1, 'Alliance', 'The Grand Alliance is a coalition of noble races bound by honor, justice, and a shared commitment to protecting Azeroth from the forces of darkness. Founded in the aftermath of the Second War, the Alliance unites Humans, Dwarves, Night Elves, and Gnomes under a common banner. King Varian Wrynn rules from Stormwind City, the Alliance''s most prominent capital, while Ironforge, Darnassus, and Gnomeregan (in exile) serve as seats of power for the other member races. The Alliance values diplomacy, law, and order, though tensions with the Horde frequently erupt into open conflict across contested territories in both the Eastern Kingdoms and Kalimdor.', 'ALLIANCE'),
+(2, 'Horde', 'The New Horde is a coalition of outcast races fighting for survival, freedom, and honor in a world that fears and mistrusts them. Forged by Warchief Thrall after the liberation of the orcs from demonic corruption and internment camps, the Horde brings together Orcs, Trolls, Tauren, and the Forsaken Undead. Orgrimmar, the fortress city carved into the red cliffs of Durotar, serves as its capital. Unlike the old Horde that ravaged Azeroth under demonic influence, Thrall''s Horde seeks a new path of honor and shamanistic tradition. Despite their desire for peace, the Horde must constantly defend its territories from Alliance aggression and the many threats that plague Kalimdor and the Eastern Kingdoms.', 'HORDE'),
+(3, 'Neutral', 'Neutral factions are organizations and groups that maintain independence from both the Alliance and the Horde, often serving their own interests or working toward goals that transcend factional politics. Among the most notable are the Steamwheedle Cartel goblins who run trade cities like Gadgetzan, Booty Bay, and Ratchet; the Argent Dawn, dedicated to combating the Scourge in the Plaguelands; the Cenarion Circle, a druidic order protecting nature; and the Thorium Brotherhood, Dark Iron dwarves who have broken from Ragnaros. These factions offer quests, services, and reputation rewards to adventurers of both factions, and their cities serve as rare havens where Alliance and Horde can coexist without conflict.', 'NEUTRAL')
+ON CONFLICT (id) DO NOTHING;
 
--- ==================== ZONES (18 zones) ====================
--- Alliance zones
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (1, 'Elwynn Forest', 'A tranquil woodland south of Stormwind City. Starting zone for Humans, filled with gentle streams, rolling hills, and the occasional threat of kobolds and gnolls.', 1, 10, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, 'https://static.wikia.nocookie.net/wowpedia/images/4/4a/Elwynn_Forest.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (2, 'Westfall', 'Once-fertile farmlands now overrun by the Defias Brotherhood. The People''s Militia struggles to maintain order in the absence of Stormwind''s military.', 10, 20, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, 'https://static.wikia.nocookie.net/wowpedia/images/4/47/Westfall.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (3, 'Duskwood', 'A dark and haunted forest east of Westfall, perpetually shrouded in shadow. Worgen, undead, and other horrors lurk behind every tree.', 18, 30, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, 'https://static.wikia.nocookie.net/wowpedia/images/2/2e/Duskwood.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (4, 'Redridge Mountains', 'A mountainous region east of Elwynn Forest, under constant threat from Blackrock orcs. The town of Lakeshire serves as a bastion of Alliance presence.', 15, 25, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, 'https://static.wikia.nocookie.net/wowpedia/images/a/a3/Redridge_Mountains.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (5, 'Stormwind City', 'Capital of the Alliance and the Kingdom of Stormwind. A majestic city rebuilt after the First War, center of human civilization.', 1, 60, 'EASTERN_KINGDOMS', 'CITY', 1, 'https://static.wikia.nocookie.net/wowpedia/images/5/5c/StormwindCity.jpg');
+-- ==================== CLASES DE PERSONAJE ====================
+INSERT INTO character_classes (id, name, description, role, resource_type) VALUES
+(1, 'Warrior', 'Warriors are the quintessential melee fighters of Azeroth, masters of every weapon and armor type in the game. They excel in two primary roles: as Protection-specced tanks who hold enemy attention with high threat abilities like Sunder Armor and Shield Slam, or as Arms/Fury damage dealers who unleash devastating attacks such as Mortal Strike and Bloodthirst. Warriors use Rage as their resource, which is generated by dealing and receiving damage in combat, making them stronger the longer a fight lasts. Their key abilities include Charge, Execute, Whirlwind, and the iconic Berserker Stance. Available to every race in the game, warriors are indispensable in both dungeon groups and raid encounters, where a skilled tank can mean the difference between victory and a wipe.', 'TANK', 'RAGE'),
+(2, 'Paladin', 'Paladins are holy warriors who wield the power of the Light to heal allies, protect the innocent, and smite the undead. Exclusive to the Alliance faction (Human and Dwarf only), paladins are incredibly versatile: Holy paladins are powerful single-target healers, Protection paladins can tank with their auras and blessings, and Retribution paladins deal melee damage empowered by divine strikes. Their iconic abilities include Lay on Hands (a full emergency heal), Divine Shield (complete invulnerability), and Blessings that buff entire groups. Paladins wear plate armor and can use most melee weapons and shields. Their aura system provides passive bonuses to nearby allies, and Judgement seals deliver powerful combat effects. In Vanilla WoW, paladins are most valued as healers in endgame raids.', 'HYBRID', 'MANA'),
+(3, 'Hunter', 'Hunters are master trackers and survivalists who use ranged weapons and loyal animal companions to devastating effect. They are the premier ranged physical damage dealers, using bows, guns, or crossbows to unleash abilities like Aimed Shot, Multi-Shot, and Arcane Shot from a distance. Each hunter can tame a wild beast to fight at their side, choosing from dozens of pet families with unique abilities. The three talent specializations are Beast Mastery (pet-focused), Marksmanship (raw ranged damage), and Survival (traps and utility). Hunters also bring crucial raid utility with Trueshot Aura and the ability to kite enemies. Their unique mechanics include a minimum range (deadzone) for ranged attacks, Feign Death to drop threat, and Aspect abilities that modify their playstyle. Available to Dwarves, Night Elves, Orcs, Tauren, and Trolls.', 'DPS', 'MANA'),
+(4, 'Rogue', 'Rogues are stealthy assassins and cunning combatants who strike from the shadows with lethal precision. Using Energy as their resource (which regenerates at a steady rate), rogues build Combo Points on targets through abilities like Sinister Strike, Backstab, and Ambush, then spend them on powerful finishing moves such as Eviscerate and Kidney Shot. Their three talent trees are Assassination (poison and critical damage), Combat (sustained melee DPS), and Subtlety (stealth and control). Rogues can Stealth to move invisibly, Sap enemies to crowd-control humanoids, use Vanish to escape combat, and apply deadly poisons to their weapons. They wear leather armor and excel with daggers and swords. In PvP, rogues are feared for their ability to stunlock opponents, while in PvE they provide excellent sustained damage and the ability to Lockpick chests and doors.', 'DPS', 'ENERGY'),
+(5, 'Priest', 'Priests are the most versatile healing class in Azeroth, wielding both holy light and shadow magic with equal mastery. Holy priests are the backbone of any raid healing team, using spells like Greater Heal, Prayer of Healing, and Renew to keep groups alive. Discipline priests focus on damage prevention through Power Word: Shield and efficient healing. Shadow priests take a darker path, transforming into Shadowform to deal sustained damage over time with Shadow Word: Pain, Vampiric Embrace, and Mind Blast, while also healing their group through damage dealt. Key utility spells include Power Word: Fortitude (stamina buff), Fear Ward (Alliance), Dispel Magic, and Psychic Scream. Priests wear cloth armor and are available to Humans, Dwarves, Night Elves, Trolls, and Undead, with each race receiving unique racial priest abilities.', 'HEALER', 'MANA'),
+(6, 'Shaman', 'Shamans are spiritual leaders and elemental warriors who commune with the forces of earth, fire, water, and air. Exclusive to the Horde (Orc, Troll, and Tauren), shamans bring unmatched versatility through their three talent trees: Elemental (ranged spell damage with Lightning Bolt and Chain Lightning), Enhancement (melee combat empowered by Windfury Weapon and Stormstrike), and Restoration (powerful healing with Chain Heal and Healing Wave). Their signature mechanic is the Totem system — shamans can place up to four totems simultaneously (one per element) that provide area-of-effect buffs like Windfury Totem, Mana Spring Totem, and Strength of Earth Totem. Shamans can also self-resurrect with Reincarnation and purge enemy buffs. In raids, Restoration shamans are prized for their Chain Heal and totems, making them essential for Horde raid groups.', 'HYBRID', 'MANA'),
+(7, 'Mage', 'Mages are masters of arcane, fire, and frost magic, wielding devastating spells to obliterate enemies from a distance. They are one of the highest damage-dealing classes in the game, with three distinct specializations: Arcane (burst damage and mana efficiency), Fire (raw destructive power with Fireball, Pyroblast, and Combustion), and Frost (control and survivability with Frostbolt, Blizzard, and Ice Block). Beyond damage, mages provide crucial utility: they can Polymorph enemies for crowd control, create Portals and Teleports to every major city, conjure Food and Water for the entire group, and cast Arcane Intellect to boost party mana. Their Ice Block ability grants complete immunity and Evocation restores mana mid-combat. Mages wear cloth armor and are available to Humans, Gnomes, Trolls, and Undead.', 'DPS', 'MANA'),
+(8, 'Warlock', 'Warlocks are dark spellcasters who have made pacts with demonic entities to wield shadow and fire magic of terrifying power. They command a stable of demon minions — the Imp, Voidwalker, Succubus, Felhunter, and the mighty Infernal — each suited to different situations. Their three talent trees are Affliction (damage over time with Corruption, Curse of Agony, and Siphon Life), Demonology (enhanced demon pets and survivability), and Destruction (direct damage with Shadow Bolt, Conflagrate, and Soul Fire). Warlocks use Soul Shards as a secondary resource, harvested from dying enemies, to summon demons, create Healthstones (healing items) and Soulstones (combat resurrection), and summon party members. Their unique Life Tap converts health into mana. In raids, warlocks are valued for their consistent damage, summoning utility, and Curse debuffs. Available to Humans, Gnomes, Orcs, and Undead.', 'DPS', 'MANA'),
+(9, 'Druid', 'Druids are shapeshifters and guardians of nature who draw power from the Emerald Dream and the teachings of Cenarius. They are the most versatile class in the game, capable of filling every role: Balance (ranged spell damage as a Moonkin with Starfire and Moonfire), Feral Combat (melee DPS in Cat Form with Shred and Ferocious Bite, or tanking in Bear Form with Maul and Swipe), and Restoration (healing with Rejuvenation, Regrowth, and Healing Touch). Druids can shift between forms fluidly — Travel Form for speed, Aquatic Form for swimming, Cat Form for stealth, and Bear Form for durability. Key utility includes Mark of the Wild (stat buff), Innervate (mana restoration for allies), and combat resurrection with Rebirth. Druids wear leather armor and are available only to Night Elves and Tauren. Their deep connection to nature makes them unique among all classes in Azeroth.', 'HYBRID', 'MANA')
+ON CONFLICT (id) DO NOTHING;
 
--- Horde zones
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (6, 'Durotar', 'A harsh, rocky land on the eastern coast of Kalimdor. Starting zone for Orcs and Trolls, it is a land of red earth and scorching sun.', 1, 10, 'KALIMDOR', 'OPEN_WORLD', 2, 'https://static.wikia.nocookie.net/wowpedia/images/6/6d/Durotar.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (7, 'The Barrens', 'A vast savanna stretching across central Kalimdor. Home to diverse wildlife and the bustling crossroads, it is a crucible for young Horde adventurers.', 10, 25, 'KALIMDOR', 'OPEN_WORLD', 2, 'https://static.wikia.nocookie.net/wowpedia/images/3/32/Barrens.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (8, 'Thousand Needles', 'A vast canyon filled with towering stone pillars rising from the desert floor. The Shimmering Flats host goblin-run rocket car races.', 25, 35, 'KALIMDOR', 'OPEN_WORLD', 2, 'https://static.wikia.nocookie.net/wowpedia/images/f/f1/Thousand_Needles.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (9, 'Stonetalon Mountains', 'A mountainous region in central Kalimdor contested by druids and the Venture Company. The Horde maintains a strong presence in its southern reaches.', 15, 27, 'KALIMDOR', 'OPEN_WORLD', 2, 'https://static.wikia.nocookie.net/wowpedia/images/0/05/Stonetalon_Mountains.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (10, 'Orgrimmar', 'Capital of the Horde, built into the red cliffs of Durotar. A fortress city of iron and stone, seat of the Warchief.', 1, 60, 'KALIMDOR', 'CITY', 2, 'https://static.wikia.nocookie.net/wowpedia/images/0/05/Orgrimmar.jpg');
+-- ==================== ZONAS - MUNDO ABIERTO ====================
+INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES
+(1, 'Elwynn Forest', 'Elwynn Forest is a tranquil woodland region south of Stormwind City and the starting zone for Human characters. Rolling green hills, peaceful streams, and farms dot the landscape, but danger lurks beneath the surface. Kobolds infest the mines of Fargodeep and Jasperlode, gnolls led by the notorious Hogger terrorize the southern roads, and the shadowy Defias Brotherhood operates in secret. The town of Goldshire serves as the main quest hub, while Northshire Abbey is where all human adventurers begin their journey. Despite its dangers, Elwynn Forest remains one of the most iconic and beloved zones in all of World of Warcraft.', 1, 10, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(2, 'Westfall', 'Westfall is a desolate region of barren farmlands west of Elwynn Forest that has fallen into ruin. Once the breadbasket of the Kingdom of Stormwind, the fields now lie fallow after the nobles abandoned the farmers to poverty. The Defias Brotherhood, led by the vengeful Edwin VanCleef, has taken advantage of the chaos, establishing a criminal empire and building a secret fortress in the Deadmines beneath Moonbrook. The People''s Militia, led by Captain Gryan Stoutmantle at Sentinel Hill, struggles to maintain order against both the Defias and the mechanical Harvest Watchers that roam the fields. Westfall is the first zone where Alliance players encounter a major storyline that leads to their first dungeon experience.', 10, 20, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(3, 'Duskwood', 'Duskwood is a dark, haunted forest perpetually shrouded in an unnatural twilight that never lifts. Once part of the bright Brightwood, the region was cursed when the archmage Morganth summoned dark powers, and now undead, worgen, and spectral terrors roam freely. The town of Darkshire serves as the primary quest hub, where the Night Watch militia fights desperately to keep the roads safe. Notable threats include Mor''Ladim, a death knight wandering the Raven Hill Cemetery; Stitches, a terrifying abomination that patrols the main road; and the ogre mound at Vul''Gol. The zone features some of Vanilla''s most atmospheric storytelling, with quest chains involving the missing wife of Stalvan Mistmantle and the dark history of the Worgen curse.', 18, 30, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(4, 'Redridge Mountains', 'Redridge Mountains is a picturesque but besieged region of red-rock canyons and clear lakes east of Elwynn Forest. The town of Lakeshire, built on the shores of Lake Everstill, is under constant threat from Blackrock orcs who have established a stronghold at Stonewatch Keep. The bridge connecting Lakeshire to the rest of the Alliance territories has been destroyed, leaving the town isolated and desperate for help. Magistrate Solomon coordinates the defense alongside the Lakeshire Guard, sending adventurers to combat gnolls, murlocs along the lakeshore, and the ever-present orc threat. The zone offers a compelling narrative about a small town''s struggle for survival against overwhelming odds.', 15, 25, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(5, 'Stormwind City', 'Stormwind City is the crown jewel of the Alliance and the capital of the Kingdom of Stormwind. Rebuilt after its complete destruction during the First War by the stonemasons guild (whose betrayal by the nobles led to the formation of the Defias Brotherhood), Stormwind is a magnificent city of white stone towers, tree-lined canals, and grand districts. The city is divided into several distinct areas: the Trade District (auction house and bank), the Cathedral of Light (priest and paladin trainers), the Dwarven District (mining and blacksmithing), the Mage Quarter (mage and warlock trainers), Old Town (rogue trainers and SI:7 headquarters), and Stormwind Keep where the throne room awaits. The city also houses the Stockade dungeon and the Deeprun Tram connecting to Ironforge.', 1, 60, 'EASTERN_KINGDOMS', 'CITY', 1, NULL),
+(6, 'Dun Morogh', 'Dun Morogh is a frigid, snow-covered mountain region in the Eastern Kingdoms that serves as the starting zone for both Dwarves and Gnomes. The area is dominated by the enormous mountain of Ironforge, within which the great dwarven capital is carved. New adventurers begin at Coldridge Valley, fighting off troggs and hostile wildlife before venturing into the wider zone. Key locations include Kharanos (a small dwarven town and quest hub), Brewnall Village, the Gnomeregan entrance, and Frostmane Hold where hostile ice trolls dwell. The zone features a constant snowfall aesthetic and the rugged, hearty culture of the dwarven people, with quests involving beer delivery, trogg extermination, and the defense of dwarven excavation sites.', 1, 10, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(7, 'Loch Modan', 'Loch Modan is a verdant region centered around a massive lake of the same name, held back by the enormous Stonewrought Dam — an engineering marvel of the dwarven civilization. The zone serves as the second area for dwarven and gnome characters after Dun Morogh. The town of Thelsamar is the primary quest hub, where dwarves organize expeditions to archaeological dig sites and defend against troggs, kobolds, and the hostile Mosshide gnolls. The dam itself is a prominent landmark, and the lake provides fishing opportunities. Notable quest chains involve investigating Dark Iron dwarf activity, defending excavation sites, and dealing with the ogre threat in the Mo''grosh Stronghold to the northeast.', 10, 20, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(8, 'Teldrassil', 'Teldrassil is a colossal World Tree grown by the Night Elves after the destruction of Nordrassil at the Battle of Mount Hyjal, in a desperate attempt to regain their lost immortality. The entire zone exists atop the branches and roots of this enormous tree, which rises from the ocean off the northwest coast of Kalimdor. New Night Elf characters begin in Shadowglen and quickly encounter signs of corruption seeping into the tree — tainted wildlife, aggressive furbolgs, and dark spirits. The zone features the Night Elf capital of Darnassus, a serene city of moonlit temples and ancient architecture. Despite its beauty, Teldrassil was grown without the blessing of the Dragon Aspects, and a creeping corruption threatens to consume it from within.', 1, 10, 'KALIMDOR', 'OPEN_WORLD', 1, NULL),
+(9, 'Darkshore', 'Darkshore is a long, narrow coastal zone stretching along the northwestern shore of Kalimdor, serving as the second leveling area for Night Elf characters. The region is characterized by ancient ruins, rocky coastline, and dense forest, all under a perpetual gray sky. The town of Auberdine serves as the main quest hub and travel point, with boats running to Teldrassil and Menethil Harbor. Darkshore tells a story of environmental devastation — strange earthquakes rock the land, sea creatures attack the coast, and corrupted wildlife threatens the night elf settlements. Adventurers investigate the causes of the land''s distress while battling murlocs, naga, and the mysterious Twilight''s Hammer cult.', 10, 20, 'KALIMDOR', 'OPEN_WORLD', 1, NULL),
+(10, 'Durotar', 'Durotar is the harsh, sun-baked homeland that Warchief Thrall claimed for the New Horde on the eastern coast of Kalimdor, named in honor of his father Durotan. This arid land of red rock, scorched earth, and sparse vegetation is the starting zone for both Orc and Troll characters. New adventurers begin in the Valley of Trials, fighting scorpids, boars, and Burning Blade cultists before venturing to Razor Hill and Sen''jin Village. Despite its harsh appearance, Durotar represents freedom and a new beginning for the orcs, who built the fortress city of Orgrimmar in its northern canyons. The zone also features the Echo Isles off the southern coast, the ancestral home of the Darkspear trolls, currently occupied by hostile forces.', 1, 10, 'KALIMDOR', 'OPEN_WORLD', 2, NULL),
+(11, 'The Barrens', 'The Barrens is an enormous savanna stretching across central Kalimdor, famous in WoW culture for its vast size, lengthy travel times, and the legendary Barrens Chat in the general channel. This massive zone serves as the primary leveling area for Horde characters from level 10 to 25, with the Crossroads as its central quest hub. The landscape features golden grasslands, scattered oases, and roaming wildlife including raptors, zhevras, and thunder lizards. Notable locations include Ratchet (a neutral goblin port town), Camp Taurajo (a Horde outpost), and the entrance to the Wailing Caverns dungeon. Quest chains involve conflicts with the Kolkar centaur, Bristleback quilboar, and the mysterious Burning Blade cult. The zone also contains the entrance to Razorfen Kraul and Razorfen Downs dungeons.', 10, 25, 'KALIMDOR', 'OPEN_WORLD', 2, NULL),
+(12, 'Thousand Needles', 'Thousand Needles is a breathtaking zone of towering stone pillars rising from a vast canyon floor in southern Kalimdor. The Horde maintains Freewind Post, a settlement built atop one of these enormous pillars, while the Shimmering Flats at the zone''s southern edge host a goblin-run raceway where gnomish and goblin engineers compete in rocket-powered car races. The zone is home to the Galak and Grimtotem tauren clans (both hostile), as well as harpies and various dangerous wildlife. Adventurers descend into the canyon to help allied tauren fight against the aggressive Grimtotem tribe and to participate in the racing culture of the Mirage Raceway, making it one of the more unique and visually striking zones in Vanilla WoW.', 25, 35, 'KALIMDOR', 'OPEN_WORLD', 2, NULL),
+(13, 'Stonetalon Mountains', 'Stonetalon Mountains is a rugged, mountainous region in central Kalimdor that serves as a contested battlefield between the Night Elves and the Horde. The zone features dramatic elevation changes, from the lush Stonetalon Peak (where a Druid of the Talon enclave resides) to the scorched Charred Vale, devastated by Venture Company mining operations. Both factions maintain outposts: the Horde''s Sun Rock Retreat and the Alliance''s Stonetalon Peak. Quests involve combating the Venture Company''s environmental destruction, fighting hostile harpies, and navigating the political tensions between the two factions. The zone serves as an early introduction to the faction conflict that defines much of the WoW experience.', 15, 27, 'KALIMDOR', 'OPEN_WORLD', 2, NULL),
+(14, 'Orgrimmar', 'Orgrimmar is the mighty fortress capital of the Horde, carved into the red rock canyons of northern Durotar by Warchief Thrall and named in honor of the legendary Orgrim Doomhammer. The city is a testament to orcish engineering and strength, with massive iron gates, spike-topped walls, and buildings constructed from timber and iron. Key districts include the Valley of Strength (main hub with auction house and bank), the Valley of Wisdom (where Thrall holds court), the Valley of Honor (warrior trainers and the Ring of Valor), the Drag (a narrow canyon with various trainers), the Cleft of Shadow (rogue and warlock trainers), and the Valley of Spirits (troll district). Orgrimmar also houses the entrance to the Ragefire Chasm dungeon and serves as the flight hub connecting to all Horde territories.', 1, 60, 'KALIMDOR', 'CITY', 2, NULL),
+(15, 'Mulgore', 'Mulgore is a vast, beautiful grassland in central Kalimdor and the ancestral homeland of the Tauren people. Rolling green hills, wildflowers, and roaming herds of kodo beasts create one of the most serene landscapes in World of Warcraft. New Tauren characters begin at Camp Narache in Red Cloud Mesa, fighting aggressive swoops, bristleback quilboar, and learning the ways of the Earth Mother. The zone''s main quest hub is Bloodhoof Village, named after the ruling Bloodhoof tribe led by the wise Cairne. Mulgore is ringed by mountains that protect it from the outside world, with Thunder Bluff — the tauren capital built atop towering mesas — rising dramatically in the center. Despite its peaceful appearance, threats from the Venture Company, hostile quilboar, and wayward harpies keep adventurers busy.', 1, 10, 'KALIMDOR', 'OPEN_WORLD', 2, NULL),
+(16, 'Tirisfal Glades', 'Tirisfal Glades is a haunted, perpetually gloomy forest in the northern Eastern Kingdoms that serves as the starting zone for Undead characters. Once a beautiful region of Lordaeron, the land was irrevocably scarred by the Plague of Undeath and the fall of the kingdom to the Scourge. New Forsaken characters rise from their graves in Deathknell, slowly coming to terms with their undead existence while fighting mindless Scourge remnants and the fanatical Scarlet Crusade. The town of Brill serves as the primary quest hub, situated between the ruined Lordaeron palace (beneath which lies the Undercity) and the Scarlet Monastery to the northeast. The zone''s atmosphere of decay, gothic horror, and dark humor makes it one of the most memorable starting experiences in the game.', 1, 10, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 2, NULL),
+(17, 'Silverpine Forest', 'Silverpine Forest is a dark, shadowy woodland south of Tirisfal Glades, serving as the second leveling zone for Undead characters. The region is gripped by conflict on multiple fronts: Dalaran mages have erected a magical barrier in the south, the worgen curse spreads through the forest creating feral man-beasts, and the Scourge maintains a presence at various points. The Sepulcher serves as the primary Horde quest hub, from which Forsaken forces coordinate their efforts to secure the region. The zone also contains the entrance to Shadowfang Keep, a cursed castle where the mad Archmage Arugal commands his worgen creations. Silverpine''s dark forests, abandoned farmsteads, and eerie atmosphere make it a fitting continuation of the Undead storyline.', 10, 20, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 2, NULL),
+(18, 'Ashenvale', 'Ashenvale is an ancient, sacred forest in northern Kalimdor that represents one of the fiercest battlegrounds between the Alliance and Horde. The Night Elves have guarded this woodland for thousands of years, but the Horde''s need for lumber has led to an aggressive deforestation campaign by the Warsong clan, based out of the Warsong Lumber Camp. Both factions maintain strongholds: Astranaar for the Alliance and Splintertree Post for the Horde. The zone features ancient Night Elf ruins, the corrupted Demonfall Canyon (scarred by the Burning Legion''s invasion), and the entrance to the Warsong Gulch battleground. Notable quest chains involve battling the satyr forces in Night Run, investigating the corruption of the Forest Song, and the escalating military conflict between the two factions.', 18, 30, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(19, 'Stranglethorn Vale', 'Stranglethorn Vale is a massive, dense tropical jungle in the southern Eastern Kingdoms, famous for being one of the most dangerous and PvP-heavy zones in Vanilla WoW. The zone is split into northern and southern sections, filled with Bloodscalp and Skullsplitter trolls, Venture Company goblins, Kurzen''s rebel soldiers, and pirates at Booty Bay. The neutral goblin port of Booty Bay at the southern tip serves as a major trade hub, while Grom''gol Base Camp (Horde) and Rebel Camp (Alliance) provide faction-specific quest hubs. The legendary Hemet Nesingwary hunting chain sends players on a safari to kill progressively more dangerous beasts, culminating in the hunt for King Bangalash. Zul''Gurub, the ancient troll city and 20-man raid, lies in the zone''s northeastern corner.', 30, 45, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(20, 'Tanaris', 'Tanaris is a vast desert in southern Kalimdor dominated by endless sand dunes and the neutral goblin city of Gadgetzan at its center. The zone is home to the hostile Sandfury trolls who inhabit the ancient city of Zul''Farrak (a 5-man dungeon), as well as Wastewander bandits, silithid insects, and various desert creatures. Gadgetzan serves as a major neutral quest hub and trade center, with an arena for dueling and access to both faction''s auction houses. Hidden beneath the sands lie the mysterious Caverns of Time, guarded by the Bronze Dragonflight, though they remain sealed during Vanilla. The zone also features the Thistleshrub Valley (home to aggressive thistleshrub elementals), Steamwheedle Port, and the pirate cove of Lost Rigger Cove.', 40, 50, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(21, 'Un''Goro Crater', 'Un''Goro Crater is a primordial paradise hidden in a massive volcanic crater in southern Kalimdor, where dinosaurs still roam and exotic crystalline formations dot the landscape. This unique zone feels like a lost world, filled with devilsaurs (massive T-Rex-like creatures that are among the most dangerous non-elite mobs in the game), raptors, pterrordaxes, and exotic plant life. Marshal''s Refuge serves as the main quest hub, where researchers from both factions study the crater''s mysteries. Notable features include the Fire Plume Ridge volcano at the center, pylons that grant powerful buffs when activated, and the Linken quest chain — a beloved homage to The Legend of Zelda. Devilsaur Leather, harvested from the zone''s apex predators, is one of the most valuable crafting materials in the game.', 48, 55, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(22, 'Winterspring', 'Winterspring is a frozen, mountainous valley in the far north of Kalimdor, accessible only through the Timbermaw Hold tunnel from Felwood. This high-level zone features perpetual snowfall, frozen lakes, and majestic frost-covered trees. The goblin town of Everlook serves as the neutral quest hub and trade center. Key activities include farming Frostsaber reputation (a months-long daily grind for the coveted Winterspring Frostsaber mount — Alliance only), gathering valuable herbs and ores, hunting elite frost giants and ice thistle yeti, and exploring the ancient ruins of the Blue Dragonflight. The zone is also home to Darkwhisper Gorge, inhabited by high-level demons, and the rare spawn Azuregos patrols the surrounding area as a world boss.', 53, 60, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(23, 'Silithus', 'Silithus is a desolate desert in the far southwest of Kalimdor, representing one of the most dangerous and lore-significant zones in Vanilla WoW. The region is swarming with Silithid insects — hive-mind creatures controlled by the ancient Qiraji empire sealed behind the Gates of Ahn''Qiraj. The Cenarion Hold serves as the main quest hub, where the Cenarion Circle coordinates the defense against the insect threat. Silithus is the gateway to the Ahn''Qiraj war effort and the opening of the Gates event, one of the most epic server-wide events in WoW history. Players farm Twilight Cultist camps for Encrypted Twilight Texts, battle silithid swarms, and earn Cenarion Circle reputation. The zone also contains two raid instances: Ruins of Ahn''Qiraj (20-man) and Temple of Ahn''Qiraj (40-man).', 55, 60, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(24, 'Eastern Plaguelands', 'Eastern Plaguelands is the devastated heart of the Scourge''s domain in Lordaeron, a blighted wasteland of diseased soil, corrupted wildlife, and roaming undead hordes. This high-level zone represents the epicenter of the Plague of Undeath that destroyed the Kingdom of Lordaeron. Key locations include Light''s Hope Chapel (the Argent Dawn''s last stronghold and main quest hub), the ruined city of Stratholme (two dungeon wings), Tyr''s Hand (a Scarlet Crusade fortress), and Naxxramas hovering ominously above. The zone features extensive Argent Dawn reputation quests, Scourge Invasions during world events, and the entrance to both Stratholme and Naxxramas. Plagued bears, diseased gryphons, and elite undead patrols make travel dangerous for unprepared adventurers.', 53, 60, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(25, 'Western Plaguelands', 'Western Plaguelands is a war-torn region where the Argent Dawn, Scarlet Crusade, and Scourge fight a three-way battle for control of the blighted lands of Lordaeron. The zone features Andorhal, a ruined city contested by both the Scourge and the Alliance, and the Scholomance school of necromancy on Caer Darrow island. Chillwind Camp serves as the Alliance quest hub while the Bulwark provides a Horde staging point. The zone contains extensive quest chains involving the Chromie time-travel storyline, cauldron destruction missions (purging Scourge plague cauldrons), and the Tirion Fordring redemption quest chain — one of the most beloved storylines in Vanilla WoW, telling the tale of a dishonored paladin living in exile.', 51, 58, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(26, 'Burning Steppes', 'Burning Steppes is a volcanic, ash-covered wasteland at the foot of Blackrock Mountain in the Eastern Kingdoms. The zone is dominated by hostile forces: Blackrock orcs from the Spire, Black Dragonflight dragonkin, fire elementals, and Dark Iron dwarf patrols. Morgan''s Vigil, a small Alliance outpost, and Flame Crest, a Horde camp, serve as the main quest hubs. The zone provides crucial attunement quests for endgame dungeons and raids, including the Onyxia attunement chain and Blackrock Depths key quests. Blackrock Mountain itself — accessible from both Burning Steppes and Searing Gorge — houses five instances: Blackrock Depths, Lower and Upper Blackrock Spire, Molten Core, and Blackwing Lair, making this zone one of the most important endgame areas.', 50, 58, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(27, 'Feralas', 'Feralas is a lush, tropical jungle in western Kalimdor featuring some of the tallest trees and densest vegetation on the continent. The zone contains the ruins of Eldre''Thalas, the ancient Highborne city now known as Dire Maul — a three-wing dungeon complex. Camp Mojache (Horde) and Feathermoon Stronghold (Alliance, located on an island offshore) serve as faction quest hubs. The zone is populated by yeti, hippogryphs, ogres of the Gordunni tribe, and the hostile Woodpaw gnolls. Notable features include the Twin Colossals (enormous stone pillars), the Isle of Dread (home to elite chimaeras), and the dream-touched Emerald Dream portals scattered through the forest. Feralas offers a sense of exploration and wilderness that few other zones match.', 40, 50, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(28, 'The Hinterlands', 'The Hinterlands is a wild, forested region in the northeastern Eastern Kingdoms, home to the Wildhammer dwarves and their gryphon rookeries at Aerie Peak, as well as the hostile Vilebranch and Witherbark forest trolls. The zone provides a unique blend of Alliance and neutral content, with Aerie Peak serving as the main quest hub. Adventurers explore the ancient troll temple of Jintha''Alor (one of the largest outdoor elite areas in Vanilla), hunt for rare troll artifacts, and help the Wildhammer dwarves defend against troll aggression. The zone also features Skulk Rock (home to green dragonkin), Seradane (a corrupted Emerald Dream portal), and excellent herb and mining nodes. The Hinterlands is a favorite zone for many players due to its atmosphere and quest variety.', 40, 50, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(29, 'Desolace', 'Desolace is a barren, lifeless wasteland on the western coast of Kalimdor, arguably the most desolate zone in the game (living up to its name). The gray, rocky landscape is dominated by warring centaur clans (Gelkis and Magram), who players can ally with through reputation grinds. The zone also contains Maraudon, a dungeon set in a sacred centaur cave corrupted by the elemental Princess Theradras. Nigel''s Point (Alliance), Shadowprey Village (Horde), and Kormek''s Hut (neutral) serve as quest hubs. Notable features include the Kodo Graveyard (where kodo beasts go to die), the coast where sea giants roam, and the Burning Blade demon cultists operating in Thunder Axe Fortress. Despite its bleak atmosphere, Desolace offers important quest chains and dungeon access.', 30, 40, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(30, 'Swamp of Sorrows', 'Swamp of Sorrows is a murky, dangerous marshland in the southeastern Eastern Kingdoms, near the Dark Portal that connects Azeroth to Draenor. The zone is primarily Horde-aligned, with Stonard serving as the main quest hub — one of the oldest Horde settlements in the Eastern Kingdoms, established during the First War. The swamp is filled with hostile creatures: Lost Ones (degenerated draenei), swamp jaguars, Fen Dwellers, and green dragonkin protecting the Temple of Atal''Hakkar (Sunken Temple). Alliance presence is limited to a small camp. The zone offers important quests leading to the Sunken Temple dungeon and the Blasted Lands, serving as a key transition area for players heading toward endgame content.', 35, 45, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(31, 'Blasted Lands', 'Blasted Lands is a twisted, demon-haunted wasteland in the far southeast of the Eastern Kingdoms, surrounding the Dark Portal — the gateway between Azeroth and the orc homeworld of Draenor. The land itself has been corrupted by the portal''s energies, leaving it barren, red-soiled, and saturated with demonic taint. Hostile demons, hellboars, scorpions, and Servants of Razelikh roam the landscape. Nethergarde Keep (Alliance) watches over the Dark Portal, while the zone offers reputation quests for various factions. Players collect body parts from creatures to receive stat-boosting buffs from NPCs, making this zone popular for pre-raid buffing. The Dark Portal itself stands as a massive, dormant structure — a reminder of the wars that nearly destroyed Azeroth.', 45, 55, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(32, 'Searing Gorge', 'Searing Gorge is a scorched, industrial wasteland south of Blackrock Mountain, dominated by Dark Iron dwarf mining operations and enslaved elementals. The zone serves as one of two approaches to Blackrock Mountain (the other being Burning Steppes) and features the Thorium Brotherhood faction, reformed Dark Iron dwarves who offer valuable endgame recipes in exchange for reputation. Key locations include the Cauldron (a massive pit where Dark Iron dwarves force enslaved fire elementals to work), Thorium Point (Thorium Brotherhood quest hub), and various Dark Iron camps and incursion sites. The zone is essential for endgame progression, as Thorium Brotherhood recipes include some of the best crafted items in the game.', 43, 50, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(33, 'Ironforge', 'Ironforge is the ancient, magnificent capital of the Dwarven nation, carved into the very heart of the mountain bearing its name. The city is centered around the Great Forge, an immense pit of molten metal that has burned since the city''s founding and serves as both a cultural symbol and practical crafting station. The city''s circular layout radiates outward from the Forge into distinct districts: the Commons (auction house and bank), the Military Ward (warrior and hunter trainers), the Mystic Ward (mage and priest trainers), Tinker Town (gnome quarter with engineering trainers), the Hall of Explorers (museum and Explorer''s League headquarters), and the Throne Room where King Magni Bronzebeard rules. The Deeprun Tram connects Ironforge to Stormwind City, making it a central hub for Alliance logistics.', 1, 60, 'EASTERN_KINGDOMS', 'CITY', 1, NULL),
+(34, 'Darnassus', 'Darnassus is the ethereal, moonlit capital of the Night Elves, situated atop the World Tree Teldrassil. The city is a marvel of ancient elven architecture, with graceful buildings woven into the living wood of the great tree, moonlit waterways, and serene gardens. Key areas include the Temple of the Moon (where High Priestess Tyrande Whisperwind resides), the Cenarion Enclave (druid trainers and Cenarion Circle representatives), the Tradesmen''s Terrace (auction house and bank), and the Craftsmen''s Terrace. Darnassus is notably quieter and less visited than other Alliance capitals due to its remote location, accessible primarily by boat from Darkshore. Despite this, it remains one of the most beautiful cities in the game, embodying the Night Elves'' deep connection to nature and the moon.', 1, 60, 'KALIMDOR', 'CITY', 1, NULL),
+(35, 'Thunder Bluff', 'Thunder Bluff is the majestic capital of the Tauren people, constructed atop a series of towering mesas that rise dramatically from the plains of Mulgore. The city is connected by rope bridges spanning the gaps between the mesa plateaus, each serving a different purpose: the High Rise (where Cairne Bloodhoof holds court), the Spirit Rise (shaman and priest trainers, with the Pools of Vision for scrying), the Hunter Rise (hunter and warrior trainers), and the lower mesa with the auction house and bank. Accessible only by elevators from the ground level, Thunder Bluff is one of the most defensible cities in the game and features some of the most stunning views in World of Warcraft. The city reflects Tauren culture perfectly — open to the sky, connected to nature, and built with reverence for the Earth Mother.', 1, 60, 'KALIMDOR', 'CITY', 2, NULL),
+(36, 'Undercity', 'Undercity is the dark, labyrinthine capital of the Forsaken, built in the catacombs and sewers beneath the ruins of Lordaeron''s once-great palace. The city is a gothic masterpiece of undead architecture, with green slime rivers, flickering lanterns, and the constant sound of dripping water echoing through its circular corridors. The layout consists of four quarters arranged around a central hub: the War Quarter (warrior and rogue trainers), the Magic Quarter (mage and warlock trainers), the Apothecarium (where the Royal Apothecary Society conducts sinister experiments developing a New Plague), and the Rogues'' Quarter. At the center, Sylvanas Windrunner, the Banshee Queen, holds court in the Royal Quarter. Above the Undercity, the ruined Lordaeron throne room contains an eerie echo of the moment Prince Arthas murdered his father, King Terenas.', 1, 60, 'EASTERN_KINGDOMS', 'CITY', 2, NULL),
+(37, 'Wetlands', 'Wetlands is a soggy, marshy region connecting Loch Modan to the northern territories of the Eastern Kingdoms. The zone is dominated by the port town of Menethil Harbor, which serves as a crucial Alliance travel hub with boats to Theramore Isle in Kalimdor and Auberdine in Darkshore. The marshlands are home to hostile Dark Iron dwarves, aggressive raptors, gnolls, murlocs, and the Dragonmaw orcs who once enslaved red dragons. Notable quest chains involve investigating orc activity, recovering supplies from a crashed caravan, and helping the Menethil Guard protect the harbor. The zone serves as an important crossroads, with mountain passes leading to Arathi Highlands and the road to Loch Modan via the Thandol Span bridge.', 20, 30, 'EASTERN_KINGDOMS', 'OPEN_WORLD', 1, NULL),
+(38, 'Arathi Highlands', 'Arathi Highlands is a rolling, windswept grassland in the eastern part of the continent, home to the ruins of Stromgarde — once the mightiest human kingdom. The zone is contested between Alliance and Horde, with Refuge Pointe (Alliance) and Hammerfall (Horde) serving as faction quest hubs. Notable features include the ruins of Stromgarde (divided between human loyalists, Syndicate rogues, and ogres), the Arathi Basin battleground entrance, the Circle of Elements (where elementals spawn), and Go''Shek Farm. The zone offers a mix of PvE questing and PvP encounters, as players from both factions frequently clash while completing quests in the same areas.', 30, 40, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(39, 'Badlands', 'Badlands is a barren, rocky desert in the central Eastern Kingdoms, characterized by jagged rock formations, dusty canyons, and extreme heat. The zone is contested territory with Kargath (Horde) as the primary quest hub, while Alliance presence is minimal. Notable locations include Uldaman (a dungeon revealing Titan secrets), the Angor Fortress (Dark Iron dwarves), and the Lethlor Ravine where black dragonkin patrol. The zone features quests involving archaeological exploration, ogre extermination, and dragonkin investigation. Rock elementals, buzzards, coyotes, and hostile troggs roam the wastes. Badlands is an important transition zone leading to Searing Gorge and eventually Blackrock Mountain.', 35, 45, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(40, 'Felwood', 'Felwood is a corrupted forest in northern Kalimdor, once part of the great woodlands of Ashenvale before the Burning Legion''s taint poisoned the land during the Third War. The zone''s trees are twisted and sickly, the wildlife is aggressive and diseased, and pools of green fel corruption bubble from the ground. Emerald Sanctuary and Bloodvenom Post serve as Alliance-aligned and Horde-aligned quest hubs respectively. Key content includes the Timbermaw Hold reputation grind (clearing corrupted furbolgs to earn passage through the tunnel to Winterspring and Moonglade), collecting Felwood herbs for cleansing recipes, and battling the Shadow Council warlocks. The zone is essential for endgame herbalists due to high-value herb spawns.', 48, 55, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(41, 'Azshara', 'Azshara is a coastal cliffside zone northeast of Ashenvale, named after the ancient Night Elf Queen Azshara who became the ruler of the naga. The zone features dramatic cliff formations, ancient Highborne ruins, and beautiful autumnal coloring that makes it visually striking despite being relatively empty of quest content in Vanilla. Notable features include the Bay of Storms (where the blue dragonflight and naga contest), Timbermaw Hold (with furbolg reputation quests), Azuregos (a world boss blue dragon), and scattered rare herb and ore nodes. The zone is infamous among players for being one of the least developed zones in Vanilla WoW, with few quests and inconvenient travel, though its beauty and the Azuregos encounter make it worth visiting.', 45, 55, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(42, 'Moonglade', 'Moonglade is a sacred druidic sanctuary in northern Kalimdor, accessible primarily through the druid teleport spell Teleport: Moonglade. This peaceful valley is home to the Cenarion Circle''s leadership and the great druid trainers. The town of Nighthaven sits beside Lake Elune''ara, where the annual Lunar Festival celebration takes place. All druids, regardless of faction, are welcome here, and it represents one of the few places where Alliance and Horde can interact peacefully. The zone also serves as the gathering point for the Ahn''Qiraj war effort and contains high-level herb nodes. Moonglade''s serene atmosphere and lore significance make it a beloved location for druid players.', 55, 60, 'KALIMDOR', 'OPEN_WORLD', NULL, NULL),
+(43, 'Dustwallow Marsh', 'Dustwallow Marsh is a humid, swampy region on the eastern coast of Kalimdor, notable for containing Theramore Isle — the Alliance''s major stronghold in Kalimdor, founded and led by the sorceress Jaina Proudmoore. The marsh is filled with hostile creatures: black dragonkin, swamp creatures, murlocs, and hostile ogres. Brackenwall Village serves as the Horde quest hub. Key storylines involve investigating the mysterious burning of a Horde village, dealing with the black dragonflight presence in Onyxia''s Lair (accessible from this zone), and the political tensions between Theramore and the Horde. The zone contains the entrance to Onyxia''s Lair, one of the first raid encounters available to level 60 players.', 35, 45, 'KALIMDOR', 'OPEN_WORLD', 1, NULL),
+(44, 'Hillsbrad Foothills', 'Hillsbrad Foothills is a fertile farming region in the northern Eastern Kingdoms, famous in WoW history as one of the most intense world PvP zones. The conflict between the Alliance town of Southshore and the Horde outpost of Tarren Mill has become legendary, with spontaneous large-scale battles erupting regularly on PvP servers. The zone features rolling green hills, farms, and the Alterac Mountains looming to the north. Quest content involves the Forsaken''s efforts to develop the New Plague at the Sludge Fields, the defense of Southshore against Syndicate rogues and undead incursions, and the conflict over Durnholde Keep — the former internment camp where Thrall was raised as a slave. The zone offers a compelling blend of lore and PvP excitement.', 20, 30, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL),
+(45, 'Alterac Mountains', 'Alterac Mountains is a snowy, mountainous zone in the northern Eastern Kingdoms, home to the ruins of the fallen Kingdom of Alterac — a human nation that betrayed the Alliance during the Second War. The zone features hostile Syndicate operatives (remnants of the Alterac nobility turned crime lords), yeti, ogres, and mountain lions. Key locations include the Alterac Ruins, Strahnbrad (an abandoned town), and Chillwind Point which connects to the Western Plaguelands. The zone also serves as the setting for the Alterac Valley battleground — an epic 40-versus-40 PvP battle that can last for hours as players fight for territory, summon powerful NPCs, and attempt to defeat the enemy faction''s general.', 30, 40, 'EASTERN_KINGDOMS', 'OPEN_WORLD', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- Contested / Neutral zones
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (11, 'Ashenvale', 'An ancient forest in northern Kalimdor, sacred to the Night Elves but fiercely contested by the Horde. Its ancient trees hide dark secrets.', 18, 30, 'KALIMDOR', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/a/a4/Ashenvale.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (12, 'Stranglethorn Vale', 'A dense jungle filled with trolls, pirates, and wild beasts. The Gurubashi trolls are rebuilding their empire in the ancient city of Zul''Gurub.', 30, 45, 'EASTERN_KINGDOMS', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/7/71/Stranglethorn_Vale.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (13, 'Tanaris', 'A vast desert in southern Kalimdor, home to the port city of Gadgetzan. The Caverns of Time lie hidden beneath its sands.', 40, 50, 'KALIMDOR', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/c/c0/Tanaris.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (14, 'Un''Goro Crater', 'A lush, primordial crater teeming with dinosaurs and exotic plant life. A land untouched by time, rich in rare crystals and mysterious power pylons.', 48, 55, 'KALIMDOR', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/2/27/UnGoro_Crater.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (15, 'Winterspring', 'A frozen valley nestled in the mountains of northern Kalimdor. Home to frostsaber cats, blue dragonspawn, and the goblin town of Everlook.', 53, 60, 'KALIMDOR', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/3/35/Winterspring.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (16, 'Silithus', 'A desolate desert in southwestern Kalimdor, swarming with the insectoid Silithid. The gates of Ahn''Qiraj loom in the south.', 55, 60, 'KALIMDOR', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/7/7c/Silithus.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (17, 'Eastern Plaguelands', 'The heart of the Scourge''s domain in Lordaeron. The land is blighted and crawling with undead, centered around the dread citadel of Stratholme.', 53, 60, 'EASTERN_KINGDOMS', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/4/4e/Eastern_Plaguelands.jpg');
-INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES (18, 'Western Plaguelands', 'Lands devastated by the Scourge in northern Eastern Kingdoms. The Argent Dawn fights to reclaim this blighted territory from the undead.', 51, 58, 'EASTERN_KINGDOMS', 'CONTESTED', NULL, 'https://static.wikia.nocookie.net/wowpedia/images/2/24/Western_Plaguelands.jpg');
+-- ==================== MAZMORRAS ====================
+INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES
+(50, 'Ragefire Chasm', 'Ragefire Chasm is the first dungeon available to Horde players, located beneath the city of Orgrimmar itself. The volcanic caverns are infested by Burning Blade cultists — orcs who secretly serve the Burning Legion — along with their summoned demons and fire elementals. Thrall has ordered the cultists eliminated before they can threaten the capital from within. The dungeon is short and straightforward, making it ideal for new players learning group dynamics. Four bosses await: Oggleflint, Taragaman the Hungerer, Jergosh the Invoker, and Bazzalan.', 13, 18, 'KALIMDOR', 'DUNGEON', 2, NULL),
+(51, 'Wailing Caverns', 'Wailing Caverns is a sprawling cavern network hidden in The Barrens, corrupted by druids of the Fang who fell under the influence of the Emerald Nightmare. What was once a place of natural beauty has become a labyrinth of twisting passages filled with corrupted serpents, raptors, and mutated plant life. The dungeon is notorious for its confusing layout and length, with six bosses spread across the winding caves. The Disciple of Naralex awaits at the entrance, seeking help to awaken his master from the nightmare. Completing the escort event summons the final boss, Mutanus the Devourer.', 15, 25, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(52, 'The Deadmines', 'The Deadmines is the iconic first Alliance dungeon, located beneath the town of Moonbrook in Westfall. This underground fortress was secretly built by Edwin VanCleef and the Defias Brotherhood — stonemasons who rebuilt Stormwind but were never paid by the corrupt nobles. The dungeon progresses from natural caverns through a goblin-designed foundry to the climactic pirate ship hidden in an underground harbor. Players fight through ogre guards, goblin engineers, and Defias soldiers before confronting VanCleef himself on his ship. The Deadmines features some of the most beloved loot in the game, including the Cruel Barb, Blackened Defias Armor, and the Cookie''s Stirring Rod.', 17, 26, 'EASTERN_KINGDOMS', 'DUNGEON', 1, NULL),
+(53, 'Shadowfang Keep', 'Shadowfang Keep is a haunted castle in Silverpine Forest, home to the mad Archmage Arugal and his worgen creations. During the Scourge invasion of Lordaeron, Arugal — a mage of Dalaran — summoned the worgen from another dimension to fight the undead, but the feral beasts proved uncontrollable and overran the keep. Arugal, driven insane, now treats the worgen as his children. The dungeon features a gothic atmosphere with haunted corridors, spectral enemies, and a dramatic ascent through the keep to confront Arugal in his tower. Prized drops include the Shadowfang sword (one of the most valuable twink items) and the Robes of Arugal.', 22, 30, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(54, 'The Stockade', 'The Stockade is a prison facility located within the walls of Stormwind City, the only dungeon situated entirely inside a capital city. A riot has broken out among the inmates, and the most dangerous prisoners — including Defias agents and Dark Iron dwarf spies — have seized control. The dungeon is compact and straightforward, making it a quick run for Alliance players. Though the loot is modest, the quests provide good experience and reputation rewards. The Stockade is Alliance-only due to its location, and Horde players cannot access it without fighting through the entire city.', 22, 30, 'EASTERN_KINGDOMS', 'DUNGEON', 1, NULL),
+(55, 'Blackfathom Deeps', 'Blackfathom Deeps is a partially submerged temple complex in northwestern Ashenvale, once a sacred Night Elf shrine to the moon goddess Elune. The temple has been taken over by the Twilight''s Hammer cult, naga, and corrupted sea creatures who worship the Old Gods in the darkness below. The dungeon features underwater swimming sections, ancient Night Elf architecture, and a progression from naga-infested caverns to the corrupted inner sanctum where the hydra Aku''mai dwells. Key bosses include Lady Sarevess, Twilight Lord Kelris, and the massive Aku''mai, a pet of the Old Gods.', 24, 32, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(56, 'Gnomeregan', 'Gnomeregan is the fallen capital city of the Gnomes, a technological marvel that was irradiated in a catastrophic attempt to stop a trogg invasion. The betrayer Mekgineer Thermaplugg convinced High Tinker Mekkatorque to irradiate the city, but instead of killing the troggs, it created irradiated gnome lepers and forced the evacuation. Now this vast underground city is overrun by troggs, leper gnomes, and malfunctioning mechanical guardians. The dungeon is notable for its engineering-themed loot, mechanical enemies, and the complexity of its layout. The final confrontation with Thermaplugg in his control room features exploding bomb dispensers.', 29, 38, 'EASTERN_KINGDOMS', 'DUNGEON', 1, NULL),
+(57, 'Scarlet Monastery', 'Scarlet Monastery is a four-wing dungeon complex in Tirisfal Glades, serving as the headquarters of the fanatical Scarlet Crusade — humans who are so obsessed with purging the undead that they attack anyone they suspect of corruption. The wings are the Graveyard (lowest level), Library, Armory, and Cathedral, each with distinct bosses and loot tables. The Monastery houses some of the most iconic encounters in Vanilla WoW, from Herod''s devastating Whirlwind in the Armory to the dramatic Mograine-Whitemane resurrection event in the Cathedral. The dungeon is equally popular with both factions and features some of the best leveling gear in the game.', 26, 45, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(58, 'Razorfen Kraul', 'Razorfen Kraul is the thorny, labyrinthine lair of the Razorfen quilboar tribe, located in the southern Barrens. The quilboar — pig-like humanoids — have built their settlement within a massive network of thorny vines that grew from the blood of the demigod Agamaggan. The dungeon features winding thorn-covered passages, quilboar shaman and warriors, and culminates in a confrontation with the matriarch Charlga Razorflank. The dungeon offers a unique aesthetic with its organic thorn architecture and includes quests involving stopping the quilboar expansion.', 30, 40, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(59, 'Razorfen Downs', 'Razorfen Downs is the quilboar burial grounds located south of Razorfen Kraul, now overrun by the Scourge. The lich Amnennar the Coldbringer was sent by the Plague to corrupt the quilboar dead and raise them as undead servants. The dungeon is darker and more dangerous than Razorfen Kraul, featuring undead quilboar, skeletal warriors, and necromantic rituals. Notable encounters include the summoned boss Tuten''kash, the fire-wielding skeleton Mordresh Fire Eye, and the final confrontation with Amnennar himself in a frozen throne room.', 37, 46, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(60, 'Uldaman', 'Uldaman is an ancient Titan research facility hidden beneath the Badlands, where dwarves excavating for archaeological treasures have accidentally awakened its stone guardians. The dungeon is a treasure trove of Titan lore, featuring massive stone halls, trogg-infested caverns, and Dark Iron dwarf excavation teams. The climactic encounter with Archaedas — a colossal Titan stone guardian — involves waves of awakening stone constructs. The dungeon also contains the Discs of Norgannon, which reveal secrets about the origins of the dwarven race and their connection to the Titans. Uldaman is essential for understanding WoW''s deeper lore.', 42, 52, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(61, 'Zul''Farrak', 'Zul''Farrak is an ancient troll city in the Tanaris desert, home to the hostile Sandfury trolls who guard their sacred treasures with fanatical devotion. The dungeon is set entirely outdoors in a sun-baked temple complex and features one of the most beloved encounters in Vanilla WoW — the Stairs Event, where players must defend a group of rescued prisoners atop a ziggurat against waves of troll attackers. Other notable encounters include Antu''sul and his basilisks, the sacred pool of Gahz''rilla (a hydra boss summoned with a special mallet), and Chief Ukorz Sandscalp. The zone''s open-air design makes it unique among WoW dungeons.', 44, 54, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(62, 'Maraudon', 'Maraudon is a sacred cave in Desolace, corrupted by the elemental Princess Theradras — daughter of Therazane the Stonemother. According to legend, the demigod Zaetar, son of Cenarius, fell in love with Theradras, and their union produced the centaur race. When the centaur killed Zaetar, Theradras kept his spirit imprisoned in the depths of the cave. The dungeon features two distinct entrance paths (orange and purple crystals) that converge on the inner sanctum. The environment transitions from corrupted caverns to a stunning underground paradise where Theradras resides. Notable loot includes the Blade of Eternal Darkness.', 46, 55, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(63, 'Sunken Temple', 'The Temple of Atal''Hakkar, commonly known as the Sunken Temple, is a partially submerged troll temple in the Swamp of Sorrows. Built by the Atal''ai troll priests who worship Hakkar the Soulflayer, the blood god, the temple was sunk beneath the swamp by the Green Dragonflight to prevent Hakkar''s summoning. Despite this, the cult persists in the ruins below, continuing their dark rituals. The dungeon features a complex multi-level layout with a circular balcony puzzle, dragon mini-bosses, and the final encounter with the Shade of Eranikus. The temple is important lore-wise, connecting to the later Zul''Gurub raid.', 50, 56, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(64, 'Blackrock Depths', 'Blackrock Depths (BRD) is the largest dungeon in Vanilla WoW, an enormous Dark Iron dwarf city carved deep within Blackrock Mountain. Ruled by Emperor Dagran Thaurissan, the Dark Irons serve the fire elemental lord Ragnaros against their will. The dungeon contains over a dozen bosses, a bar (the Grim Guzzler where players can start a bar fight), a prison, a arena, and even a church where the Emperor holds Princess Moira Bronzebeard captive. BRD is essential for endgame progression, as it drops the key to the Molten Core and provides attunement quests. A full clear can take 3-4 hours, though experienced groups often do selective runs targeting specific bosses.', 52, 60, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(65, 'Lower Blackrock Spire', 'Lower Blackrock Spire (LBRS) is the lower portion of the Blackrock Spire dungeon complex within Blackrock Mountain. Controlled by Blackrock orcs, Smolderthorn trolls, ogres, and spiders, LBRS serves as a critical stepping stone toward endgame content. The dungeon is designed for 5-10 players and features a labyrinthine layout with multiple paths through orc barracks, spider caverns, and troll chambers. Key encounters include Highlord Omokk, War Master Voone, Mother Smolderweb, and the final boss Overlord Wyrmthalak, a dragonspawn commander of Nefarian. LBRS also contains the UBRS key quest and Fire Resistance gear important for Molten Core.', 55, 60, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(66, 'Upper Blackrock Spire', 'Upper Blackrock Spire (UBRS) is a 10-player raid dungeon (often considered the bridge between 5-man content and 40-man raids) in the upper reaches of Blackrock Spire. This section is controlled by the self-proclaimed Warchief Rend Blackhand and his black dragonspawn allies serving Nefarian. The dungeon features dramatic encounters including the Pyroguard Emberseer (a fire elemental freed from imprisonment), Rend Blackhand riding his dragon mount Gyth, the massive fire beast known simply as The Beast, and the final boss General Drakkisath. Drakkisath drops the key to Nefarian''s lair (Blackwing Lair), making UBRS essential for raid progression.', 58, 60, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(67, 'Dire Maul', 'Dire Maul is a three-wing dungeon complex set in the ancient Highborne city of Eldre''Thalas in Feralas. Each wing offers a distinct experience: East (overrun by corrupted satyrs and plant life), West (containing the imprisoned demon Immol''thar and Prince Tortheldrin), and North (occupied by Gordok ogres, with the famous Tribute Run where players bypass bosses to claim extra loot from the final chest). Dire Maul was added in patch 1.3 and features some of the best pre-raid gear in the game. The dungeon is also home to class-specific quests for epic items and the Dire Maul book turn-in for valuable enchants.', 56, 60, 'KALIMDOR', 'DUNGEON', NULL, NULL),
+(68, 'Stratholme', 'Stratholme is the ruined city where Prince Arthas first turned to darkness, ordering the purge of its plague-infected citizens before taking up the cursed runeblade Frostmourne. Now divided between the Scarlet Crusade (Living side) and the Scourge (Undead side), the dungeon offers two distinct wings. The Living side features Crusade zealots and culminates in the revelation that the Grand Crusader is actually the dreadlord Balnazzar in disguise. The Undead side is a timed run to rescue kidnapped citizens and slay Baron Rivendare before he raises them as undead, with the ultra-rare Deathcharger''s Reins mount as a coveted drop (0.8% chance). Stratholme is essential for Argent Dawn reputation and endgame gear.', 58, 60, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL),
+(69, 'Scholomance', 'Scholomance is a school of necromancy located within the crypt beneath the Barov family estate on Caer Darrow island in the Western Plaguelands. Once the ancestral home of the noble Barov family, the estate was converted into a training ground for Scourge necromancers and agents. The dungeon features classroom-themed encounters where the headmaster Darkmaster Gandling teleports players into rooms full of undead students for exams. Key encounters include the vampire Kirtonos the Herald (summoned via a blood ritual), the illusionist Jandice Barov, the bone golem Rattlegore, and the lich Ras Frostwhisper. Scholomance is important for Argent Dawn reputation and drops several pre-raid Best in Slot items.', 58, 60, 'EASTERN_KINGDOMS', 'DUNGEON', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- ==================== NPCS (25 NPCs) ====================
--- Alliance NPCs
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (1, 'Marshal Dughan', 'Marshal of Goldshire', 'The marshal of Goldshire, defender of Elwynn Forest and leader of the local militia.', 'QUEST_GIVER', true, 15, 1, 1, 'https://static.wikia.nocookie.net/wowpedia/images/1/1e/Marshal_Dughan.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (2, 'Gryan Stoutmantle', 'Captain of the People''s Militia', 'Leader of the People''s Militia in Westfall, fighting against the Defias Brotherhood.', 'QUEST_GIVER', true, 30, 2, 1, 'https://static.wikia.nocookie.net/wowpedia/images/e/e8/Gryan_Stoutmantle.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (3, 'Hemet Nesingwary', 'Big Game Hunter', 'A famous dwarven hunter in Stranglethorn Vale who challenges adventurers to hunt exotic beasts.', 'QUEST_GIVER', true, 45, 12, 1, 'https://static.wikia.nocookie.net/wowpedia/images/5/57/Hemet_Nesingwary.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (4, 'Innkeeper Farley', 'Innkeeper', 'The innkeeper at the Lion''s Pride Inn in Goldshire, Elwynn Forest.', 'INNKEEPER', true, 10, 1, 1, 'https://static.wikia.nocookie.net/wowpedia/images/3/37/Innkeeper_Farley.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (5, 'Dungar Longdrink', 'Gryphon Master', 'The gryphon master at Stormwind City who provides flight paths to Alliance adventurers.', 'FLIGHT_MASTER', false, 55, 5, 1, 'https://static.wikia.nocookie.net/wowpedia/images/f/f0/Dungar_Longdrink.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (6, 'Woo Ping', 'Weapon Master', 'Weapon master trainer in Stormwind City who teaches proficiency with various weapon types.', 'TRAINER', false, 60, 5, 1, 'https://static.wikia.nocookie.net/wowpedia/images/a/a9/Woo_Ping.jpg');
+-- ==================== RAIDS ====================
+INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES
+(70, 'Molten Core', 'Molten Core is the first 40-man raid instance in World of Warcraft, located deep beneath Blackrock Mountain in the fiery domain of Ragnaros the Firelord. This elemental plane of fire houses 10 bosses, including the iconic Ragnaros himself, who emerges from a pool of lava for one of the most memorable encounters in MMO history. Players must assemble teams of 40 adventurers in fire resistance gear to battle through molten giants, core hounds, fire elementals, and the Dark Iron dwarf servants of the Firelord. Molten Core drops Tier 1 armor sets, Bindings of the Windseeker (for the legendary Thunderfury), and the Eye of Sulfuras (for Sulfuras, Hand of Ragnaros). The raid defined an era of WoW raiding.', 60, 60, 'EASTERN_KINGDOMS', 'RAID', NULL, NULL),
+(71, 'Onyxia''s Lair', 'Onyxia''s Lair is a single-boss 40-man raid in Dustwallow Marsh, home to the black dragon Onyxia — daughter of Deathwing and one of the most cunning creatures in Azeroth. Before entering her lair, players must complete an elaborate attunement chain that reveals Onyxia has been manipulating Stormwind politics disguised as Lady Katrana Prestor. The three-phase encounter is legendary: Phase 1 is a tank-and-spank, Phase 2 has Onyxia take flight and breathe fire across the lair while whelps pour from caves, and Phase 3 is a desperate burn as Onyxia fears and breathes fire in random directions. Head of Onyxia is turned in for a server-wide buff, and her lair drops Tier 2 helms.', 60, 60, 'KALIMDOR', 'RAID', NULL, NULL),
+(72, 'Blackwing Lair', 'Blackwing Lair (BWL) is a 40-man raid atop Blackrock Mountain, the fortress of Nefarian — son of Deathwing and lord of the Black Dragonflight. This 8-boss raid represents a significant step up in difficulty from Molten Core, featuring complex mechanics and the iconic class-call system where Nefarian uses each class''s abilities against them. Notable encounters include Razorgore the Untamed (a mind-control mechanic), Vaelastrasz the Corrupt (a DPS race with a powerful buff), Chromaggus (a two-headed dragon with randomized breath attacks), and Nefarian himself in a two-phase encounter. BWL drops Tier 2 armor sets and some of the most powerful weapons in the game.', 60, 60, 'EASTERN_KINGDOMS', 'RAID', NULL, NULL),
+(73, 'Zul''Gurub', 'Zul''Gurub is a 20-man raid set in the ancient troll city in Stranglethorn Vale, where the Atal''ai priests seek to summon the blood god Hakkar the Soulflayer. The raid features a unique high priest system where optional bosses empower Hakkar if not killed first. Each high priest channels a different animal aspect (bat, snake, spider, panther, tiger), and killing them before Hakkar weakens him significantly. The raid introduced the reputation-based enchant system and drops some of the best catch-up gear in the game. Zul''Gurub is famous for the Corrupted Blood incident — an unintentional plague that spread to capital cities, studied by epidemiologists as a model for real-world pandemics.', 60, 60, 'EASTERN_KINGDOMS', 'RAID', NULL, NULL),
+(74, 'Ruins of Ahn''Qiraj', 'Ruins of Ahn''Qiraj (AQ20) is a 20-man outdoor raid in Silithus, set among the ancient Qiraji ruins outside the gates of Ahn''Qiraj. The raid features six bosses drawn from the insectoid Qiraji and their Silithid servants, with encounters that require coordination against swarming adds and environmental hazards. AQ20 was unlocked as part of the Gates of Ahn''Qiraj world event, requiring a massive server-wide war effort to gather supplies and a champion to ring the Scarab Gong. The raid drops nature resistance gear crucial for Temple of Ahn''Qiraj and class-specific books that upgrade abilities. It serves as excellent preparation for the more difficult 40-man Temple of Ahn''Qiraj.', 60, 60, 'KALIMDOR', 'RAID', NULL, NULL),
+(75, 'Temple of Ahn''Qiraj', 'Temple of Ahn''Qiraj (AQ40) is a 40-man raid and one of the most challenging encounters in Vanilla WoW, set within the inner sanctum of the Qiraji empire in Silithus. The raid features nine bosses including the Twin Emperors (requiring a unique tank-swap mechanic), Viscidus (requiring frost damage to shatter), and the final boss C''Thun — an Old God whose death gaze and tentacle phase pushed raid coordination to its limits. AQ40 drops Tier 2.5 armor sets and some of the most powerful weapons before Naxxramas. The opening of the Gates event and the Scepter of the Shifting Sands quest chain remain among the most legendary events in WoW history.', 60, 60, 'KALIMDOR', 'RAID', NULL, NULL),
+(76, 'Naxxramas', 'Naxxramas is the floating necropolis of the arch-lich Kel''Thuzad, hovering above the Eastern Plaguelands. As the final raid of Vanilla WoW, Naxxramas represents the ultimate challenge: four themed wings (Arachnid, Plague, Military, and Construct), each containing multiple bosses with punishing mechanics. After clearing all four wings, players face Sapphiron (an undead frost wyrm) and finally Kel''Thuzad himself. The raid drops Tier 3 armor sets, the most powerful gear in Vanilla, and requires extensive consumable preparation and class coordination. Due to its extreme difficulty, fewer than 1% of Vanilla players ever cleared Naxxramas, making it the most exclusive content in the game''s history.', 60, 60, 'EASTERN_KINGDOMS', 'RAID', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- Horde NPCs
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (7, 'Thrall', 'Warchief of the Horde', 'Warchief of the Horde and leader of the Orcs. A powerful shaman who freed his people from demonic corruption.', 'QUEST_GIVER', false, 63, 10, 2, 'https://static.wikia.nocookie.net/wowpedia/images/2/2a/Thrall.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (8, 'Rexxar', 'Champion of the Horde', 'A legendary half-ogre beastmaster who wanders the wilds with his animal companions.', 'QUEST_GIVER', true, 60, 7, 2, 'https://static.wikia.nocookie.net/wowpedia/images/f/fe/Rexxar.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (9, 'Orgrimmar Grunt', 'City Guard', 'Guards of Orgrimmar, loyal to the Warchief. They patrol the streets and maintain order.', 'HUMANOID', false, 55, 10, 2, 'https://static.wikia.nocookie.net/wowpedia/images/8/82/Orgrimmar_Grunt.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (10, 'Vendor Turen', 'General Goods Vendor', 'A general goods vendor in Orgrimmar selling supplies to Horde adventurers.', 'VENDOR', false, 30, 10, 2, 'https://static.wikia.nocookie.net/wowpedia/images/4/4a/Vendor_Turen.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (11, 'Drek''Thar', 'Farseer of the Frostwolf Clan', 'The blind but powerful shaman elder of the Frostwolf Clan, a mentor to Thrall.', 'TRAINER', false, 62, 10, 2, 'https://static.wikia.nocookie.net/wowpedia/images/d/dd/DrekThar.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (12, 'Doras', 'Wind Rider Master', 'The wind rider master in Orgrimmar who provides flight paths for Horde adventurers.', 'FLIGHT_MASTER', false, 55, 10, 2, 'https://static.wikia.nocookie.net/wowpedia/images/c/c9/Doras_WRM.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (13, 'Sergra Darkthorn', 'Quest Giver', 'A quest giver at the Crossroads in the Barrens, sending adventurers to tame the wild savanna.', 'QUEST_GIVER', true, 25, 7, 2, 'https://static.wikia.nocookie.net/wowpedia/images/9/99/Sergra_Darkthorn.jpg');
+-- ==================== BATTLEGROUNDS ====================
+INSERT INTO zones (id, name, description, min_level, max_level, continent, zone_type, faction_id, image_url) VALUES
+(80, 'Warsong Gulch', 'Warsong Gulch is a 10v10 Capture the Flag battleground set in the forests of Ashenvale, representing the conflict between the Night Elf Silverwing Sentinels and the Horde''s Warsong Outriders. Teams must capture the enemy faction''s flag from their base and return it to their own flag to score, while preventing the enemy from doing the same. The first team to capture three flags wins. Warsong Gulch is fast-paced and favors classes with speed abilities (druids in Travel Form, shamans with Ghost Wolf) and flag carrier protection. It is available in level brackets starting at 10-19, making it the first PvP battleground most players experience.', 10, 60, 'KALIMDOR', 'BATTLEGROUND', NULL, NULL),
+(81, 'Arathi Basin', 'Arathi Basin is a 15v15 resource control battleground set in the Arathi Highlands, where the League of Arathor (Alliance) and the Defilers (Horde) fight over five strategic resource nodes: Stables, Blacksmith, Lumber Mill, Mine, and Farm. Teams must capture and hold nodes to accumulate resources, with the first team to reach 2000 resources winning. The more nodes a team controls, the faster resources accumulate. Arathi Basin rewards strategic thinking and map awareness, as teams must decide whether to defend held nodes or push for new captures. The battleground is available from level 20.', 20, 60, 'EASTERN_KINGDOMS', 'BATTLEGROUND', NULL, NULL),
+(82, 'Alterac Valley', 'Alterac Valley is the grandest PvP battleground in Vanilla WoW — an epic 40v40 battle in the snowy Alterac Mountains between the Stormpike Guard (Alliance) and the Frostwolf Clan (Horde). This massive battleground features multiple objectives: capturing graveyards, destroying enemy towers, rescuing friendly NPCs, completing quests for powerful summoned allies (the Ice Lord Lokholar and Archdruid Ivus), mining resources, and ultimately defeating the enemy faction''s general (Drek''Thar for Horde, Vanndar Stormpike for Alliance). Battles can last from 30 minutes to several hours, with the ebb and flow of combat creating truly epic experiences. Alterac Valley is available from level 51.', 51, 60, 'EASTERN_KINGDOMS', 'BATTLEGROUND', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- Neutral NPCs
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (14, 'Gazlowe', 'Chief Engineer of Ratchet', 'Chief engineer and leader of Ratchet in the Barrens. A shrewd goblin businessman.', 'QUEST_GIVER', true, 35, 7, 3, 'https://static.wikia.nocookie.net/wowpedia/images/5/5a/Gazlowe.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (15, 'Auctioneer Beardo', 'Auctioneer', 'Goblin auctioneer at Gadgetzan in Tanaris. Open for business with both factions.', 'VENDOR', false, 40, 13, 3, 'https://static.wikia.nocookie.net/wowpedia/images/7/71/Auctioneer_Beardo.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (16, 'Chromie', 'Bronze Dragon', 'A bronze dragon disguised as a gnome, guardian of the timeways. Found investigating the plague in Andorhal.', 'QUEST_GIVER', true, 55, 18, 4, 'https://static.wikia.nocookie.net/wowpedia/images/b/b3/Chromie.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (17, 'Mux Manascrambler', 'Goblin Engineer', 'A goblin engineer in Gadgetzan who offers engineering supplies and training.', 'TRAINER', false, 45, 13, 3, 'https://static.wikia.nocookie.net/wowpedia/images/e/e0/Mux_Manascrambler.jpg');
+-- ==================== RAZAS ====================
+INSERT INTO races (id, name, description, faction_id) VALUES
+(1, 'Human', 'Humans are one of the youngest but most resilient races in Azeroth. Despite their relatively short lifespans, they have built some of the greatest kingdoms the world has ever known. The Kingdom of Stormwind, rebuilt after its destruction in the First War, stands as a testament to human determination and ingenuity. Led by the young King Anduin Wrynn (with Highlord Bolvar Fordragon as regent), humans are the diplomatic backbone of the Alliance. Their starting zone is Elwynn Forest, a peaceful woodland south of Stormwind City where new adventurers face threats from kobolds, gnolls led by the infamous Hogger, and the shadowy Defias Brotherhood. Human racial abilities include Perception (increased stealth detection), The Human Spirit (+5% bonus spirit), Diplomacy (10% faster reputation gains), Sword and Mace Specialization (+5 skill), and Every Man for Himself (PvP trinket effect). Humans can be Warriors, Paladins, Rogues, Priests, Mages, and Warlocks, making them one of the most versatile races in the game.', 1),
+(2, 'Dwarf', 'Dwarves are a stout, proud race of miners, blacksmiths, and warriors who have called the frozen peaks of Khaz Modan home for thousands of years. Their magnificent capital of Ironforge is carved deep into the heart of the mountain, centered around the Great Forge — an enormous pit of molten metal that has burned since the city''s founding. Led by King Magni Bronzebeard, the dwarves have recently become fascinated with archaeology and their Titan origins, sending expeditions across Azeroth to uncover their ancient heritage. Their starting zone is Dun Morogh, a snowy mountain region where young dwarves battle troggs, frostmane trolls, and the harsh winter elements. Dwarf racial abilities include Stoneform (removes poisons, diseases, and bleeds while increasing armor by 10%), Gun Specialization (+5 gun skill), Frost Resistance (+10 frost resistance), Find Treasure (tracking treasure on the minimap), and their natural hardiness. Dwarves can be Warriors, Paladins, Hunters, Rogues, and Priests.', 1),
+(3, 'Night Elf', 'Night Elves are an ancient and reclusive race with a history stretching back over ten thousand years. Once immortal guardians of the World Tree Nordrassil, they sacrificed their eternal life during the Battle of Mount Hyjal to destroy the demon lord Archimonde. Now dwelling atop the new World Tree Teldrassil, they are led by High Priestess Tyrande Whisperwind and Archdruid Malfurion Stormrage (though Malfurion sleeps in the Emerald Dream during Vanilla). Their starting zone is Teldrassil itself, a vast tree rising from the ocean off Kalimdor''s northwest coast, where young elves confront the corruption seeping into their sacred home. Night Elf racial abilities include Shadowmeld (stealth while standing still — the only race with a stealth racial), Quickness (+1% dodge chance), Wisp Spirit (faster ghost movement after death), and Nature Resistance (+10 nature resistance). Night Elves can be Warriors, Hunters, Rogues, Priests, and Druids, and are the only Alliance race that can be Druids.', 1),
+(4, 'Gnome', 'Gnomes are a diminutive but brilliantly inventive race of tinkers, engineers, and scholars whose insatiable curiosity drives them to push the boundaries of science and magic. Tragically, their beloved capital of Gnomeregan — a technological marvel built deep underground in Dun Morogh — was lost when a trogg invasion forced the disastrous decision to irradiate the city, a plan that backfired catastrophically thanks to the treachery of Mekgineer Thermaplugg. Now refugees living in Ironforge alongside their dwarven allies, the gnomes are led by High Tinker Gelbin Mekkatorque, who dreams of one day reclaiming their homeland. Gnome starting zone is shared with dwarves in Dun Morogh, where they battle troggs and test experimental technology. Gnome racial abilities include Escape Artist (breaks root and snare effects), Expansive Mind (+5% total intellect), Arcane Resistance (+10 arcane resistance), and Engineering Specialization (+15 engineering skill). Gnomes can be Warriors, Rogues, Mages, and Warlocks, and are popular choices for caster classes due to their intellect bonus.', 1),
+(5, 'Orc', 'Orcs are a proud, fierce warrior race originally from the world of Draenor. Deceived and corrupted by the Burning Legion, they invaded Azeroth through the Dark Portal and waged devastating wars against the Alliance. After years of internment in camps following their defeat, the young shaman Thrall rose to liberate his people and founded the New Horde, leading them across the sea to the harsh land of Durotar in Kalimdor. Under Thrall''s wise leadership from the fortress city of Orgrimmar, the orcs have reconnected with their shamanic heritage and seek to build a new future of honor and strength. Their starting zone is Durotar and the Valley of Trials, where young orcs face scorpids, lazy peons, and Burning Blade cultists. Orc racial abilities include Blood Fury (increases melee attack power), Hardiness (25% resistance to stun effects), Command (+5% pet melee damage), and Axe Specialization (+5 axe skill). Orcs can be Warriors, Hunters, Rogues, Shamans, and Warlocks.', 2),
+(6, 'Undead', 'The Forsaken are undead humans who broke free from the Lich King''s telepathic domination and now struggle to find their place in a world that reviles them. Led by the enigmatic Banshee Queen Sylvanas Windrunner — a former High Elf ranger general who was slain and raised by Arthas — the Forsaken have claimed the ruins of the former human capital of Lordaeron as their own, building the Undercity in the catacombs beneath the shattered palace. Their alliance with the Horde is one of convenience rather than loyalty, as the Forsaken pursue their own dark agenda. The starting zone is Tirisfal Glades, a once-beautiful land now shrouded in perpetual gloom, where new Forsaken confront the Scourge remnants and the fanatical Scarlet Crusade. Undead racial abilities include Will of the Forsaken (breaks Fear, Sleep, and Charm effects), Cannibalize (consume corpses to restore health), Underwater Breathing (300% longer breath), and Shadow Resistance (+10 shadow resistance). Undead can be Warriors, Rogues, Priests, Mages, and Warlocks.', 2),
+(7, 'Tauren', 'Tauren are a noble and spiritual race of towering, bovine humanoids who have roamed the plains of Kalimdor for generations. Deeply connected to the Earth Mother and the spirits of nature, the tauren are natural druids and shamans who revere the balance of the natural world above all else. Led by the wise Cairne Bloodhoof, they built their capital of Thunder Bluff atop the great mesas of Mulgore after Thrall and the Horde helped them drive back the marauding centaur who had plagued their tribes for years. Their starting zone is Mulgore, a vast and beautiful grassland where young tauren learn the ways of their people while battling aggressive plainstriders, swoops, and the hostile Bristleback quilboar. Tauren racial abilities include War Stomp (AoE stun in melee range), Endurance (+5% total health), Cultivation (+15 herbalism skill), and Nature Resistance (+10 nature resistance). Tauren can be Warriors, Hunters, Shamans, and Druids, and are the only Horde race that can be Druids. Their immense size makes them visually imposing on any battlefield.', 2),
+(8, 'Troll', 'The Darkspear Trolls are a tribe of jungle trolls who were rescued from destruction by Thrall and the orcs during their voyage to Kalimdor. Grateful for their salvation, the Darkspear pledged eternal loyalty to the Horde and now live alongside the orcs in Durotar. Led by the cunning Vol''jin, son of the legendary witch doctor Sen''jin who sacrificed himself to save his people from the sea witch, the Darkspear are fierce warriors and powerful practitioners of voodoo magic. Their starting zone is shared with orcs in Durotar and the Echo Isles, tropical islands off the coast where they battle hostile wildlife and naga invaders. Troll racial abilities include Berserking (increases attack and casting speed based on missing health), Regeneration (10% health regeneration in combat, much more out of combat), Beast Slaying (+5% damage to beasts), Throwing and Bow Specialization (+5 skill), and their iconic lanky physique. Trolls can be Warriors, Hunters, Rogues, Priests, Shamans, and Mages, making them the most versatile Horde race with six available classes.', 2)
+ON CONFLICT (id) DO NOTHING;
 
--- Hostile / Boss NPCs (no faction)
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (18, 'Hogger', 'Gnoll Chieftain', 'The fearsome gnoll chieftain of Elwynn Forest. Terror of low-level adventurers everywhere.', 'BOSS', false, 11, 1, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/7/73/Hogger.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (19, 'Edwin VanCleef', 'Defias Kingpin', 'Leader of the Defias Brotherhood. Once a stonemason betrayed by the nobles of Stormwind, now a ruthless criminal mastermind.', 'BOSS', false, 21, 2, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/5/53/Edwin_VanCleef.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (20, 'Onyxia', 'Broodmother of the Black Dragonflight', 'Daughter of Deathwing, she secretly manipulated Stormwind politics disguised as Lady Prestor.', 'DRAGON', false, 63, 12, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/a/a4/Onyxia.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (21, 'Ragnaros', 'The Firelord', 'The elemental lord of fire, summoned by the Dark Iron dwarves. Resides in the molten depths of Blackrock Mountain.', 'ELEMENTAL', false, 63, 17, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/4/4e/Ragnaros.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (22, 'Lady Anacondra', 'Corrupted Druid', 'A druid corrupted by the Emerald Nightmare, now a boss in the Wailing Caverns.', 'BOSS', false, 20, 7, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/0/0b/Lady_Anacondra.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (23, 'Mor''Ladim', 'Undead Knight', 'A cursed undead knight who wanders the graveyard of Duskwood, once a hero of the Alliance.', 'UNDEAD', false, 28, 3, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/d/d4/MorLadim.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (24, 'Stitches', 'Abomination', 'A terrifying undead abomination that patrols the roads of Duskwood, feared by all travelers.', 'UNDEAD', false, 35, 3, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/a/a2/Stitches.jpg');
-INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES (25, 'King Bangalash', 'White Tiger', 'A rare and powerful white tiger prowling the jungles of Stranglethorn Vale. Coveted by hunters.', 'BEAST', false, 43, 12, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/b/b0/King_Bangalash.jpg');
-
--- ==================== QUESTS (25 quests) ====================
--- Alliance quests
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (1, 'A Threat Within', 'Marshal Dughan is concerned about the growing threat of kobolds in the mines of Elwynn Forest. Investigate the Fargodeep Mine and report back.', 4, 1, 'ALLIANCE', '250 XP, 1 silver', 250, 1, 1, 'https://static.wikia.nocookie.net/wowpedia/images/e/ef/Elwynn_Forest_Screenshot.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (2, 'The Defias Brotherhood', 'Gryan Stoutmantle needs help uncovering the Defias threat in Westfall. Track down clues about their leadership and hidden fortress.', 14, 10, 'ALLIANCE', '1150 XP, 8 silver, Chain quest reward', 1150, 2, 2, 'https://static.wikia.nocookie.net/wowpedia/images/4/47/Westfall.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (3, 'The People''s Militia', 'Help the People''s Militia defend Westfall from the Defias Brotherhood. Eliminate their scouts and saboteurs threatening the farmlands.', 12, 9, 'ALLIANCE', '900 XP, 6 silver', 900, 2, 2, 'https://static.wikia.nocookie.net/wowpedia/images/4/47/Westfall.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (4, 'Elwynn Forest Wolves', 'Clear the wolves threatening the farmers of Elwynn Forest. The beasts have grown bold and are attacking livestock near Goldshire.', 2, 1, 'ALLIANCE', '170 XP, 75 copper', 170, 1, 4, 'https://static.wikia.nocookie.net/wowpedia/images/4/4a/Elwynn_Forest.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (5, 'The Legend of Stalvan', 'Investigate the dark history of Stalvan Mistmantle in Duskwood. Uncover the tragic tale of love and madness that haunts the region.', 22, 18, 'ALLIANCE', '1800 XP, 18 silver', 1800, 3, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/2/2e/Duskwood.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (6, 'Ashenvale Outrunners', 'Eliminate the Horde scouts in Ashenvale forest. They are surveying Alliance positions for a potential offensive.', 20, 18, 'ALLIANCE', '1750 XP, 15 silver', 1750, 11, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/a/a4/Ashenvale.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (7, 'Blackrock Menace', 'Drive back the Blackrock orcs threatening Redridge Mountains. The town of Lakeshire is under siege and needs reinforcements.', 18, 15, 'ALLIANCE', '1400 XP, 12 silver', 1400, 4, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/a/a3/Redridge_Mountains.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (8, 'Wanted: Hogger', 'Hogger, the gnoll chieftain, has been terrorizing travelers in Elwynn Forest. Bring his head to Marshal Dughan for a reward.', 11, 5, 'ALLIANCE', '850 XP, 5 silver', 850, 1, 1, 'https://static.wikia.nocookie.net/wowpedia/images/7/73/Hogger.jpg');
-
--- Horde quests
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (9, 'Chen''s Empty Keg', 'Find the ingredients for Chen Stormstout''s legendary brew somewhere in the Barrens. A quest of taste, adventure, and hops.', 15, 11, 'HORDE', '1350 XP, 10 silver', 1350, 7, 14, 'https://static.wikia.nocookie.net/wowpedia/images/3/32/Barrens.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (10, 'Lost in Battle', 'Find a fallen warrior in the Barrens and return his belongings to his family. Honor the sacrifice of those who fell defending the Horde.', 10, 7, 'HORDE', '630 XP, 3 silver 50 copper', 630, 7, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/3/32/Barrens.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (11, 'Sergra''s Challenge', 'Sergra Darkthorn at the Crossroads challenges you to hunt the fierce raptors of the Barrens and prove your worth as a hunter.', 13, 10, 'HORDE', '1100 XP, 7 silver', 1100, 7, 13, 'https://static.wikia.nocookie.net/wowpedia/images/3/32/Barrens.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (12, 'The Spirits of Stonetalon', 'Commune with the ancestral spirits in the Stonetalon Mountains and defend the sacred groves from the Venture Company''s deforestation.', 18, 15, 'HORDE', '1500 XP, 13 silver', 1500, 9, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/0/05/Stonetalon_Mountains.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (13, 'Call of the Frostwolf', 'Drek''Thar calls upon champions to defend the Frostwolf clan''s honor in Alterac Valley against the Stormpike dwarves.', 51, 48, 'HORDE', '5000 XP, 50 silver', 5000, 10, 11, 'https://static.wikia.nocookie.net/wowpedia/images/0/05/Orgrimmar.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (14, 'Consumed by Hatred', 'The quilboar threat in the Barrens grows stronger. Eliminate their war leaders before they unite against the Crossroads.', 16, 12, 'HORDE', '1250 XP, 9 silver', 1250, 7, 13, 'https://static.wikia.nocookie.net/wowpedia/images/3/32/Barrens.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (15, 'The Thousand Needles Race', 'Participate in the goblin-sponsored races across the Shimmering Flats. Win glory and prizes by defeating the competition.', 28, 25, 'HORDE', '2200 XP, 22 silver', 2200, 8, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/f/f1/Thousand_Needles.jpg');
-
--- Neutral quests
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (16, 'Welcome to the Jungle', 'Hemet Nesingwary challenges you to hunt the wild beasts of Stranglethorn Vale. Prove yourself against panthers, tigers, and raptors.', 30, 28, NULL, '2400 XP, 25 silver', 2400, 12, 3, 'https://static.wikia.nocookie.net/wowpedia/images/7/71/Stranglethorn_Vale.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (17, 'Raptor Mastery', 'Hemet Nesingwary wants you to prove yourself by hunting the deadliest raptors in Stranglethorn Vale.', 33, 29, NULL, '2800 XP, 30 silver', 2800, 12, 3, 'https://static.wikia.nocookie.net/wowpedia/images/7/71/Stranglethorn_Vale.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (18, 'A Plague Upon Thee', 'Chromie needs help investigating the plague in the Western Plaguelands. The bronze dragon senses temporal disturbances.', 53, 50, NULL, '5500 XP, 55 silver', 5500, 18, 16, 'https://static.wikia.nocookie.net/wowpedia/images/2/24/Western_Plaguelands.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (19, 'Gadgetzan Water Survey', 'Investigate the water shortage in Tanaris for the goblins of Gadgetzan. Someone is diverting the underground streams.', 42, 40, NULL, '3200 XP, 35 silver', 3200, 13, 15, 'https://static.wikia.nocookie.net/wowpedia/images/c/c0/Tanaris.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (20, 'The Apes of Un''Goro', 'Explore the mysterious Un''Goro Crater and study the intelligent apes that dwell there. Collect samples for research.', 50, 48, NULL, '4800 XP, 48 silver', 4800, 14, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/2/27/UnGoro_Crater.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (21, 'Frostsaber Provisions', 'Help the Frostsaber trainers in Winterspring by gathering provisions. The harsh winter has depleted their supplies.', 55, 53, NULL, '5200 XP, 52 silver', 5200, 15, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/3/35/Winterspring.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (22, 'The Calling of Silithus', 'The Cenarion Circle needs champions to investigate the growing Silithid threat in Silithus before the gates of Ahn''Qiraj open.', 58, 55, NULL, '6000 XP, 60 silver', 6000, 16, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/7/7c/Silithus.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (23, 'Light''s Hope Chapel', 'Travel to Light''s Hope Chapel in the Eastern Plaguelands and assist the Argent Dawn in their crusade against the Scourge.', 55, 52, NULL, '5800 XP, 57 silver', 5800, 17, NULL, 'https://static.wikia.nocookie.net/wowpedia/images/4/4e/Eastern_Plaguelands.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (24, 'Big Game Hunter', 'Track and defeat King Bangalash, the legendary white tiger of Stranglethorn Vale, for Hemet Nesingwary.', 38, 35, NULL, '3100 XP, 32 silver', 3100, 12, 3, 'https://static.wikia.nocookie.net/wowpedia/images/b/b0/King_Bangalash.jpg');
-INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES (25, 'Plagued Lands', 'Scout the Western Plaguelands and report on the Scourge activity to the Argent Dawn. The undead forces are massing.', 54, 51, NULL, '5600 XP, 56 silver', 5600, 18, 16, 'https://static.wikia.nocookie.net/wowpedia/images/2/24/Western_Plaguelands.jpg');
-
--- ==================== ITEMS ====================
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (1, 'Thunderfury, Blessed Blade of the Windseeker', 'A legendary sword forged from the essence of Thunderaan.', 'LEGENDARY', 'Weapon', 60, 'Molten Core - Bindings of the Windseeker');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (2, 'Hearthstone', 'Returns you to your home inn when used.', 'COMMON', 'Consumable', 1, 'Given at character creation');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (3, 'Linen Cloth', 'A basic cloth used for tailoring and first aid.', 'COMMON', 'Trade Good', 1, 'Humanoid mobs level 1-15');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (4, 'Defias Bandana', 'A red bandana worn by members of the Defias Brotherhood.', 'COMMON', 'Quest', 1, 'Defias mobs in Westfall');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (5, 'Smite''s Mighty Hammer', 'A powerful hammer dropped by Mr. Smite in the Deadmines.', 'RARE', 'Weapon', 17, 'Deadmines - Mr. Smite');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (6, 'Staff of Dominance', 'A powerful staff for casters from Blackrock Spire.', 'EPIC', 'Weapon', 57, 'Upper Blackrock Spire');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (7, 'Copper Ore', 'Raw copper ore that can be smelted into copper bars.', 'COMMON', 'Trade Good', 1, 'Mining nodes level 1-50');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (8, 'Shadowfang', 'A rare twink sword from Shadowfang Keep.', 'RARE', 'Weapon', 17, 'Shadowfang Keep - various bosses');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (9, 'Minor Healing Potion', 'Restores 70 to 90 health.', 'COMMON', 'Consumable', 1, 'Alchemy crafting, vendor');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (10, 'Warsong Gulch Mark of Honor', 'A mark earned from Warsong Gulch battleground.', 'UNCOMMON', 'Quest', 10, 'Warsong Gulch PvP');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (11, 'Devout Mantle', 'Priest tier 0 shoulders from Baron Rivendare.', 'RARE', 'Armor', 55, 'Stratholme - Baron Rivendare');
-INSERT INTO items (id, name, description, quality, item_type, level_required, drop_source) VALUES (12, 'Sulfuras, Hand of Ragnaros', 'Legendary two-handed mace forged with the Sulfuron Hammer and Eye of Ragnaros.', 'LEGENDARY', 'Weapon', 60, 'Molten Core - Ragnaros');
-
--- ==================== RACES ====================
-INSERT INTO races (id, name, description, faction_id) VALUES (1, 'Human', 'Resilient and adaptable, humans are one of the youngest races of Azeroth.', 1);
-INSERT INTO races (id, name, description, faction_id) VALUES (2, 'Dwarf', 'Stout and strong, dwarves are an ancient race of miners and warriors.', 1);
-INSERT INTO races (id, name, description, faction_id) VALUES (3, 'Night Elf', 'Ancient and wise, night elves are guardians of nature.', 1);
-INSERT INTO races (id, name, description, faction_id) VALUES (4, 'Gnome', 'Inventive and curious, gnomes are brilliant engineers and tinkerers.', 1);
-INSERT INTO races (id, name, description, faction_id) VALUES (5, 'Orc', 'Proud and fierce warriors from Draenor, seeking honor in a new world.', 2);
-INSERT INTO races (id, name, description, faction_id) VALUES (6, 'Undead', 'Forsaken undead who broke free from the Lich King''s control.', 2);
-INSERT INTO races (id, name, description, faction_id) VALUES (7, 'Tauren', 'Noble and peaceful, tauren are deeply connected to nature and the Earth Mother.', 2);
-INSERT INTO races (id, name, description, faction_id) VALUES (8, 'Troll', 'Cunning and spiritual, the Darkspear trolls are loyal allies of the Horde.', 2);
-
--- ==================== RACE-CLASS RELATIONS ====================
+-- ==================== RELACIONES RAZA-CLASE ====================
 -- Human: Warrior, Paladin, Rogue, Priest, Mage, Warlock
-INSERT INTO race_class (race_id, class_id) VALUES (1, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (1, 2);
-INSERT INTO race_class (race_id, class_id) VALUES (1, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (1, 5);
-INSERT INTO race_class (race_id, class_id) VALUES (1, 7);
-INSERT INTO race_class (race_id, class_id) VALUES (1, 8);
+INSERT INTO race_class (race_id, class_id) VALUES (1,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (1,2) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (1,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (1,5) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (1,7) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (1,8) ON CONFLICT DO NOTHING;
 -- Dwarf: Warrior, Paladin, Hunter, Rogue, Priest
-INSERT INTO race_class (race_id, class_id) VALUES (2, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (2, 2);
-INSERT INTO race_class (race_id, class_id) VALUES (2, 3);
-INSERT INTO race_class (race_id, class_id) VALUES (2, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (2, 5);
+INSERT INTO race_class (race_id, class_id) VALUES (2,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (2,2) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (2,3) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (2,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (2,5) ON CONFLICT DO NOTHING;
 -- Night Elf: Warrior, Hunter, Rogue, Priest, Druid
-INSERT INTO race_class (race_id, class_id) VALUES (3, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (3, 3);
-INSERT INTO race_class (race_id, class_id) VALUES (3, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (3, 5);
-INSERT INTO race_class (race_id, class_id) VALUES (3, 9);
+INSERT INTO race_class (race_id, class_id) VALUES (3,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (3,3) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (3,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (3,5) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (3,9) ON CONFLICT DO NOTHING;
 -- Gnome: Warrior, Rogue, Mage, Warlock
-INSERT INTO race_class (race_id, class_id) VALUES (4, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (4, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (4, 7);
-INSERT INTO race_class (race_id, class_id) VALUES (4, 8);
+INSERT INTO race_class (race_id, class_id) VALUES (4,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (4,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (4,7) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (4,8) ON CONFLICT DO NOTHING;
 -- Orc: Warrior, Hunter, Rogue, Shaman, Warlock
-INSERT INTO race_class (race_id, class_id) VALUES (5, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (5, 3);
-INSERT INTO race_class (race_id, class_id) VALUES (5, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (5, 6);
-INSERT INTO race_class (race_id, class_id) VALUES (5, 8);
+INSERT INTO race_class (race_id, class_id) VALUES (5,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (5,3) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (5,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (5,6) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (5,8) ON CONFLICT DO NOTHING;
 -- Undead: Warrior, Rogue, Priest, Mage, Warlock
-INSERT INTO race_class (race_id, class_id) VALUES (6, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (6, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (6, 5);
-INSERT INTO race_class (race_id, class_id) VALUES (6, 7);
-INSERT INTO race_class (race_id, class_id) VALUES (6, 8);
+INSERT INTO race_class (race_id, class_id) VALUES (6,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (6,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (6,5) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (6,7) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (6,8) ON CONFLICT DO NOTHING;
 -- Tauren: Warrior, Hunter, Shaman, Druid
-INSERT INTO race_class (race_id, class_id) VALUES (7, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (7, 3);
-INSERT INTO race_class (race_id, class_id) VALUES (7, 6);
-INSERT INTO race_class (race_id, class_id) VALUES (7, 9);
+INSERT INTO race_class (race_id, class_id) VALUES (7,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (7,3) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (7,6) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (7,9) ON CONFLICT DO NOTHING;
 -- Troll: Warrior, Hunter, Rogue, Priest, Shaman, Mage
-INSERT INTO race_class (race_id, class_id) VALUES (8, 1);
-INSERT INTO race_class (race_id, class_id) VALUES (8, 3);
-INSERT INTO race_class (race_id, class_id) VALUES (8, 4);
-INSERT INTO race_class (race_id, class_id) VALUES (8, 5);
-INSERT INTO race_class (race_id, class_id) VALUES (8, 6);
-INSERT INTO race_class (race_id, class_id) VALUES (8, 7);
+INSERT INTO race_class (race_id, class_id) VALUES (8,1) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (8,3) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (8,4) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (8,5) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (8,6) ON CONFLICT DO NOTHING;
+INSERT INTO race_class (race_id, class_id) VALUES (8,7) ON CONFLICT DO NOTHING;
 
--- ==================== PROFESSIONS ====================
-INSERT INTO professions (id, name, description, type) VALUES (1, 'Alchemy', 'Create potions, elixirs, and flasks from herbs.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (2, 'Blacksmithing', 'Forge weapons and armor from metal bars.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (3, 'Enchanting', 'Enchant weapons and armor with magical properties.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (4, 'Engineering', 'Create gadgets, explosives, and mechanical devices.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (5, 'Herbalism', 'Gather herbs from the world for alchemy.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (6, 'Leatherworking', 'Craft leather and mail armor from hides.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (7, 'Mining', 'Mine ore and gems from mineral veins.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (8, 'Skinning', 'Skin beasts for leather and hides.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (9, 'Tailoring', 'Create cloth armor and bags from cloth.', 'PRIMARY');
-INSERT INTO professions (id, name, description, type) VALUES (10, 'Cooking', 'Prepare food that provides temporary buffs.', 'SECONDARY');
-INSERT INTO professions (id, name, description, type) VALUES (11, 'First Aid', 'Create bandages to heal wounds outside of combat.', 'SECONDARY');
-INSERT INTO professions (id, name, description, type) VALUES (12, 'Fishing', 'Catch fish from bodies of water across Azeroth.', 'SECONDARY');
+-- ==================== PROFESIONES ====================
+INSERT INTO professions (id, name, description, type) VALUES
+(1, 'Alchemy', 'Alchemy is the ancient art of transforming raw herbs into powerful potions, elixirs, flasks, and transmutations. Alchemists are essential to any raiding guild, producing consumables that dramatically boost player performance in combat. From Minor Healing Potions at low levels to the legendary Flask of the Titans and Flask of Supreme Power at endgame, alchemy provides a steady progression of increasingly powerful recipes. Alchemy pairs naturally with Herbalism, which provides the raw herb materials needed for most recipes. At high skill levels, alchemists can perform transmutations, converting one material into another — most notably transmuting Thorium Bars and Arcane Crystals into the highly valuable Arcanite Bars used in top-tier blacksmithing and engineering recipes. Alchemists can also create resistance potions critical for specific raid encounters, such as Greater Fire Protection Potions for Molten Core.', 'PRIMARY'),
+(2, 'Blacksmithing', 'Blacksmithing allows adventurers to forge powerful weapons and heavy armor from metal bars, creating some of the most sought-after equipment in the game. Blacksmiths work at anvils found in most cities and towns, hammering raw materials into swords, axes, maces, plate armor, mail armor, and shields. The profession branches into two specializations at higher levels: Weaponsmithing (further divided into Swordsmithing, Axesmithing, and Hammersmithing) and Armorsmithing, each offering unique recipe paths. Blacksmithing pairs best with Mining, which provides the ore and bars needed for crafting. Iconic endgame items include the Arcanite Reaper (a devastating two-hand axe), the Lionheart Helm (the best warrior plate helm in the game), and various epic weapon recipes that require rare materials from high-end dungeons and raids.', 'PRIMARY'),
+(3, 'Enchanting', 'Enchanting is the mystical art of imbuing weapons and armor with magical properties, permanently enhancing their stats. Enchanters can also disenchant magical items, breaking them down into enchanting materials like Strange Dust, Soul Dust, Vision Dust, Dream Dust, Illusion Dust, and various Essences and Shards. This makes enchanting unique among professions — it does not have a gathering counterpart, instead sourcing materials by destroying other magical equipment. High-level enchantments like Crusader (weapon proc that heals and increases strength), +55 Healing, and +30 Spell Power are in enormous demand for endgame content. Enchanters also craft wands at lower levels and can create oils that temporarily enhance weapons. The profession requires significant material investment but is extremely profitable at max level, as every raider needs their gear enchanted.', 'PRIMARY'),
+(4, 'Engineering', 'Engineering is the most fun and creative profession in World of Warcraft, allowing players to craft an incredible array of gadgets, explosives, devices, and mechanical companions. Engineers can build Goblin Rocket Boots for speed bursts, Gnomish Death Rays for massive (if unreliable) damage, Target Dummies to distract enemies, various grenades and bombs for AoE damage and crowd control, and even a Gnomish or Goblin specialization teleporter. The profession splits into Gnomish Engineering (utility and quirky devices) and Goblin Engineering (explosives and raw power) at skill level 200. Engineering pairs with Mining for materials. While engineering crafts are mostly bind-on-pickup and cannot be sold, the combat utility they provide — especially in PvP — is unmatched. Engineers also craft unique headpieces, trinkets, and the coveted Field Repair Bot 74A for raid convenience.', 'PRIMARY'),
+(5, 'Herbalism', 'Herbalism is the gathering profession of tracking and collecting herbs found throughout the world of Azeroth. Herbalists develop a keen eye for spotting plants in the wild, using the Find Herbs tracking ability to detect nearby herb nodes on their minimap. Herbs range from common low-level plants like Peacebloom and Silverleaf found in starting zones, through mid-level staples like Stranglekelp and Goldthorn, to rare endgame herbs like Mountain Silversage, Plaguebloom, and the ultra-rare Black Lotus — found only in Winterspring, Eastern Plaguelands, Burning Steppes, and Silithus. Herbalism pairs perfectly with Alchemy, providing all the raw materials needed for potion crafting. Skilled herbalists can earn substantial gold by selling high-demand herbs on the Auction House, particularly Black Lotus which is required for every flask recipe.', 'PRIMARY'),
+(6, 'Leatherworking', 'Leatherworking enables crafters to create leather and mail armor from hides and skins gathered through Skinning. Leatherworkers produce gear primarily used by Druids, Rogues, Hunters, and Shamans. The profession branches into three specializations at higher levels: Tribal Leatherworking (focuses on nature-themed leather gear, including the powerful Devilsaur Armor set), Elemental Leatherworking (resistance gear and elemental-themed items), and Dragonscale Leatherworking (mail armor ideal for hunters and shamans). Iconic crafts include the Devilsaur Gauntlets and Leggings (a BiS set for physical DPS), Hide of the Wild (a prized healing cloak), and various resistance armor sets needed for specific raid encounters. Leatherworkers can also craft armor kits that add armor value to any chest, legs, head, hands, or feet slot.', 'PRIMARY'),
+(7, 'Mining', 'Mining is the essential gathering profession for extracting ore, stones, and gems from mineral veins found throughout the world. Miners use a mining pick to harvest nodes, producing raw ore that can be smelted into bars at any forge. The progression moves from Copper and Tin in starting zones, through Iron and Mithril in mid-level areas, to Thorium in endgame zones — with rare Arcane Crystals occasionally appearing from Rich Thorium Veins. Mining pairs with both Blacksmithing and Engineering, providing the metal bars and stones needed for both professions. The Find Minerals tracking ability reveals nearby mining nodes on the minimap. Mining is one of the most profitable gathering professions, as metal bars are in constant demand for crafting, and Arcane Crystals (needed for Arcanite Bar transmutes) sell for substantial gold.', 'PRIMARY'),
+(8, 'Skinning', 'Skinning allows players to harvest leather and hides from the corpses of slain beasts, dragonkin, and certain other creatures throughout Azeroth. It is the simplest gathering profession to level, as skinnable creatures are abundant everywhere and the act of skinning is quick and requires only a Skinning Knife in your inventory. Leather quality progresses from Light Leather and Medium Leather at low levels through Heavy, Thick, and Rugged Leather at endgame, with specialty drops like Devilsaur Leather (from devilsaurs in Un''Goro Crater), Core Leather (from Molten Core), and Black Dragonscale. Skinning pairs naturally with Leatherworking, but raw leather is also profitable on the Auction House due to high demand from leatherworkers. Skinning requires higher skill levels to skin higher-level creatures, following a simple formula based on the creature''s level.', 'PRIMARY'),
+(9, 'Tailoring', 'Tailoring is the art of crafting cloth armor, bags, shirts, and other fabric items using cloth dropped by humanoid enemies throughout the world. Unlike other crafting professions, Tailoring does not require a specific gathering profession — cloth drops from virtually every humanoid enemy in the game, from Linen Cloth at low levels through Wool, Silk, Mageweave, Runecloth, and the special Mooncloth at endgame. Tailors produce gear primarily for Priests, Mages, and Warlocks, with iconic items including the Robe of the Archmage, Robe of the Void, Truefaith Vestments, and Bloodvine Garb set. Perhaps the most universally useful tailoring products are bags — from 10-slot Mageweave Bags to 14-slot Runecloth Bags and the coveted 16-slot Mooncloth Bag, which is the largest craftable bag in Vanilla WoW. Mooncloth, a specialty fabric with a 4-day crafting cooldown, is always in high demand.', 'PRIMARY'),
+(10, 'Cooking', 'Cooking is a secondary profession (meaning anyone can learn it alongside two primary professions) that transforms raw meat, fish, and other ingredients into prepared food that restores health and provides powerful temporary buffs. While simple cooked food merely restores health between fights faster than raw food, higher-level recipes grant significant combat bonuses: Grilled Squid increases Agility, Nightfin Soup restores mana over time, and Dirge''s Kickin'' Chimaerok Chops provide a stamina boost. The legendary Savory Deviate Delight — made from Deviate Fish caught in the Wailing Caverns — transforms the eater into a pirate or ninja. Cooking ingredients come from killing beasts (meat drops), Fishing (fish), and vendors (spices and recipes). Most cooking is done at a cooking fire or brazier found in towns and camps throughout the world.', 'SECONDARY'),
+(11, 'First Aid', 'First Aid is a secondary profession that allows players to craft bandages from cloth, providing an efficient way to heal between combat encounters without using mana or potions. This makes it particularly valuable for non-healing classes like Warriors and Rogues who lack self-healing abilities. Bandages progress from Linen Bandages (healing 66 damage) at the lowest level to Heavy Runecloth Bandages (healing 2000 damage) at max skill. Applying a bandage channels over several seconds and is interrupted by taking damage, so it is best used after combat ends. First Aid also includes the ability to create Anti-Venom items that remove poison effects. The profession uses cloth as its only material — the same Linen, Wool, Silk, Mageweave, and Runecloth used by Tailoring. Every class benefits from First Aid, and it is considered essential for Warriors, Rogues, and Hunters in particular.', 'SECONDARY'),
+(12, 'Fishing', 'Fishing is a secondary profession that allows players to cast a line into any body of water in Azeroth and catch fish, treasure chests, and other aquatic items. While seemingly simple, Fishing provides valuable materials for Cooking (raw fish for recipes) and Alchemy (Stonescale Eel for Stonescale Oil, Oily Blackmouth for Free Action Potions). Fishing can be done in oceans, lakes, rivers, and even lava pools, with different zones yielding different catches. Higher-level fishing requires better skill to avoid catching junk items, and can be enhanced with lures and special fishing poles like the Arcanite Fishing Rod or the legendary Nat Pagle''s Extreme Angler FC-5000. The Stranglethorn Fishing Extravaganza is a weekly server-wide competition where anglers race to catch rare fish for unique rewards. Fishing is a relaxing activity that many players enjoy as a break from combat.', 'SECONDARY')
+ON CONFLICT (id) DO NOTHING;
 
+-- ====================================================================
+-- JEFES DE MAZMORRA
+-- ====================================================================
+
+-- RAGEFIRE CHASM (50)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(1, 'Oggleflint', 'Trogg leader of Ragefire Chasm.', 'An unusually intelligent trogg who has gathered his kind in the depths beneath Orgrimmar.', 16, 1600, 50),
+(2, 'Taragaman the Hungerer', 'Satyr demon of the Chasm.', 'A satyr summoned by Burning Blade cultists who feeds on the fire of the chasm.', 16, 1800, 50),
+(3, 'Jergosh the Invoker', 'Burning Blade orc warlock.', 'A corrupted orc channeling demonic energy in the depths, threatening Orgrimmar.', 16, 1900, 50),
+(4, 'Bazzalan', 'Satyr leader of the Burning Blade in the Chasm.', 'The satyr leading demonic forces beneath Orgrimmar.', 17, 2100, 50);
+
+-- WAILING CAVERNS (51)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(5, 'Lady Anacondra', 'Druid corrupted by the Emerald Dream.', 'One of the Fang leaders, corrupted by the nightmare invading the caverns.', 20, 2200, 51),
+(6, 'Lord Cobrahn', 'Corrupted serpent druid.', 'A promising druid before falling under Emerald Dream corruption.', 20, 2300, 51),
+(7, 'Kresh', 'Giant cave turtle.', 'An ancient turtle with petrified shell inhabiting the underground waters.', 20, 2500, 51),
+(8, 'Lord Serpentis', 'The most dangerous of the Fang druids.', 'Fully given to corruption, seeking to spread the nightmare beyond the caves.', 21, 2800, 51),
+(9, 'Verdan the Everliving', 'Gigantic plant elemental.', 'A manifestation of natural corruption grown to enormous proportions.', 21, 3000, 51),
+(10, 'Mutanus the Devourer', 'Nightmare aberration.', 'The physical manifestation of corruption. Only appears when the purification ritual awakens its fury.', 22, 3200, 51);
+
+-- THE DEADMINES (52)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(11, 'Rhahk''Zor', 'Ogre guardian of the Mines.', 'An ogre recruited by the Defias Brotherhood. His brute strength is legendary.', 17, 1800, 52),
+(12, 'Sneed', 'Goblin engineer in his shredder.', 'Oversees logging operations. Hides inside his giant mechanical shredder.', 19, 2100, 52),
+(13, 'Gilnid', 'Goblin smelter of the Defias forge.', 'Runs the foundry where Defias weapons are manufactured.', 20, 2400, 52),
+(14, 'Mr. Smite', 'Tauren first mate of the Defias ship.', 'A renegade tauren serving as first mate. Changes weapons during combat.', 20, 3000, 52),
+(15, 'Edwin VanCleef', 'Leader of the Defias Brotherhood.', 'Master mason who rebuilt Stormwind. When nobles refused to pay, he swore revenge and formed the Brotherhood.', 21, 4200, 52);
+
+-- SHADOWFANG KEEP (53)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(16, 'Razorclaw the Butcher', 'Enraged worgen of the keep.', 'One of the first creatures transformed by Arugal. Its fury is uncontrollable.', 20, 2000, 53),
+(17, 'Baron Silverlaine', 'Ghost of the former lord.', 'Original owner of Shadowfang Keep. His spirit wanders seeking revenge.', 24, 2600, 53),
+(18, 'Commander Springvale', 'Undead knight serving Arugal.', 'Former Lordaeron paladin, now undead servant of the mad archmage.', 24, 2700, 53),
+(19, 'Odo the Blindwatcher', 'Monstrous bat worgen.', 'Transformed into a winged creature by Arugal experiments.', 24, 2800, 53),
+(20, 'Fenrus the Devourer', 'Great spectral wolf of Arugal.', 'Arugal favorite wolf pet, imbued with dark arcane magic.', 25, 3000, 53),
+(21, 'Archmage Arugal', 'Mad mage who summoned the worgen.', 'Dalaran mage who summoned worgen from another dimension. Now treats them as children.', 26, 3800, 53);
+
+-- THE STOCKADE (54)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(22, 'Targorr the Dread', 'Freed orc prisoner.', 'A brutal orc who seized control of a prison section after the riot.', 24, 2200, 54),
+(23, 'Kam Deepfury', 'Imprisoned Dark Iron dwarf.', 'A captured Dark Iron dwarf who exploited the chaos to seize power.', 27, 2600, 54),
+(24, 'Bazil Thredd', 'Leader of the Defias prison riot.', 'Defias agent who orchestrated the riot from inside.', 29, 2800, 54),
+(25, 'Dextren Ward', 'Dangerous imprisoned assassin.', 'An assassin so dangerous he was locked in the deepest cell.', 26, 2500, 54);
+
+-- BLACKFATHOM DEEPS (55)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(26, 'Ghamoo-Ra', 'Corrupted giant sea turtle.', 'An ancient turtle corrupted by the darkness emanating from the submerged temple.', 25, 2400, 55),
+(27, 'Lady Sarevess', 'Naga sorceress of the temple.', 'A naga seeking arcane secrets hidden in the depths.', 25, 2600, 55),
+(28, 'Gelihast', 'Murloc shaman of the caverns.', 'Murloc leader who worships ancient entities beneath the waters.', 26, 2500, 55),
+(29, 'Twilight Lord Kelris', 'Leader of the Twilight cult.', 'A night elf who betrayed his people and now serves the Old Gods.', 27, 3200, 55),
+(30, 'Aku''mai', 'Hydra of the Void.', 'A hydra corrupted by the Old Gods dwelling in the deepest caverns.', 28, 3800, 55);
+
+-- GNOMEREGAN (56)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(31, 'Grubbis', 'Trogg leader of Gnomeregan.', 'A trogg dominating the upper sections of the fallen gnome city.', 30, 2800, 56),
+(32, 'Viscous Fallout', 'Giant radioactive ooze.', 'A mass of toxic waste brought to life by Gnomeregan radiation.', 30, 3000, 56),
+(33, 'Electrocutioner 6000', 'Corrupted gnome defense robot.', 'A security robot following defense protocols against all intruders.', 32, 3200, 56),
+(34, 'Crowd Pummeler 9-60', 'Gnome mechanical golem.', 'A gnome combat machine reprogrammed by Thermaplugg.', 32, 3400, 56),
+(35, 'Mekgineer Thermaplugg', 'Gnome traitor who irradiated Gnomeregan.', 'The advisor who convinced High Tinker Mekkatorque to irradiate the city.', 34, 5200, 56);
+
+-- SCARLET MONASTERY (57)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(36, 'Interrogator Vishas', 'Scarlet Crusade torturer.', 'A sadistic interrogator who enjoys tormenting prisoners.', 32, 2800, 57),
+(37, 'Bloodmage Thalnos', 'Undead Scarlet blood mage.', 'A former scarlet mage killed and resurrected.', 33, 3000, 57),
+(38, 'Houndmaster Loksey', 'Crusade dog trainer.', 'Responsible for the fierce war hounds patrolling the library.', 34, 3200, 57),
+(39, 'Arcanist Doan', 'Mage protector of the library.', 'Guardian of sacred Crusade texts. His fire shield is legendary.', 37, 3800, 57),
+(40, 'Herod', 'Champion of the Scarlet Crusade.', 'The warrior champion. His Whirlwind is feared by all.', 40, 4800, 57),
+(41, 'Scarlet Commander Mograine', 'Military leader of the Monastery.', 'Son of the legendary Ashbringer, leads with fanatical zeal.', 42, 5400, 57),
+(42, 'High Inquisitor Whitemane', 'High priestess of the Crusade.', 'Spiritual leader with the power to resurrect the fallen.', 42, 4200, 57);
+
+-- RAZORFEN KRAUL (58)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(43, 'Aggem Thorncurse', 'Quilboar shaman.', 'A powerful shaman channeling earth magic to protect the kraul.', 33, 3000, 58),
+(44, 'Death Speaker Jargba', 'Quilboar spiritual leader.', 'A warlock who communicates with spirits of the dead.', 34, 3200, 58),
+(45, 'Overlord Ramtusk', 'Quilboar military leader.', 'The war chief, an enormous quilboar wielding a massive axe.', 36, 4000, 58),
+(46, 'Charlga Razorflank', 'Matriarch of the Razorfen.', 'The true leader. A cunning sorceress plotting quilboar expansion.', 38, 4400, 58);
+
+-- RAZORFEN DOWNS (59)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(47, 'Tuten''kash', 'Giant undead spider.', 'A monstrous spider resurrected by necromancy.', 40, 3800, 59),
+(48, 'Mordresh Fire Eye', 'Skeleton warlock.', 'A skeleton commanding undead legions with fire magic.', 39, 3600, 59),
+(49, 'Glutton', 'Undead abomination.', 'A grotesque mass of reanimated flesh.', 40, 4200, 59),
+(50, 'Amnennar the Coldbringer', 'Lich lord of Razorfen Downs.', 'A powerful lich sent by the Scourge to corrupt the quilboar.', 42, 5000, 59);
+
+-- ULDAMAN (60)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(51, 'Revelosh', 'Trogg guardian of Uldaman.', 'A trogg who learned to use Titan crystals as weapons.', 44, 4000, 60),
+(52, 'Ironaya', 'Titan construct of Uldaman.', 'A titan guardian who awakens when intruders approach vault secrets.', 45, 4800, 60),
+(53, 'Galgann Fireforge', 'Dark Iron dwarf excavator.', 'Leader of the Dark Iron expedition seeking titan artifacts.', 45, 4400, 60),
+(54, 'Grimlok', 'Trogg shaman leader.', 'The most powerful trogg, able to summon stone elementals.', 45, 4200, 60),
+(55, 'Archaedas', 'Titan guardian of the final vault.', 'The supreme guardian, a stone colossus created by the Titans.', 47, 7200, 60);
+
+-- ZUL'FARRAK (61)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(56, 'Antu''sul', 'Troll high priest of basilisks.', 'Controls Zul''Farrak basilisks through ancient domination rituals.', 48, 5000, 61),
+(57, 'Theka the Martyr', 'Sacred Sandfury troll.', 'Transforms into a scarab near death, a power granted by ancient loas.', 46, 4200, 61),
+(58, 'Witch Doctor Zum''rah', 'Troll necromancer.', 'A witch doctor who raises fallen trolls to grow his army.', 46, 4600, 61),
+(59, 'Hydromancer Velratha', 'Troll water sorceress.', 'Guardian of the Rod of Sul, controlling the sands of Tanaris.', 48, 5200, 61),
+(60, 'Chief Ukorz Sandscalp', 'Supreme chief of the Sandfury trolls.', 'The warrior leader fighting alongside his guardian.', 48, 6000, 61);
+
+-- MARAUDON (62)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(61, 'Noxxion', 'Corrupted plant elemental.', 'A manifestation of corruption at Maraudon entrance.', 48, 4800, 62),
+(62, 'Razorlash', 'Giant thorned lasher.', 'An enormous carnivorous plant fed by corrupt energy.', 48, 5000, 62),
+(63, 'Lord Vyletongue', 'Satyr lord of Maraudon.', 'A satyr who seized the upper sections of the sacred cave.', 49, 5200, 62),
+(64, 'Landslide', 'Giant earth elemental.', 'An elemental born from the anger of corrupted earth.', 50, 5800, 62),
+(65, 'Princess Theradras', 'Elemental daughter of Therazane.', 'Daughter of the Earth Mother. Her union with Zaetar spawned the centaur.', 51, 8000, 62);
+
+-- SUNKEN TEMPLE (63)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(66, 'Atal''alarion', 'Troll temple guardian.', 'A stone golem animated by Atal''ai magic to protect the temple entrance.', 50, 5400, 63),
+(67, 'Dreamscythe', 'Corrupted green dragon.', 'A green flight dragon trapped and corrupted by Hakkar influence.', 53, 5800, 63),
+(68, 'Jammal''an the Prophet', 'High priest of Hakkar.', 'Leader of the Atal''ai cult seeking to summon Hakkar.', 54, 6200, 63),
+(69, 'Shade of Eranikus', 'Essence of dragon Eranikus.', 'Shadow of the green dragon guardian, corrupted by the Dream nightmare.', 55, 7800, 63);
+
+-- BLACKROCK DEPTHS (64)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(70, 'High Interrogator Gerstahn', 'Dark Iron priestess.', 'Extracting information from prisoners in the Depths cells.', 52, 5600, 64),
+(71, 'Lord Roccor', 'Fire elemental guardian.', 'A molten rock elemental guarding deeper sections.', 51, 5200, 64),
+(72, 'Fineous Darkvire', 'Dark Iron chief architect.', 'Responsible for constructing the enormous underground structures.', 54, 5800, 64),
+(73, 'General Angerforge', 'Dark Iron army general.', 'Commands military forces. His discipline is iron, his cruelty legendary.', 57, 7000, 64),
+(74, 'Golem Lord Argelmach', 'Dark Iron golem master.', 'Creator of golems guarding the Depths.', 57, 7200, 64),
+(75, 'Ambassador Flamelash', 'Fire elemental emissary.', 'A fire elemental liaison between Dark Irons and Ragnaros elemental plane.', 57, 6800, 64),
+(76, 'Emperor Dagran Thaurissan', 'Emperor of the Dark Iron dwarves.', 'Sovereign of the Dark Irons, subjugated by Ragnaros. Holds Princess Moira captive.', 59, 12000, 64);
+
+-- LOWER BLACKROCK SPIRE (65)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(77, 'Highlord Omokk', 'Ogre leader of the Spire.', 'A brutally strong ogre ruling the lower chambers.', 59, 7400, 65),
+(78, 'War Master Voone', 'Smolderthorn troll leader.', 'Commands Smolderthorn trolls allied with Blackrock orcs.', 59, 7200, 65),
+(79, 'Mother Smolderweb', 'Giant spider of the Spire.', 'A colossal spider in the darkest sections.', 59, 6800, 65),
+(80, 'Overlord Wyrmthalak', 'Black dragonspawn commander.', 'Dragonspawn leading Nefarian forces in the lower chambers.', 60, 9600, 65);
+
+-- UPPER BLACKROCK SPIRE (66)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(81, 'Pyroguard Emberseer', 'Caged fire elemental.', 'A powerful fire elemental kept captive by orcs as a weapon.', 60, 8200, 66),
+(82, 'Jed Guardarunas', 'Elite orc spellcaster.', 'An orc warlock protecting upper halls with fire and shadow.', 59, 7000, 66),
+(83, 'Warchief Rend Punonegro', 'Self-proclaimed Warchief.', 'Son of Punonegro, claims the title of Warchief of the Horde. Rides a black dragon named Gyth.', 60, 11000, 66),
+(84, 'The Beast', 'Giant magma core.', 'An enormous fire and rock creature guarding the chamber of General Drakkisath.', 60, 9800, 66),
+(85, 'General Drakkisath', 'Dragonspawn leader serving Nefarian.', 'The right hand of Nefarian in the Spire. Guards the entrance to the lair of the black dragon.', 60, 12500, 66);
+
+-- DIRE MAUL (67)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(86, 'Zevrim Thornhoof', 'Satyr lord of the east wing.', 'A satyr feeding on souls of elves trapped in Eldre''Thalas ruins.', 57, 6800, 67),
+(87, 'Alzzin the Wildshaper', 'Corrupted satyr druid.', 'A powerful satyr who corrupted the east wing inner garden.', 58, 8200, 67),
+(88, 'Tendris Warpwood', 'Corrupted ancient treant of the west wing.', 'An ancient corrupted treant blocking passage to inner sections.', 57, 7000, 67),
+(89, 'Immol''thar', 'Imprisoned Void demon.', 'A powerful demon kept captive by elves to power the magic barrier.', 59, 9400, 67),
+(90, 'Prince Tortheldrin', 'Last prince of Eldre''Thalas.', 'The elf who sacrificed his own subjects to maintain the barrier.', 60, 8800, 67),
+(91, 'King Gordok', 'Ogre leader of the north wing.', 'King of the Gordok ogres occupying the north wing.', 60, 10000, 67);
+
+-- STRATHOLME (68)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(92, 'The Unforgiven', 'Vengeful specter of Stratholme.', 'Spirit of a villager massacred during the Purge.', 57, 6400, 68),
+(93, 'Timmy the Cruel', 'Undead abomination.', 'A particularly sadistic ghoul roaming ruined streets.', 58, 7200, 68),
+(94, 'Cannon Master Willey', 'Scarlet artillery officer.', 'Commands artillery defenses of the Scarlet section.', 58, 7400, 68),
+(95, 'Archivist Galford', 'Guardian of Scarlet archives.', 'Guards secret Crusade records in his protected chamber.', 58, 7000, 68),
+(96, 'Balnazzar', 'Disguised Dreadlord.', 'A Nathrezim demon secretly controlling the Scarlet Crusade.', 60, 13000, 68),
+(97, 'Baroness Anastari', 'Scourge banshee lady.', 'A noble elf turned banshee controlling the undead section.', 59, 7800, 68),
+(98, 'Nerub''enkan', 'Nerubian crypt lord.', 'A nerubian serving the Scourge with an army of undead spiders.', 59, 7600, 68),
+(99, 'Ramstein the Gorger', 'Giant abomination.', 'The largest abomination in Stratholme, guarding Baron Rivendare.', 60, 9200, 68),
+(100, 'Baron Rivendare', 'Undead lord of Stratholme.', 'A former human noble who willingly served the Scourge. Rides a deathcharger.', 60, 14000, 68);
+
+-- SCHOLOMANCE (69)
+INSERT INTO bosses (id, name, description, lore, level, health, zone_id) VALUES
+(101, 'Kirtonos the Herald', 'Vampire guardian of Scholomance.', 'A powerful vampire summoned by blood ritual.', 60, 8000, 69),
+(102, 'Jandice Barov', 'Undead illusionist mage.', 'Barov family member creating illusory copies of herself.', 59, 7400, 69),
+(103, 'Rattlegore', 'Giant bone construct.', 'A golem assembled from hundreds of victims bones.', 60, 8800, 69),
+(104, 'Ras Frostwhisper', 'Lich master of Scholomance.', 'A powerful liche teaching necromancy to Scourge apprentices.', 60, 10200, 69),
+(105, 'Doctor Theolen Krastinov', 'The Butcher of Scholomance.', 'A sadistic doctor experimenting on living and dead.', 60, 9000, 69),
+(106, 'Lord Alexei Barov', 'Undead Barov noble.', 'A Barov lord who sold his soul to the Scourge for eternal power.', 60, 8600, 69),
+(107, 'Lady Illucia Barov', 'Undead Barov noble.', 'Sister of Alexei, equally corrupted. Uses shadow magic and mind control.', 60, 8400, 69),
+(108, 'Darkmaster Gandling', 'Headmaster of Scholomance.', 'The rector who teleports victims to classrooms full of undead.', 60, 14500, 69)
+ON CONFLICT (id) DO NOTHING;
+
+-- ====================================================================
+-- BOTIN (LOOT) — Items iconicos por boss
+-- ====================================================================
+
+-- RAGEFIRE CHASM
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(1, 'Oggleflint''s Inspirer', 'A primitive but surprisingly sturdy mace.', 'UNCOMMON', 'One-Hand Mace', 35.0, 1),
+(2, 'Caverndeep Trudgers', 'Boots caked in volcanic ash.', 'UNCOMMON', 'Boots Mail', 30.0, 1),
+(3, 'Subterranean Cape', 'Cape forged in the heat of the chasm.', 'UNCOMMON', 'Cloak', 28.0, 2),
+(4, 'Cursed Felblade', 'A dagger infused with demonic flame.', 'UNCOMMON', 'Dagger', 25.0, 2),
+(5, 'Crystalline Cuffs', 'Wristguards reinforced with lava crystal.', 'UNCOMMON', 'Bracers Cloth', 22.0, 2),
+(6, 'Robe of Evocation', 'Ragged robe imbued with demonic energy.', 'UNCOMMON', 'Chest Cloth', 30.0, 3),
+(7, 'Chanting Blade', 'Dagger that hums with dark incantations.', 'UNCOMMON', 'Dagger', 26.0, 3),
+(8, 'Bazzalan''s Blade', 'Curved dagger of the satyr leader.', 'RARE', 'Dagger', 25.0, 4),
+(9, 'Demonic Bone Ring', 'Ring carved from demon bone.', 'UNCOMMON', 'Ring', 30.0, 4),
+(10, 'Shadowweave Mantle', 'Shoulderpads from woven shadows.', 'UNCOMMON', 'Shoulders Cloth', 22.0, 4);
+
+-- WAILING CAVERNS
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(11, 'Belt of the Fang', 'Belt woven with enchanted scales.', 'UNCOMMON', 'Belt Leather', 28.0, 5),
+(12, 'Snakeskin Bag', 'A bag made from serpent hide.', 'UNCOMMON', 'Bag', 20.0, 5),
+(13, 'Serpent''s Shoulders', 'Shoulder pads infused with serpent venom.', 'RARE', 'Shoulders Leather', 15.0, 6),
+(14, 'Cobrahn''s Grasp', 'Gloves dripping with venom.', 'UNCOMMON', 'Gloves Leather', 22.0, 6),
+(15, 'Kresh''s Back', 'Natural petrified shell shield.', 'RARE', 'Shield', 35.0, 7),
+(16, 'Worn Turtle Shell Shield', 'A sturdy ancient shell.', 'UNCOMMON', 'Shield', 40.0, 7),
+(17, 'Savage Trodders', 'Boots pulsing with nightmare energy.', 'RARE', 'Boots Leather', 14.0, 8),
+(18, 'Serpentis'' Gloves', 'Gloves from the fang lord.', 'UNCOMMON', 'Gloves Cloth', 20.0, 8),
+(19, 'Living Root', 'A sword that seems to grow like a plant.', 'RARE', 'Two-Hand Sword', 18.0, 9),
+(20, 'Deep Fathom Ring', 'Ring pulled from the nightmare.', 'UNCOMMON', 'Ring', 24.0, 9),
+(21, 'Mutant Scale Breastplate', 'Breastplate from Mutanus hide.', 'RARE', 'Chest Mail', 22.0, 10),
+(22, 'Slime-Encrusted Pads', 'Shoulder pads covered in nightmare ooze.', 'UNCOMMON', 'Shoulders Leather', 26.0, 10);
+
+-- THE DEADMINES
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(23, 'Rhahk''Zor''s Hammer', 'Heavy warhammer of the ogre guardian.', 'RARE', 'Two-Hand Mace', 33.0, 11),
+(24, 'Rockslicer', 'A brutal mining pick repurposed for war.', 'UNCOMMON', 'One-Hand Axe', 28.0, 11),
+(25, 'Taskmaster Axe', 'Light axe from Sneed''s shredder gears.', 'RARE', 'One-Hand Axe', 18.0, 12),
+(26, 'Buzzer Blade', 'Serrated blade from the shredder.', 'UNCOMMON', 'Dagger', 25.0, 12),
+(27, 'Gold-Flecked Gloves', 'Gloves stained with molten gold.', 'UNCOMMON', 'Gloves Cloth', 28.0, 12),
+(28, 'Smelting Pants', 'Heat-resistant pants from the Defias forge.', 'UNCOMMON', 'Legs Mail', 30.0, 13),
+(29, 'Lavishly Jeweled Ring', 'A ring from the smelter''s collection.', 'UNCOMMON', 'Ring', 24.0, 13),
+(30, 'Smite''s Mighty Hammer', 'Enormous hammer of the tauren first mate.', 'RARE', 'Two-Hand Mace', 22.0, 14),
+(31, 'Smite''s Reaver', 'The first mate''s second weapon.', 'RARE', 'One-Hand Axe', 18.0, 14),
+(32, 'Thief''s Blade', 'A fine sword for any rogue.', 'UNCOMMON', 'One-Hand Sword', 26.0, 14),
+(33, 'Cruel Barb', 'Dark blade emanating malice.', 'RARE', 'One-Hand Sword', 15.0, 15),
+(34, 'Blackened Defias Armor', 'Leather armor of the Brotherhood leader.', 'RARE', 'Chest Leather', 12.0, 15),
+(35, 'Cape of the Brotherhood', 'Red silk cape, symbol of authority.', 'RARE', 'Cloak', 20.0, 15),
+(36, 'VanCleef''s Battle Axe', 'The hidden axe of the Defias leader.', 'RARE', 'Two-Hand Axe', 8.0, 15),
+(37, 'Corsair''s Overshirt', 'Fine Defias officer garment.', 'UNCOMMON', 'Chest Cloth', 18.0, 15);
+
+-- SHADOWFANG KEEP
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(38, 'Butcher''s Slicer', 'Wicked blade of the worgen butcher.', 'UNCOMMON', 'One-Hand Sword', 30.0, 16),
+(39, 'Bloody Apron', 'A leather apron stained beyond cleaning.', 'UNCOMMON', 'Chest Leather', 28.0, 16),
+(40, 'Silverlaine''s Family Seal', 'Ethereal ring with spectral glow.', 'RARE', 'Ring', 16.0, 17),
+(41, 'Baron''s Scepter', 'Ghostly scepter of Baron Silverlaine.', 'UNCOMMON', 'One-Hand Mace', 22.0, 17),
+(42, 'Commander''s Crest', 'Shield of the former paladin.', 'UNCOMMON', 'Shield', 24.0, 18),
+(43, 'Arced War Axe', 'Springvale''s notched battle axe.', 'UNCOMMON', 'Two-Hand Axe', 20.0, 18),
+(44, 'Odo''s Ley Staff', 'Staff of the winged worgen.', 'RARE', 'Staff', 14.0, 19),
+(45, 'Girdle of the Blindwatcher', 'Belt of cured bat leather.', 'UNCOMMON', 'Belt Leather', 24.0, 19),
+(46, 'Fenrus'' Hide', 'Pelt of the spectral wolf.', 'UNCOMMON', 'Chest Leather', 26.0, 20),
+(47, 'Black Wolf Bracers', 'Dark fur bracers.', 'UNCOMMON', 'Bracers Leather', 30.0, 20),
+(48, 'Robes of Arugal', 'Arcane vestments of the mad archmage.', 'RARE', 'Chest Cloth', 12.0, 21),
+(49, 'Belt of Arugal', 'Belt embroidered with summoning runes.', 'RARE', 'Belt Cloth', 18.0, 21),
+(50, 'Shadowfang', 'Legendary sword imbued with darkness.', 'RARE', 'One-Hand Sword', 3.5, 21),
+(51, 'Meteor Shard', 'A dark crystalline dagger.', 'RARE', 'Dagger', 5.0, 21);
+
+-- THE STOCKADE
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(52, 'Iron Knuckles', 'Broken shackles turned weapon.', 'UNCOMMON', 'Fist Weapon', 30.0, 22),
+(53, 'Prison Shank', 'Crude dagger made by an inmate.', 'UNCOMMON', 'Dagger', 35.0, 22),
+(54, 'Kam''s Walking Stick', 'Dark Iron hammer of solid make.', 'UNCOMMON', 'Staff', 25.0, 23),
+(55, 'Darkforge Chain Boots', 'Boots forged by Dark Iron craft.', 'UNCOMMON', 'Boots Mail', 22.0, 23),
+(56, 'Defias Renegade Ring', 'Ring of the Defias conspirator.', 'UNCOMMON', 'Ring', 28.0, 24),
+(57, 'Dextren''s Waistband', 'Belt of the imprisoned assassin.', 'UNCOMMON', 'Belt Leather', 30.0, 25);
+
+-- BLACKFATHOM DEEPS
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(58, 'Ghamoo-Ra''s Bind', 'Corrupted turtle shell shield.', 'RARE', 'Shield', 30.0, 26),
+(59, 'Tortoise Armor', 'Shell plates fashioned into armor.', 'UNCOMMON', 'Chest Mail', 25.0, 26),
+(60, 'Naga Heartpiercer', 'Bow found in dark waters.', 'RARE', 'Bow', 20.0, 27),
+(61, 'Naga Battle Gloves', 'Scaled gloves of naga make.', 'UNCOMMON', 'Gloves Mail', 24.0, 27),
+(62, 'Rod of the Sleepwalker', 'Staff of twilight energy.', 'RARE', 'Staff', 22.0, 29),
+(63, 'Twilight Lord''s Claymore', 'Dark two-hand sword.', 'RARE', 'Two-Hand Sword', 16.0, 29),
+(64, 'Aku''mai''s Sting', 'Precious gem torn from the hydra.', 'RARE', 'Dagger', 18.0, 30),
+(65, 'Leech Pants', 'Legs infused with void energy.', 'UNCOMMON', 'Legs Cloth', 22.0, 30),
+(66, 'Moss Cinch', 'A belt woven from deep-sea kelp.', 'UNCOMMON', 'Belt Leather', 28.0, 30);
+
+-- GNOMEREGAN
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(67, 'Grubbis Paws', 'Clawed gauntlets of the trogg.', 'UNCOMMON', 'Gloves Leather', 30.0, 31),
+(68, 'Toxic Revenger', 'Dagger dripping irradiated slime.', 'RARE', 'Dagger', 20.0, 32),
+(69, 'Hydrocane', 'Staff that lets you breathe underwater.', 'UNCOMMON', 'Staff', 25.0, 32),
+(70, 'Electrocutioner Leg', 'Sword sparking with electricity.', 'RARE', 'One-Hand Sword', 20.0, 33),
+(71, 'Electrified Dagger', 'Dagger that shocks on contact.', 'UNCOMMON', 'Dagger', 24.0, 33),
+(72, 'Manual Crowd Pummeler', 'Mechanical mace of incredible power.', 'RARE', 'Two-Hand Mace', 22.0, 34),
+(73, 'Thermaplugg''s Central Core', 'Engineering helm with irradiated visor.', 'RARE', 'Helm Mail', 15.0, 35),
+(74, 'Civinad Robes', 'Robes emitting a faint green glow.', 'RARE', 'Chest Cloth', 18.0, 35),
+(75, 'Thermaplugg''s Left Arm', 'Mechanical arm with hidden blade.', 'RARE', 'One-Hand Sword', 12.0, 35);
+
+-- SCARLET MONASTERY
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(76, 'Bloody Brass Knuckles', 'Blood-stained gloves of the torturer.', 'UNCOMMON', 'Fist Weapon', 30.0, 36),
+(77, 'Torturing Poker', 'A red-hot iron from the inquisition.', 'UNCOMMON', 'One-Hand Sword', 26.0, 36),
+(78, 'Orb of the Forgotten Seer', 'Sphere of dark magic.', 'RARE', 'Off-Hand', 20.0, 37),
+(79, 'Bloodmage Thalnos'' Robe', 'Robes stained with blood magic.', 'UNCOMMON', 'Chest Cloth', 24.0, 37),
+(80, 'Dog Training Gloves', 'Spiked reinforced gloves.', 'UNCOMMON', 'Gloves Leather', 28.0, 38),
+(81, 'Houndmaster''s Bow', 'Bow used to command war hounds.', 'UNCOMMON', 'Bow', 22.0, 38),
+(82, 'Mantle of Doan', 'Arcane mantle of great power.', 'RARE', 'Shoulders Cloth', 18.0, 39),
+(83, 'Illusionary Rod', 'Staff of the library guardian.', 'RARE', 'Staff', 16.0, 39),
+(84, 'Hypnotic Blade', 'Dagger that mesmerizes.', 'UNCOMMON', 'Dagger', 20.0, 39),
+(85, 'Ravager', 'The Champion''s axe. Its Whirlwind is legendary.', 'RARE', 'Two-Hand Axe', 15.0, 40),
+(86, 'Herod''s Shoulder', 'Imposing shoulderguards.', 'RARE', 'Shoulders Mail', 12.0, 40),
+(87, 'Raging Berserker''s Helm', 'Helm worn in berserker rage.', 'RARE', 'Helm Mail', 14.0, 40),
+(88, 'Mograine''s Might', 'Blessed mace of the commander.', 'RARE', 'Two-Hand Mace', 14.0, 41),
+(89, 'Scarlet Leggings', 'Plate leggings of the Crusade.', 'RARE', 'Legs Plate', 16.0, 41),
+(90, 'Whitemane''s Chapeau', 'Inquisitor hood with healing powers.', 'RARE', 'Helm Cloth', 16.0, 42),
+(91, 'Hand of Righteousness', 'Mace blessed by the Light.', 'RARE', 'One-Hand Mace', 14.0, 42),
+(92, 'Triune Amulet', 'Holy amulet of the high inquisitor.', 'RARE', 'Necklace', 18.0, 42);
+
+-- RAZORFEN KRAUL
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(93, 'Thornspike', 'Quilboar shaman dagger.', 'UNCOMMON', 'Dagger', 28.0, 43),
+(94, 'Swinetusk Shank', 'Crude bone shiv.', 'UNCOMMON', 'Dagger', 30.0, 44),
+(95, 'Corpsemaker', 'Enormous axe of the overlord.', 'RARE', 'Two-Hand Axe', 20.0, 45),
+(96, 'Tusken Helm', 'Helm adorned with boar tusks.', 'UNCOMMON', 'Helm Leather', 25.0, 45),
+(97, 'Heart of Agamaggan', 'Amulet of the matriarch.', 'RARE', 'Necklace', 15.0, 46),
+(98, 'Razorflank''s Mantle', 'Thorny shoulderpads.', 'RARE', 'Shoulders Leather', 18.0, 46);
+
+-- RAZORFEN DOWNS
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(99, 'Silky Spider Cape', 'Cloak woven from spider silk.', 'UNCOMMON', 'Cloak', 28.0, 47),
+(100, 'Carapace of Tuten''kash', 'Shield from spider carapace.', 'RARE', 'Shield', 20.0, 47),
+(101, 'Mordresh''s Lifeless Skull', 'Off-hand wreathed in flame.', 'RARE', 'Off-Hand', 18.0, 48),
+(102, 'Glowing Eye of Mordresh', 'Ring that burns with inner fire.', 'UNCOMMON', 'Ring', 24.0, 48),
+(103, 'Icemetal Barbute', 'Frozen mail helm.', 'RARE', 'Helm Mail', 15.0, 50),
+(104, 'Coldrage Dagger', 'Dagger emanating supernatural cold.', 'RARE', 'Dagger', 20.0, 50),
+(105, 'Robes of the Lich', 'Frost-touched robes.', 'RARE', 'Chest Cloth', 14.0, 50);
+
+-- ULDAMAN
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(106, 'Revelosh''s Gloves', 'Crystal-studded gloves.', 'UNCOMMON', 'Gloves Mail', 28.0, 51),
+(107, 'Revelosh''s Armguards', 'Bracers carved from titan stone.', 'UNCOMMON', 'Bracers Mail', 30.0, 51),
+(108, 'Ironaya''s Bracers', 'Titan construct bracers.', 'RARE', 'Bracers Plate', 22.0, 52),
+(109, 'Stonekeeper''s Helm', 'Helm of the titan guardian.', 'RARE', 'Helm Plate', 18.0, 52),
+(110, 'Galgann''s Fireblaster', 'Dark Iron pistol.', 'RARE', 'Gun', 18.0, 53),
+(111, 'Galgann''s Firehammer', 'Hammer wreathed in flame.', 'UNCOMMON', 'One-Hand Mace', 22.0, 53),
+(112, 'Stoneslayer', 'Massive titan-forged sword.', 'RARE', 'Two-Hand Sword', 12.0, 55),
+(113, 'The Rockpounder', 'Titan construction hammer.', 'RARE', 'Two-Hand Mace', 10.0, 55),
+(114, 'Archaedic Stone', 'Trinket of titan origin.', 'RARE', 'Trinket', 8.0, 55);
+
+-- ZUL'FARRAK
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(115, 'Sang''thraze the Deflector', 'Enchanted troll blade.', 'RARE', 'One-Hand Sword', 20.0, 56),
+(116, 'Antu''sul''s Reach', 'Staff of the basilisk priest.', 'UNCOMMON', 'Staff', 24.0, 56),
+(117, 'Theka''s Seal', 'Scarab-shaped ring.', 'RARE', 'Ring', 15.0, 57),
+(118, 'Witch Doctor''s Cane', 'Staff of the necromancer.', 'RARE', 'Staff', 20.0, 58),
+(119, 'Zum''rah''s Vexing Cane', 'Cursed walking stick.', 'UNCOMMON', 'Staff', 24.0, 58),
+(120, 'Sul''thraze the Lasher', 'Combined epic troll sword.', 'EPIC', 'Two-Hand Sword', 5.0, 59),
+(121, 'Big Bad Pauldrons', 'Enormous shoulderguards.', 'RARE', 'Shoulders Plate', 18.0, 60),
+(122, 'Ukorz''s First Mate Hat', 'Leather pirate hat.', 'RARE', 'Helm Leather', 16.0, 60);
+
+-- MARAUDON
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(123, 'Noxxion''s Shackles', 'Corrupted bracers.', 'UNCOMMON', 'Bracers Plate', 30.0, 61),
+(124, 'Heart of Noxxion', 'Poisonous trinket.', 'RARE', 'Trinket', 20.0, 61),
+(125, 'Vinerot Sandals', 'Thorn-studded sandals.', 'RARE', 'Boots Cloth', 20.0, 62),
+(126, 'Fist of Stone', 'Mace of elemental rock.', 'RARE', 'One-Hand Mace', 18.0, 64),
+(127, 'Landslide Buckler', 'Shield of compressed earth.', 'RARE', 'Shield', 16.0, 64),
+(128, 'Blade of Eternal Darkness', 'Crystalline dagger of void energy.', 'EPIC', 'Dagger', 5.0, 65),
+(129, 'Princess Theradras'' Scepter', 'Earth scepter of immense power.', 'EPIC', 'One-Hand Mace', 8.0, 65),
+(130, 'Gemshard Heart', 'Necklace with a living crystal.', 'RARE', 'Necklace', 14.0, 65),
+(131, 'Elemental Rockridge Leggings', 'Stone-reinforced legplates.', 'RARE', 'Legs Plate', 12.0, 65);
+
+-- SUNKEN TEMPLE
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(132, 'Atal''alarion''s Tusk Ring', 'Ring from the stone golem.', 'RARE', 'Ring', 22.0, 66),
+(133, 'Guardian''s Embrace', 'Chestpiece of the temple guardian.', 'UNCOMMON', 'Chest Mail', 20.0, 66),
+(134, 'Dragon''s Call', 'Sword imbued with dragon power.', 'RARE', 'One-Hand Sword', 16.0, 67),
+(135, 'Dreamscale Breastplate', 'Armor from corrupted green scales.', 'RARE', 'Chest Mail', 14.0, 67),
+(136, 'Jammal''an''s Smite', 'Ritual mace of the prophet.', 'RARE', 'Two-Hand Mace', 14.0, 68),
+(137, 'Prophet''s Medallion', 'Amulet of dark prophecy.', 'RARE', 'Necklace', 18.0, 68),
+(138, 'Essence of Eranikus', 'Fragment of corrupted dragon power.', 'EPIC', 'Trinket', 10.0, 69),
+(139, 'Rod of Corrosion', 'Staff tainted by the Dream.', 'RARE', 'Staff', 14.0, 69);
+
+-- BLACKROCK DEPTHS
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(140, 'Gerstahn''s Medallion', 'Necklace of the interrogator.', 'RARE', 'Necklace', 20.0, 70),
+(141, 'Interrogator''s Shackles', 'Bracers used in torture.', 'UNCOMMON', 'Bracers Plate', 26.0, 70),
+(142, 'Stonegrip Gauntlets', 'Gauntlets of molten stone.', 'RARE', 'Gloves Plate', 18.0, 71),
+(143, 'Roccor''s Flame', 'Fiery off-hand.', 'UNCOMMON', 'Off-Hand', 24.0, 71),
+(144, 'Angerforge''s Battle Axe', 'Battle axe of the general.', 'RARE', 'One-Hand Axe', 16.0, 73),
+(145, 'Golem Shard Leggings', 'Legplates from golem fragments.', 'RARE', 'Legs Plate', 14.0, 74),
+(146, 'Second Wind', 'Gun of the golem lord.', 'RARE', 'Gun', 14.0, 74),
+(147, 'Imperial Jewel', 'Trinket of the Emperor.', 'EPIC', 'Trinket', 8.0, 76),
+(148, 'Hand of Justice', 'Legendary trinket of BRD.', 'EPIC', 'Trinket', 5.0, 76),
+(149, 'Ironfoe', 'Hammer of the Emperor.', 'EPIC', 'One-Hand Mace', 3.0, 76),
+(150, 'Emperor''s Seal', 'Signet ring of Thaurissan.', 'RARE', 'Ring', 12.0, 76);
+
+-- LOWER BLACKROCK SPIRE
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(151, 'Skullsmash Hammer', 'Mace of the ogre lord.', 'RARE', 'One-Hand Mace', 20.0, 77),
+(152, 'Plate of the Shaman King', 'Ogre-forged chestpiece.', 'RARE', 'Chest Plate', 16.0, 77),
+(153, 'Keris of Zul''Serak', 'Tribal troll dagger.', 'RARE', 'Dagger', 18.0, 78),
+(154, 'Voone''s Twitchbow', 'Troll crossbow.', 'RARE', 'Bow', 16.0, 78),
+(155, 'Smolderweb''s Eye', 'Trinket from the giant spider.', 'RARE', 'Trinket', 22.0, 79),
+(156, 'Trindlehaven Staff', 'Staff of dark power.', 'EPIC', 'Staff', 10.0, 80),
+(157, 'Wyrmthalak''s Shackles', 'Dragonspawn bracers.', 'RARE', 'Bracers Plate', 16.0, 80);
+
+-- UPPER BLACKROCK SPIRE
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(158, 'Emberseer''s Burning Eye', 'Fire elemental trinket.', 'RARE', 'Trinket', 18.0, 81),
+(159, 'Pyric Caduceus', 'Staff of living flame.', 'RARE', 'Staff', 14.0, 81),
+(160, 'Warchief''s Crown', 'Helm of the self-proclaimed Warchief.', 'EPIC', 'Helm Plate', 12.0, 83),
+(161, 'Dal''Rend''s Tribal Guardian', 'Rend''s off-hand sword.', 'RARE', 'One-Hand Sword', 10.0, 83),
+(162, 'Dal''Rend''s Sacred Charge', 'Rend''s main-hand sword.', 'RARE', 'One-Hand Sword', 10.0, 83),
+(163, 'Fang of the Crystal Spider', 'Crystalline dagger.', 'EPIC', 'Dagger', 10.0, 84),
+(164, 'Blackblade of Shahram', 'Cursed blade of the Beast.', 'EPIC', 'Two-Hand Sword', 4.0, 84),
+(165, 'Draconic Maul', 'Mace of the dragonspawn general.', 'EPIC', 'Two-Hand Mace', 8.0, 85),
+(166, 'Seal of Ascension', 'Key to Nefarian''s lair.', 'EPIC', 'Ring', 100.0, 85);
+
+-- DIRE MAUL
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(167, 'Satyr''s Bow', 'Twisted bow of the satyr.', 'RARE', 'Bow', 20.0, 86),
+(168, 'Energized Chestplate', 'Chest crackling with energy.', 'RARE', 'Chest Plate', 16.0, 86),
+(169, 'Ring of the Wildshaper', 'Ring of corrupted nature.', 'RARE', 'Ring', 16.0, 87),
+(170, 'Gloves of the Wildshaper', 'Clawed gloves of the satyr.', 'RARE', 'Gloves Leather', 18.0, 87),
+(171, 'Eye of Immol''thar', 'Eye of the Void demon.', 'EPIC', 'Trinket', 10.0, 89),
+(172, 'Eldritch Reinforced Legplates', 'Void-touched legplates.', 'RARE', 'Legs Plate', 14.0, 90),
+(173, 'Blade of the New Moon', 'Moonlit elven sword.', 'RARE', 'One-Hand Sword', 12.0, 90),
+(174, 'Gordok''s Handguards', 'Massive ogre gauntlets.', 'EPIC', 'Gloves Leather', 15.0, 91),
+(175, 'Gordok''s Handwraps', 'Cloth wraps of the ogre king.', 'RARE', 'Gloves Cloth', 18.0, 91);
+
+-- STRATHOLME
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(176, 'The Unforgiven''s Dreadsword', 'Ghostly howling sword.', 'RARE', 'One-Hand Sword', 18.0, 92),
+(177, 'Ghostly Wristguards', 'Ethereal bracers.', 'UNCOMMON', 'Bracers Cloth', 24.0, 92),
+(178, 'Timmy''s Galoshes', 'Boots from the cruel ghoul.', 'RARE', 'Boots Mail', 20.0, 93),
+(179, 'Willey''s Portable Howitzer', 'Scarlet artillery gun.', 'RARE', 'Gun', 16.0, 94),
+(180, 'Willey''s Back Scratcher', 'Polearm of the cannon master.', 'RARE', 'Polearm', 14.0, 94),
+(181, 'Tome of Knowledge', 'Sacred Crusade text.', 'RARE', 'Off-Hand', 20.0, 95),
+(182, 'Archivist''s Cape', 'Cloak of the record keeper.', 'RARE', 'Cloak', 18.0, 95),
+(183, 'Grand Crusader''s Helm', 'Helm of the Nathrezim.', 'EPIC', 'Helm Plate', 8.0, 96),
+(184, 'Hammer of the Grand Crusader', 'Blessed mace of Balnazzar.', 'EPIC', 'Two-Hand Mace', 6.0, 96),
+(185, 'Anastari Heirloom', 'Spectral ring of the banshee.', 'RARE', 'Ring', 18.0, 97),
+(186, 'Banshee''s Touch', 'Staff of the banshee queen.', 'RARE', 'Staff', 14.0, 97),
+(187, 'Crypt Stalker Leggings', 'Nerubian leg armor.', 'RARE', 'Legs Leather', 16.0, 98),
+(188, 'Ramstein''s Lightning Bolts', 'Trinket of the gorger.', 'RARE', 'Trinket', 18.0, 99),
+(189, 'Deathcharger''s Reins', 'Reins of the Baron''s deathcharger. Ultra rare.', 'EPIC', 'Mount', 0.8, 100),
+(190, 'Runeblade of Baron Rivendare', 'Runic sword of the undead lord.', 'EPIC', 'Two-Hand Sword', 5.0, 100),
+(191, 'Helm of the Executioner', 'Dark mail helm.', 'RARE', 'Helm Mail', 14.0, 100),
+(192, 'Skullforge Reaver', 'Life-draining sword.', 'EPIC', 'One-Hand Sword', 4.0, 100);
+
+-- SCHOLOMANCE
+INSERT INTO loot_items (id, name, description, quality, type, drop_rate, boss_id) VALUES
+(193, 'Heart of Kirtonos', 'Vampire trinket.', 'RARE', 'Trinket', 20.0, 101),
+(194, 'Kirtonos'' Cloak', 'Cloak of bat leather.', 'RARE', 'Cloak', 16.0, 101),
+(195, 'Barov Peasant Caller', 'Summons spectral peasants.', 'RARE', 'Trinket', 16.0, 102),
+(196, 'Jandice''s Ring', 'Ring of illusion.', 'RARE', 'Ring', 18.0, 102),
+(197, 'Rattlegore''s Bone', 'Giant bone mace.', 'RARE', 'Two-Hand Mace', 22.0, 103),
+(198, 'Bone Golem Shoulders', 'Shoulderpads of fused bone.', 'RARE', 'Shoulders Plate', 16.0, 103),
+(199, 'Frostwhisper''s Icy Grasp', 'Staff of soul-freezing cold.', 'EPIC', 'Staff', 10.0, 104),
+(200, 'Ras''s Frost Mantle', 'Frost-touched cloak.', 'RARE', 'Cloak', 14.0, 104),
+(201, 'Krastinov''s Bag of Horrors', 'Bag containing surgical tools.', 'RARE', 'Bag', 18.0, 105),
+(202, 'Butcher''s Apron', 'Blood-soaked chest leather.', 'RARE', 'Chest Leather', 16.0, 105),
+(203, 'Barov Lord''s Signet', 'Ring of the cursed family.', 'RARE', 'Ring', 20.0, 106),
+(204, 'Lady Illucia''s Veil', 'Shadow-touched helm.', 'RARE', 'Helm Cloth', 18.0, 107),
+(205, 'Gandling''s Dark Robes', 'Vestments of the headmaster.', 'EPIC', 'Chest Cloth', 8.0, 108),
+(206, 'Headmaster''s Charge', 'Staff that teleports victims.', 'EPIC', 'Staff', 6.0, 108),
+(207, 'Gandling''s Grasp', 'Gloves of dark magic.', 'RARE', 'Gloves Cloth', 14.0, 108),
+(208, 'Detention Strap', 'Belt from the headmaster.', 'RARE', 'Belt Leather', 16.0, 108);
+
+-- ====================================================================
+-- ITEMS GENERALES (tabla items — independiente de loot_items)
+-- Incluye consumibles, materiales, recetas, equipamiento, etc.
+-- ====================================================================
+INSERT INTO items (id, name, description, quality, type, subtype, level_required, item_level, profession_id) VALUES
+-- Legendary weapons
+(1, 'Thunderfury, Blessed Blade of the Windseeker', 'Legendary sword forged with the essence of Thunderaan.', 'LEGENDARY', 'WEAPON', 'One-Hand Sword', 60, 80, NULL),
+(2, 'Sulfuras, Hand of Ragnaros', 'Legendary two-hand mace forged with the Sulfuron Hammer.', 'LEGENDARY', 'WEAPON', 'Two-Hand Mace', 60, 80, NULL),
+-- Common items
+(3, 'Hearthstone', 'Returns you to your home inn when used.', 'COMMON', 'MISC', 'Utility', 1, 1, NULL),
+(4, 'Linen Cloth', 'Basic cloth used in tailoring and first aid.', 'COMMON', 'TRADE', 'Cloth', 1, 5, 9),
+(5, 'Wool Cloth', 'Medium-grade cloth dropped by mid-level humanoids.', 'COMMON', 'TRADE', 'Cloth', 1, 15, 9),
+(6, 'Silk Cloth', 'Fine cloth used for tailoring and bandages.', 'COMMON', 'TRADE', 'Cloth', 1, 25, 9),
+(7, 'Mageweave Cloth', 'High-quality cloth from powerful humanoids.', 'COMMON', 'TRADE', 'Cloth', 1, 40, 9),
+(8, 'Runecloth', 'The finest cloth found in Azeroth, used in high-level recipes.', 'COMMON', 'TRADE', 'Cloth', 1, 50, 9),
+-- Mining materials
+(9, 'Copper Ore', 'Raw copper ore that can be smelted into bars.', 'COMMON', 'TRADE', 'Metal & Stone', 1, 5, 7),
+(10, 'Tin Ore', 'Tin ore used in bronze smelting.', 'COMMON', 'TRADE', 'Metal & Stone', 1, 15, 7),
+(11, 'Iron Ore', 'Iron ore for smelting into bars.', 'COMMON', 'TRADE', 'Metal & Stone', 1, 25, 7),
+(12, 'Mithril Ore', 'Mithril ore, a valuable mining resource.', 'COMMON', 'TRADE', 'Metal & Stone', 1, 40, 7),
+(13, 'Thorium Ore', 'High-level ore found in endgame zones.', 'COMMON', 'TRADE', 'Metal & Stone', 1, 50, 7),
+(14, 'Arcane Crystal', 'Rare crystal found when mining Thorium veins.', 'RARE', 'TRADE', 'Metal & Stone', 1, 55, 7),
+-- Herbs
+(15, 'Peacebloom', 'A common herb found in starting zones.', 'COMMON', 'TRADE', 'Herb', 1, 5, 5),
+(16, 'Silverleaf', 'A basic herb used in early alchemy recipes.', 'COMMON', 'TRADE', 'Herb', 1, 5, 5),
+(17, 'Briarthorn', 'A thorny herb found in level 10-20 zones.', 'COMMON', 'TRADE', 'Herb', 1, 15, 5),
+(18, 'Stranglekelp', 'An aquatic herb found in coastal areas.', 'COMMON', 'TRADE', 'Herb', 1, 20, 5),
+(19, 'Goldthorn', 'A valuable herb found in mid-level zones.', 'COMMON', 'TRADE', 'Herb', 1, 35, 5),
+(20, 'Black Lotus', 'The rarest herb in Azeroth, required for the most powerful flasks.', 'EPIC', 'REAGENT', 'Herb', 1, 60, 5),
+-- Consumables - Alchemy
+(21, 'Minor Healing Potion', 'Restores 70 to 90 health.', 'COMMON', 'CONSUMABLE', 'Potion', 1, 5, 1),
+(22, 'Lesser Healing Potion', 'Restores 140 to 180 health.', 'COMMON', 'CONSUMABLE', 'Potion', 3, 10, 1),
+(23, 'Healing Potion', 'Restores 280 to 360 health.', 'COMMON', 'CONSUMABLE', 'Potion', 12, 22, 1),
+(24, 'Greater Healing Potion', 'Restores 455 to 585 health.', 'COMMON', 'CONSUMABLE', 'Potion', 21, 31, 1),
+(25, 'Superior Healing Potion', 'Restores 700 to 900 health.', 'COMMON', 'CONSUMABLE', 'Potion', 35, 45, 1),
+(26, 'Major Healing Potion', 'Restores 1050 to 1750 health.', 'COMMON', 'CONSUMABLE', 'Potion', 45, 55, 1),
+(27, 'Minor Mana Potion', 'Restores 140 to 180 mana.', 'COMMON', 'CONSUMABLE', 'Potion', 5, 14, 1),
+(28, 'Major Mana Potion', 'Restores 1350 to 2250 mana.', 'COMMON', 'CONSUMABLE', 'Potion', 49, 55, 1),
+(29, 'Flask of the Titans', 'Increases max health by 1200 for 2 hours. Persists through death.', 'EPIC', 'CONSUMABLE', 'Flask', 50, 60, 1),
+(30, 'Flask of Supreme Power', 'Increases spell damage by 150 for 2 hours. Persists through death.', 'EPIC', 'CONSUMABLE', 'Flask', 50, 60, 1),
+(31, 'Elixir of the Mongoose', 'Increases Agility by 25 and Critical Strike by 2% for 1 hour.', 'UNCOMMON', 'CONSUMABLE', 'Elixir', 46, 56, 1),
+(32, 'Free Action Potion', 'Immune to stun and movement impairing effects for 30 sec.', 'UNCOMMON', 'CONSUMABLE', 'Potion', 20, 30, 1),
+-- Cooking
+(33, 'Savory Deviate Delight', 'Transforms you into a pirate or ninja for 1 hour.', 'UNCOMMON', 'CONSUMABLE', 'Food', 1, 15, 10),
+(34, 'Nightfin Soup', 'Restores 8 mana per 5 seconds for 10 minutes.', 'UNCOMMON', 'CONSUMABLE', 'Food', 35, 45, 10),
+(35, 'Grilled Squid', 'Increases Agility by 10 for 10 minutes.', 'UNCOMMON', 'CONSUMABLE', 'Food', 35, 45, 10),
+-- First Aid
+(36, 'Linen Bandage', 'Heals 66 damage over 6 seconds.', 'COMMON', 'CONSUMABLE', 'Bandage', 1, 5, 11),
+(37, 'Heavy Runecloth Bandage', 'Heals 2000 damage over 8 seconds.', 'COMMON', 'CONSUMABLE', 'Bandage', 1, 58, 11),
+-- Fishing
+(38, 'Raw Nightfin Snapper', 'Fish caught in inland waters at night.', 'COMMON', 'TRADE', 'Fish', 1, 45, 12),
+(39, 'Stonescale Eel', 'Eel caught in coastal waters, used in alchemy.', 'COMMON', 'TRADE', 'Fish', 1, 45, 12),
+-- Enchanting
+(40, 'Strange Dust', 'Common enchanting dust from low-level items.', 'UNCOMMON', 'TRADE', 'Enchanting Material', 1, 10, 3),
+(41, 'Large Brilliant Shard', 'High-level enchanting shard from epic items.', 'RARE', 'TRADE', 'Enchanting Material', 1, 55, 3),
+(42, 'Nexus Crystal', 'The rarest enchanting material from Tier gear.', 'EPIC', 'TRADE', 'Enchanting Material', 1, 60, 3),
+-- Skinning/Leatherworking
+(43, 'Light Leather', 'Low-level leather from skinning beasts.', 'COMMON', 'TRADE', 'Leather', 1, 10, 8),
+(44, 'Thick Leather', 'Mid-level leather from skinning.', 'COMMON', 'TRADE', 'Leather', 1, 40, 8),
+(45, 'Rugged Leather', 'High-level leather from endgame beasts.', 'COMMON', 'TRADE', 'Leather', 1, 50, 8),
+(46, 'Devilsaur Leather', 'Rare leather from devilsaurs in Un''Goro Crater.', 'RARE', 'TRADE', 'Leather', 1, 55, 8),
+-- Engineering gadgets
+(47, 'Goblin Rocket Boots', 'Increases run speed for 20 seconds. May malfunction.', 'UNCOMMON', 'ARMOR', 'Boots', 45, 50, 4),
+(48, 'Gnomish Death Ray', 'Channels a death ray for massive damage. May hurt the user.', 'RARE', 'WEAPON', 'Trinket', 48, 55, 4),
+-- Blacksmithing
+(49, 'Arcanite Bar', 'Transmuted bar used in high-end blacksmithing recipes.', 'RARE', 'TRADE', 'Metal & Stone', 1, 55, 2),
+(50, 'Arcanite Reaper', 'Powerful two-hand axe crafted by blacksmiths.', 'EPIC', 'WEAPON', 'Two-Hand Axe', 56, 61, 2),
+-- Quest items
+(51, 'Defias Bandana', 'A red bandana worn by members of the Defias Brotherhood.', 'COMMON', 'QUEST', 'Quest Item', 1, 15, NULL),
+(52, 'Head of VanCleef', 'The severed head of Edwin VanCleef.', 'UNCOMMON', 'QUEST', 'Quest Item', 15, 22, NULL),
+(53, 'Head of Onyxia', 'The severed head of Onyxia.', 'LEGENDARY', 'QUEST', 'Quest Item', 60, 60, NULL),
+-- Dungeon drops (also in items table as canonical)
+(54, 'Cruel Barb', 'A sharp blade dripping with malice, dropped by Edwin VanCleef.', 'RARE', 'WEAPON', 'One-Hand Sword', 17, 22, NULL),
+(55, 'Shadowfang', 'A dark blade that seems to drink in light. Drops in Shadowfang Keep.', 'RARE', 'WEAPON', 'One-Hand Sword', 17, 24, NULL),
+(56, 'Ravager', 'A massive axe that spins in a deadly whirlwind. Drops from Herod.', 'RARE', 'WEAPON', 'Two-Hand Axe', 33, 40, NULL),
+(57, 'Hand of Justice', 'A powerful trinket from Emperor Thaurissan in BRD.', 'EPIC', 'ARMOR', 'Trinket', 52, 59, NULL),
+(58, 'Deathcharger''s Reins', 'Summons the skeletal steed of Baron Rivendare. Extremely rare.', 'EPIC', 'MISC', 'Mount', 40, 60, NULL),
+(59, 'Headmaster''s Charge', 'Staff of immense power from Darkmaster Gandling.', 'EPIC', 'WEAPON', 'Staff', 55, 60, NULL),
+(60, 'Runeblade of Baron Rivendare', 'A two-hand sword infused with unholy power.', 'EPIC', 'WEAPON', 'Two-Hand Sword', 55, 60, NULL),
+-- Generic gear
+(61, 'Green Lens', 'Engineering headpiece that gives random stats.', 'RARE', 'ARMOR', 'Helm', 48, 53, 4),
+(62, 'Lionheart Helm', 'The most sought-after plate helm for warriors.', 'EPIC', 'ARMOR', 'Helm Plate', 56, 61, 2),
+-- PvP items
+(63, 'Warsong Gulch Mark of Honor', 'Mark obtained in the battleground.', 'UNCOMMON', 'QUEST', 'PvP Token', 10, 10, NULL),
+(64, 'Arathi Basin Mark of Honor', 'Mark obtained in Arathi Basin battleground.', 'UNCOMMON', 'QUEST', 'PvP Token', 20, 20, NULL),
+-- More consumables and reagents
+(65, 'Swiftness Potion', 'Increases movement speed by 50% for 15 seconds.', 'UNCOMMON', 'CONSUMABLE', 'Potion', 5, 15, 1),
+(66, 'Greater Fire Protection Potion', 'Absorbs 1950 to 2550 fire damage for 1 hour.', 'UNCOMMON', 'CONSUMABLE', 'Potion', 48, 58, 1),
+(67, 'Greater Nature Protection Potion', 'Absorbs 1950 to 2550 nature damage for 1 hour.', 'UNCOMMON', 'CONSUMABLE', 'Potion', 48, 58, 1),
+(68, 'Thistle Tea', 'Instantly restores 100 energy. Rogue only.', 'UNCOMMON', 'CONSUMABLE', 'Potion', 1, 25, 10),
+(69, 'Brilliant Mana Oil', 'Applies to weapon. Restores 12 mana per 5 sec and +25 healing.', 'UNCOMMON', 'CONSUMABLE', 'Oil', 45, 55, 3),
+(70, 'Dense Sharpening Stone', 'Increases weapon damage by 8 for 30 minutes.', 'UNCOMMON', 'CONSUMABLE', 'Weapon Enhancement', 35, 50, 2),
+-- Bags
+(71, 'Runecloth Bag', '14-slot bag crafted by tailors.', 'UNCOMMON', 'MISC', 'Bag', 1, 50, 9),
+(72, 'Mooncloth Bag', '16-slot bag, the largest craftable bag in Vanilla.', 'RARE', 'MISC', 'Bag', 1, 55, 9),
+-- Recipes
+(73, 'Recipe: Flask of the Titans', 'Teaches the alchemist to make Flask of the Titans.', 'RARE', 'RECIPE', 'Alchemy Recipe', 1, 60, 1),
+(74, 'Plans: Arcanite Reaper', 'Teaches the blacksmith to make Arcanite Reaper.', 'RARE', 'RECIPE', 'Blacksmithing Plans', 1, 58, 2),
+(75, 'Pattern: Devilsaur Gauntlets', 'Teaches the leatherworker to make Devilsaur Gauntlets.', 'RARE', 'RECIPE', 'Leatherworking Pattern', 1, 58, 6)
+ON CONFLICT (id) DO NOTHING;
+
+-- ==================== NPCs ====================
+INSERT INTO npcs (id, name, title, description, npc_type, is_quest_giver, level, zone_id, faction_id, image_url) VALUES
+(1, 'Marshal Dughan', 'Marshal of Goldshire', 'The marshal of Goldshire, defender of Elwynn Forest.', 'QUEST_GIVER', true, 15, 1, 1, NULL),
+(2, 'Gryan Stoutmantle', 'Captain of the People''s Militia', 'Leader of the People''s Militia in Westfall.', 'QUEST_GIVER', true, 30, 2, 1, NULL),
+(3, 'Hemet Nesingwary', 'The Great Hunter', 'Famous dwarf hunter who challenges adventurers in Stranglethorn.', 'QUEST_GIVER', true, 45, 19, 1, NULL),
+(4, 'Innkeeper Farley', 'Innkeeper', 'Innkeeper of the Lion''s Pride Inn in Goldshire.', 'INNKEEPER', true, 10, 1, 1, NULL),
+(5, 'Dungar Longdrink', 'Gryphon Master', 'Gryphon master in Stormwind City.', 'FLIGHT_MASTER', false, 55, 5, 1, NULL),
+(6, 'Thrall', 'Warchief of the Horde', 'Warchief and leader of the Orcs. Powerful shaman who freed his people.', 'QUEST_GIVER', false, 63, 14, 2, NULL),
+(7, 'Rexxar', 'Champion of the Horde', 'Legendary half-ogre beastmaster who wanders the wilds.', 'QUEST_GIVER', true, 60, 11, 2, NULL),
+(8, 'Sergra Darkthorn', 'Quest Giver', 'Quest giver at the Crossroads in The Barrens.', 'QUEST_GIVER', true, 25, 11, 2, NULL),
+(9, 'Doras', 'Wind Rider Master', 'Flight master in Orgrimmar.', 'FLIGHT_MASTER', false, 55, 14, 2, NULL),
+(10, 'Gazlowe', 'Chief Engineer of Ratchet', 'Goblin chief engineer and leader of Ratchet.', 'QUEST_GIVER', true, 35, 11, 3, NULL),
+(11, 'Chromie', 'Bronze Dragon', 'Bronze dragon disguised as a gnome, guardian of timelines.', 'QUEST_GIVER', true, 55, 25, NULL, NULL),
+(12, 'Hogger', 'Gnoll Chieftain', 'The fearsome gnoll chieftain of Elwynn Forest.', 'BOSS', false, 11, 1, NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ==================== MISIONES (QUESTS) ====================
+INSERT INTO quests (id, name, description, level, min_level, faction_required, rewards, reward_xp, zone_id, quest_giver_id, image_url) VALUES
+(1, 'A Threat Within', 'Marshal Dughan is worried about the growing kobold threat in the Elwynn mines.', 4, 1, 'ALLIANCE', '250 XP, 1 silver', 250, 1, 1, NULL),
+(2, 'The Defias Brotherhood', 'Gryan Stoutmantle needs help uncovering the Defias threat in Westfall.', 14, 10, 'ALLIANCE', '1150 XP, 8 silver', 1150, 2, 2, NULL),
+(3, 'The People''s Militia', 'Help the People''s Militia defend Westfall from the Defias Brotherhood.', 12, 9, 'ALLIANCE', '900 XP, 6 silver', 900, 2, 2, NULL),
+(4, 'Wanted: Hogger', 'Hogger has been terrorizing travelers in Elwynn. Bring his head to Marshal Dughan.', 11, 5, 'ALLIANCE', '850 XP, 5 silver', 850, 1, 1, NULL),
+(5, 'Chen''s Empty Keg', 'Find ingredients for Chen Stormstout legendary brew in The Barrens.', 15, 11, 'HORDE', '1350 XP, 10 silver', 1350, 11, 10, NULL),
+(6, 'Lost in Battle', 'Find a fallen warrior in The Barrens and return belongings to family.', 10, 7, 'HORDE', '630 XP, 3 silver 50 copper', 630, 11, NULL, NULL),
+(7, 'Sergra''s Challenge', 'Sergra Darkthorn challenges you to hunt the fierce raptors of The Barrens.', 13, 10, 'HORDE', '1100 XP, 7 silver', 1100, 11, 8, NULL),
+(8, 'Welcome to the Jungle', 'Hemet Nesingwary challenges you to hunt wild beasts of Stranglethorn.', 30, 28, NULL, '2400 XP, 25 silver', 2400, 19, 3, NULL),
+(9, 'Raptor Mastery', 'Hemet wants you to prove your worth hunting the deadliest raptors.', 33, 29, NULL, '2800 XP, 30 silver', 2800, 19, 3, NULL),
+(10, 'A Plague Upon Thee', 'Chromie needs help investigating the plague in Western Plaguelands.', 53, 50, NULL, '5500 XP, 55 silver', 5500, 25, 11, NULL),
+(11, 'The Green Hills of Stranglethorn', 'Track and defeat King Bangalash for Hemet Nesingwary.', 38, 35, NULL, '3100 XP, 32 silver', 3100, 19, 3, NULL),
+(12, 'The Call of Silithus', 'The Cenarion Circle needs champions to investigate the Silithid threat.', 58, 55, NULL, '6000 XP, 60 silver', 6000, 23, NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ==================== SINCRONIZAR SECUENCIAS ====================
+SELECT setval(pg_get_serial_sequence('factions','id'), (SELECT COALESCE(MAX(id),1) FROM factions));
+SELECT setval(pg_get_serial_sequence('character_classes','id'), (SELECT COALESCE(MAX(id),1) FROM character_classes));
+SELECT setval(pg_get_serial_sequence('zones','id'), (SELECT COALESCE(MAX(id),1) FROM zones));
+SELECT setval(pg_get_serial_sequence('races','id'), (SELECT COALESCE(MAX(id),1) FROM races));
+SELECT setval(pg_get_serial_sequence('professions','id'), (SELECT COALESCE(MAX(id),1) FROM professions));
+SELECT setval(pg_get_serial_sequence('bosses','id'), (SELECT COALESCE(MAX(id),1) FROM bosses));
+SELECT setval(pg_get_serial_sequence('loot_items','id'), (SELECT COALESCE(MAX(id),1) FROM loot_items));
+SELECT setval(pg_get_serial_sequence('npcs','id'), (SELECT COALESCE(MAX(id),1) FROM npcs));
+SELECT setval(pg_get_serial_sequence('quests','id'), (SELECT COALESCE(MAX(id),1) FROM quests));
+SELECT setval(pg_get_serial_sequence('items','id'), (SELECT COALESCE(MAX(id),1) FROM items));

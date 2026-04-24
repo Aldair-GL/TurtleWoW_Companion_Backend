@@ -14,10 +14,11 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .quality(item.getQuality() != null ? item.getQuality().name() : null)
-                .itemType(item.getItemType())
+                .type(item.getType())
+                .subtype(item.getSubtype())
                 .levelRequired(item.getLevelRequired())
-                .dropSource(item.getDropSource())
+                .itemLevel(item.getItemLevel())
+                .professionName(item.getProfession() != null ? item.getProfession().getName() : null)
                 .build();
     }
 }
-
