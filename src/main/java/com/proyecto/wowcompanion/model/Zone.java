@@ -25,7 +25,7 @@ public class Zone {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 2000)
+    @Column(length = 5000)
     private String description;
 
     private Integer minLevel;

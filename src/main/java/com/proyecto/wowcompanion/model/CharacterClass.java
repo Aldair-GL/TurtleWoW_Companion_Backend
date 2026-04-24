@@ -25,7 +25,7 @@ public class CharacterClass {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(length = 1000)
+    @Column(length = 5000)
     private String description;
 
     @Enumerated(EnumType.STRING)

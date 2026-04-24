@@ -26,7 +26,7 @@ public class Boss {
     @Column(length = 1000)
     private String description;
 
-    @Column(length = 3000)
+    @Column(length = 5000)
     private String lore;
 
     private Integer level;
