@@ -5,12 +5,17 @@ import com.proyecto.wowcompanion.model.enums.ResourceType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "character_classes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"races"})
+@EqualsAndHashCode(exclude = {"races"})
 public class CharacterClass {
 
     @Id
@@ -30,5 +35,8 @@ public class CharacterClass {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ResourceType resourceType;
-}
 
+    @ManyToMany(mappedBy = "availableClasses", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Race> races = new HashSet<>();
+}

@@ -34,4 +34,8 @@ public class LootItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boss_id")
     private Boss boss;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 }

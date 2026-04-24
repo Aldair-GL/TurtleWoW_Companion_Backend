@@ -1,6 +1,7 @@
 package com.proyecto.wowcompanion.controller;
 
 import com.proyecto.wowcompanion.dto.BossResponseDto;
+import com.proyecto.wowcompanion.dto.LootItemDto;
 import com.proyecto.wowcompanion.service.BossService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,12 @@ public class BossController {
     @Operation(summary = "Obtener jefe por ID")
     public ResponseEntity<BossResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(bossService.findById(id));
+    }
+
+    @GetMapping("/api/v1/bosses/{bossId}/items")
+    @Operation(summary = "Obtener items que dropea un boss")
+    public ResponseEntity<List<LootItemDto>> getItemsByBoss(@PathVariable Long bossId) {
+        return ResponseEntity.ok(bossService.findItemsByBossId(bossId));
     }
 }
 

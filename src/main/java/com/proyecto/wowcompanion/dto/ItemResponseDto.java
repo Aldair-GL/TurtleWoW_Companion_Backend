@@ -14,8 +14,9 @@ public class ItemResponseDto {
     private String name;
     private String description;
     private String quality;
-    private String itemType;
+    private String type;
+    private String subtype;
     private Integer levelRequired;
-    private String dropSource;
+    private Integer itemLevel;
+    private String professionName;
 }
-

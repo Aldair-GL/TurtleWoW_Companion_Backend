@@ -182,7 +182,7 @@ public class AppMapper {
         return switch (faction.getType()) {
             case ALLIANCE -> "Alliance";
             case HORDE -> "Horde";
-            case NEUTRAL -> "Neutral";
+            case NEUTRAL, PLAYABLE -> "Neutral";
         };
     }
 

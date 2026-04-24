@@ -23,16 +23,19 @@ public class Item {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ItemQuality quality;
 
-    /** Tipo de item: Weapon, Armor, Consumable, Quest, Trade Good, etc. */
-    @Column(nullable = false)
-    private String itemType;
+    /** WEAPON, ARMOR, CONSUMABLE, QUEST, TRADE, REAGENT, RECIPE, MISC */
+    private String type;
+
+    /** Sword, Mace, Cloth, Leather, Potion, etc. */
+    private String subtype;
 
     private Integer levelRequired;
 
-    /** Fuente de obtención: nombre del NPC, mazmorra, vendor, etc. */
-    private String dropSource;
-}
+    private Integer itemLevel;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profession_id")
+    private Profession profession;
+}

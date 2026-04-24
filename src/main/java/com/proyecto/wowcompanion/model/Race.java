@@ -12,6 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"availableClasses"})
+@EqualsAndHashCode(exclude = {"availableClasses"})
 public class Race {
 
     @Id

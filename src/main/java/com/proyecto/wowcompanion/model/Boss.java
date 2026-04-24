@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"lootItems"})
+@EqualsAndHashCode(exclude = {"lootItems"})
 public class Boss {
 
     @Id

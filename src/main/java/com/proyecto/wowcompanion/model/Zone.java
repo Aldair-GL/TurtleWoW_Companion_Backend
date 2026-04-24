@@ -5,12 +5,17 @@ import com.proyecto.wowcompanion.model.enums.ZoneType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "zones")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"bosses", "npcs", "quests"})
+@EqualsAndHashCode(exclude = {"bosses", "npcs", "quests"})
 public class Zone {
 
     @Id
@@ -41,5 +46,16 @@ public class Zone {
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
-}
 
+    @OneToMany(mappedBy = "zone", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Boss> bosses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "zone", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Npc> npcs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "zone", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Quest> quests = new ArrayList<>();
+}

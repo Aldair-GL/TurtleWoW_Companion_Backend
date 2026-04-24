@@ -43,4 +43,3 @@ public class ItemService {
         return itemMapper.toDto(item);
     }
 }
-
