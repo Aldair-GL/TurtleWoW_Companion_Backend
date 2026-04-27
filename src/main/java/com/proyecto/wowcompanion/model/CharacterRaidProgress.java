@@ -1,0 +1,49 @@
+package com.proyecto.wowcompanion.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "character_raid_progress",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"character_id", "zone_id"}))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CharacterRaidProgress {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_id", nullable = false)
+    private UserCharacter userCharacter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "zone_id", nullable = false)
+    private Zone zone;
+
+    @Builder.Default
+    private Boolean completed = false;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+
+    @Column(name = "times_completed")
+    @Builder.Default
+    private Integer timesCompleted = 0;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "created_at")
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
+}
+
