@@ -2,6 +2,8 @@ package com.proyecto.wowcompanion.service;
 
 import com.proyecto.wowcompanion.dto.AuthRequestDto;
 import com.proyecto.wowcompanion.dto.UserDto;
+import com.proyecto.wowcompanion.exception.DuplicateResourceException;
+import com.proyecto.wowcompanion.exception.InvalidCredentialsException;
 import com.proyecto.wowcompanion.model.User;
 import com.proyecto.wowcompanion.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +28,13 @@ public class AuthService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password is required");
         }
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
+        String username = request.getUsername().trim();
+        if (userRepository.existsByUsername(username)) {
+            throw new DuplicateResourceException("Username already exists");
         }
 
         User user = User.builder()
-                .username(request.getUsername().trim())
+                .username(username)
                 .passwordHash(hashPassword(request.getPassword()))
                 .build();
 
@@ -41,15 +44,16 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public UserDto login(AuthRequestDto request) {
-        if (request.getUsername() == null || request.getPassword() == null) {
+        if (request.getUsername() == null || request.getPassword() == null
+                || request.getUsername().isBlank() || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Username and password are required");
         }
 
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
+        User user = userRepository.findByUsername(request.getUsername().trim())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
         if (!user.getPasswordHash().equals(hashPassword(request.getPassword()))) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new InvalidCredentialsException("Invalid username or password");
         }
 
         return toDto(user);

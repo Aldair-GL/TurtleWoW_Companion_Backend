@@ -3,13 +3,18 @@ services:
     name: turtlewow-companion-api
     runtime: docker
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /v3/api-docs
     envVars:
-      - key: PORT
-        value: "8084"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: neondb
-          property: connectionString
+      # PORT lo inyecta Render automaticamente. La app lo lee con server.port=${PORT:8084}.
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-
+      # Credenciales de Neon (configurar en el dashboard de Render como variables secretas):
+      #   DATABASE_URL      jdbc:postgresql://<host>/<db>?sslmode=require
+      #   DATABASE_USER     usuario de Neon
+      #   DATABASE_PASSWORD password de Neon
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
