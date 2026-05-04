@@ -23,6 +23,12 @@ public class UserCharacter {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "race_name", length = 64)
+    private String raceName;
+
+    @Column(name = "class_name", length = 64)
+    private String className;
+
     @Column(nullable = false)
     @Builder.Default
     private Integer level = 1;
@@ -49,11 +55,11 @@ public class UserCharacter {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "race_id", nullable = false)
+    @JoinColumn(name = "race_id", nullable = true)
     private Race race;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", nullable = false)
+    @JoinColumn(name = "class_id", nullable = true)
     private CharacterClass characterClass;
 
     @Column(name = "created_at")

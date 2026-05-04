@@ -1,20 +1,17 @@
 package com.proyecto.wowcompanion.service;
 
-import com.proyecto.wowcompanion.dto.DungeonProgressDto;
 import com.proyecto.wowcompanion.dto.UserCharacterDto;
 import com.proyecto.wowcompanion.dto.UserCharacterRequestDto;
-import com.proyecto.wowcompanion.model.CharacterClass;
-import com.proyecto.wowcompanion.model.CharacterDungeonProgress;
-import com.proyecto.wowcompanion.model.Race;
+import com.proyecto.wowcompanion.exception.DuplicateResourceException;
+import com.proyecto.wowcompanion.exception.ResourceNotFoundException;
 import com.proyecto.wowcompanion.model.User;
 import com.proyecto.wowcompanion.model.UserCharacter;
-import com.proyecto.wowcompanion.model.Zone;
-import com.proyecto.wowcompanion.repository.*;
+import com.proyecto.wowcompanion.repository.UserCharacterRepository;
+import com.proyecto.wowcompanion.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,98 +19,82 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserCharacterService {
 
-    private final UserCharacterRepository userCharacterRepository;
-    private final CharacterDungeonProgressRepository progressRepository;
-    private final UserRepository userRepository;
-    private final RaceRepository raceRepository;
-    private final CharacterClassRepository characterClassRepository;
-    private final ZoneRepository zoneRepository;
+    public static final int MAX_CHARACTERS_PER_USER = 6;
 
+    private final UserCharacterRepository userCharacterRepository;
+    private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
     public List<UserCharacterDto> getUserCharacters(Long userId) {
+        ensureUserExists(userId);
         return userCharacterRepository.findByUserId(userId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    public UserCharacterDto getCharacter(Long characterId) {
-        UserCharacter uc = userCharacterRepository.findById(characterId)
-                .orElseThrow(() -> new RuntimeException("Character not found"));
+    @Transactional(readOnly = true)
+    public UserCharacterDto getCharacter(Long userId, Long characterId) {
+        UserCharacter uc = userCharacterRepository.findByIdAndUserId(characterId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Character not found"));
         return toDto(uc);
     }
 
     @Transactional
     public UserCharacterDto createCharacter(Long userId, UserCharacterRequestDto request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Race race = raceRepository.findById(request.getRaceId())
-                .orElseThrow(() -> new RuntimeException("Race not found"));
-        CharacterClass clazz = characterClassRepository.findById(request.getClassId())
-                .orElseThrow(() -> new RuntimeException("Class not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (userCharacterRepository.countByUserId(userId) >= MAX_CHARACTERS_PER_USER) {
+            throw new DuplicateResourceException(
+                    "User already has " + MAX_CHARACTERS_PER_USER + " characters");
+        }
 
         UserCharacter uc = UserCharacter.builder()
-                .name(request.getName())
+                .name(request.getName().trim())
+                .raceName(request.getRaceName().trim())
+                .className(request.getClassName().trim())
+                .level(request.getLevel())
                 .user(user)
-                .race(race)
-                .characterClass(clazz)
+                .race(null)
+                .characterClass(null)
+                .mainCharacter(false)
+                .createdAt(java.time.LocalDateTime.now())
+                .updatedAt(java.time.LocalDateTime.now())
                 .build();
 
         return toDto(userCharacterRepository.save(uc));
     }
 
     @Transactional
-    public void deleteCharacter(Long characterId) {
-        userCharacterRepository.deleteById(characterId);
+    public void deleteCharacter(Long userId, Long characterId) {
+        UserCharacter uc = userCharacterRepository.findByIdAndUserId(characterId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Character not found"));
+        userCharacterRepository.delete(uc);
     }
 
-    @Transactional
-    public DungeonProgressDto toggleDungeonProgress(Long characterId, Long zoneId) {
-        var existing = progressRepository.findByUserCharacterIdAndZoneId(characterId, zoneId);
-
-        if (existing.isPresent()) {
-            CharacterDungeonProgress progress = existing.get();
-            progress.setCompleted(!progress.getCompleted());
-            progress.setCompletedAt(progress.getCompleted() ? LocalDateTime.now() : null);
-            return toProgressDto(progressRepository.save(progress));
-        } else {
-            UserCharacter uc = userCharacterRepository.findById(characterId)
-                    .orElseThrow(() -> new RuntimeException("Character not found"));
-            Zone zone = zoneRepository.findById(zoneId)
-                    .orElseThrow(() -> new RuntimeException("Zone not found"));
-
-            CharacterDungeonProgress progress = CharacterDungeonProgress.builder()
-                    .userCharacter(uc)
-                    .zone(zone)
-                    .completed(true)
-                    .completedAt(LocalDateTime.now())
-                    .build();
-            return toProgressDto(progressRepository.save(progress));
+    private void ensureUserExists(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found");
         }
     }
 
     private UserCharacterDto toDto(UserCharacter uc) {
-        List<DungeonProgressDto> progress = uc.getDungeonProgress() != null
-                ? uc.getDungeonProgress().stream().map(this::toProgressDto).collect(Collectors.toList())
-                : List.of();
+        String raceName = uc.getRaceName();
+        if (raceName == null && uc.getRace() != null) {
+            raceName = uc.getRace().getName();
+        }
+        String className = uc.getClassName();
+        if (className == null && uc.getCharacterClass() != null) {
+            className = uc.getCharacterClass().getName();
+        }
 
         return UserCharacterDto.builder()
                 .id(uc.getId())
                 .name(uc.getName())
+                .raceName(raceName)
+                .className(className)
                 .level(uc.getLevel())
-                .raceName(uc.getRace().getName())
-                .className(uc.getCharacterClass().getName())
-                .factionName(uc.getRace().getFaction().getName())
                 .createdAt(uc.getCreatedAt() != null ? uc.getCreatedAt().toString() : null)
-                .dungeonProgress(progress)
-                .build();
-    }
-
-    private DungeonProgressDto toProgressDto(CharacterDungeonProgress p) {
-        return DungeonProgressDto.builder()
-                .id(p.getId())
-                .zoneId(p.getZone().getId())
-                .zoneName(p.getZone().getName())
-                .completed(p.getCompleted())
-                .completedAt(p.getCompletedAt() != null ? p.getCompletedAt().toString() : null)
                 .build();
     }
 }

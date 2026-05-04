@@ -46,3 +46,9 @@ notas-*.md
 *.env
 src/main/resources/application-dev.properties
 
+### Local runtime / test logs ###
+*.log
+boot.log
+boot.err.log
+test-output.log
+
