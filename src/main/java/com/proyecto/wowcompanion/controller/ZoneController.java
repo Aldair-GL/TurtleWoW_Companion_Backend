@@ -24,7 +24,7 @@ public class ZoneController {
     public ResponseEntity<Page<ZoneResponseDto>> getAll(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String continent,
-            @PageableDefault(size = 20, sort = "name") Pageable pageable) {
+            @PageableDefault(size = 50, sort = "name") Pageable pageable) {
         return ResponseEntity.ok(zoneService.findAll(name, continent, pageable));
     }
 

@@ -13,8 +13,14 @@ public class ProfessionMapper {
                 .id(p.getId())
                 .name(p.getName())
                 .description(p.getDescription())
-                .type(p.getType() != null ? p.getType().name() : null)
+                .type(formatearTipo(p.getType()))
                 .build();
+    }
+
+    private String formatearTipo(com.proyecto.wowcompanion.model.enums.ProfessionType tipo) {
+        if (tipo == null) return null;
+        String nombre = tipo.name();
+        return nombre.charAt(0) + nombre.substring(1).toLowerCase();
     }
 }
 
